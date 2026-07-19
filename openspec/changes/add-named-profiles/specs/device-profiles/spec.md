@@ -1,0 +1,55 @@
+# device-profiles
+
+## ADDED Requirements
+
+### Requirement: Multiple named profiles per participant
+The system SHALL allow a participant to carry multiple named profiles (e.g.
+`fullsize` / `lowtemp`, `summer` / `winter`), each a complete parameterization of the
+participant's class, with exactly one profile active at a time.
+
+#### Scenario: Heat pump summer profile
+- **WHEN** the heat pump's `summer` profile is active
+- **THEN** the engine plans one uninterrupted DHW cycle per day instead of the winter
+  all-day behavior
+
+> Source: mstormi ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379)),
+> seconded from a second installation by masipila
+> ([5017073428](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5017073428)),
+> program selection in jlaur's founding comment
+> ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141)).
+
+### Requirement: Profile contents
+Each named profile SHALL be able to carry a load curve as a TimeSeries together with a
+scale factor, plus the class parameters it overrides (demand, deadline, protections),
+so the same representation covers consumer programs and seasonal producer curves.
+
+#### Scenario: Washing program curve
+- **WHEN** the `fullsize` profile carries its measured curve (peak 1:30 in, one hour
+  long) and a scale factor
+- **THEN** window cost is computed over that curve, not over a flat average
+
+> Source: "The TimeSeries and the scale factor should be part of the profile"
+> ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379));
+> per-level PowerProfiles (lsiepel,
+> [1481931303](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931303));
+> curve shape precedent: jlaur's mapped dishwasher program
+> ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141)).
+
+### Requirement: Active-profile selection
+The system SHALL support selecting the active profile manually, by schedule/season, and
+programmatically (rules or detection), with the switch taking effect at the next
+planning cycle.
+
+#### Scenario: Season flips the profile
+- **WHEN** the configured heating season ends
+- **THEN** the heat pump's active profile changes from `winter` to `summer` without
+  user action
+
+#### Scenario: Detected program
+- **WHEN** an appliance's own state reports which program the user chose
+- **THEN** a rule can set the matching named profile before the engine plans it
+
+> Source: seasonal examples in [5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379)
+> and [5017073428](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5017073428);
+> "select the last run specific program"
+> ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141)).

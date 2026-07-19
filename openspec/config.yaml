@@ -1,0 +1,23 @@
+schema: spec-driven
+
+context: |
+  Community spec for native Energy Management in openHAB (seed for openhab-core#3478).
+  Goal: an EMS framework in openhab-core plus new add-on extension points — NOT a binding.
+  Language: Java 21, openhab-core conventions (OSGi, registries/providers, item metadata, UoM).
+  Already available in core and to be built upon, not reinvented:
+    - future-timestamped TimeSeries + the `forecast` persistence strategy (openHAB 4.1)
+    - Number:Currency / Number:EnergyPrice UoM (openHAB 4.1)
+    - item metadata namespaces, the semantic model, persistence services
+  Requirements are mechanism-neutral SHALL statements; contested design picks live in
+  design.md files as open questions, not in requirements.
+  Every requirement carries a Source line pointing at the #3478 comment or production
+  system it came from (storm.house, openhab-spot-price-optimizer, openhab-binding-emsmanager).
+  Wave order: 1 participant model + energy levels, 2 price/forecast data planes,
+  3 grid constraints + named profiles, 4 adaptive learning.
+
+rules:
+  proposal:
+    - Always include a "Non-goals" section
+    - Name the wave the change belongs to
+  specs:
+    - Every requirement ends with a "Source:" line citing its origin
