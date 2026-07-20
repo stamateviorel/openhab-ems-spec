@@ -61,17 +61,30 @@ PV-first scheduling and charts can overlay forecast ahead of *now*.
 > [repo](https://github.com/stamateviorel/openhab-binding-emsmanager)).
 
 ### Requirement: Derived-demand forecasts
-The system SHALL allow demand forecasts to be computed from other forecasts and
-published as first-class series — the proven case being heating need derived from
-outdoor temperature (approximately linear), passive solar gain (solar forecast as
-proxy), and pre-heating ahead of steep temperature drops.
+The system SHALL allow demand forecasts to be computed from other forecasts and published
+as first-class series in energy units (kWh per period, not a count of hours) — the proven
+case being heating need derived from outdoor temperature (approximately linear), passive
+solar gain (solar forecast as a proxy, useful even without PV), and pre-heating ahead of
+steep temperature drops.
 
 #### Scenario: Cold snap pre-heat
 - **WHEN** the temperature forecast shows 0 → −20 °C within 12 hours
 - **THEN** the heating-need series rises ahead of the drop so the engine pre-heats in
   the cheaper, warmer hours
 
-> Source: masipila 2026 ([5017073428](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5017073428));
+#### Scenario: Heating demand re-derived with a morning solar check
+- **GIVEN** tomorrow's heat-pump demand computed the day before as periods of energy need
+  (a ground-source heat pump, no PV on site)
+- **WHEN** the next morning's solar forecast shows a sunny day
+- **THEN** the daytime part of the demand series is overwritten downwards, since passive
+  solar gain will cover some of the heating
+
+> Source: masipila 2026 ([5017073428](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5017073428))
+> and his production Spot Price Optimizer examples — a heat pump's day-ahead demand
+> (4×6h periods) re-derived with a morning solar check that overwrites the daytime part
+> without any PV, plus simpler night car-charging demand, persisted in kWh not hours, with
+> the derivation algorithm free to take whatever inputs it needs
+> ([5021411844](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5021411844));
 > pre-conditioning planner prior art in the reference (RC model + DP pre-heat).
 
 ### Requirement: Source-agnostic consumption
