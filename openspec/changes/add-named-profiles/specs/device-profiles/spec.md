@@ -47,6 +47,19 @@ seasonal producer curves.
 > curve shape precedent: jlaur's mapped dishwasher program
 > ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141)).
 
+### Requirement: Profiles are updatable at any time
+A profile's TimeSeries SHALL be read-write and updatable at any time, so a curve can be
+refined or replaced live — by the learning layer or by richer telemetry — without
+redefining the profile.
+
+#### Scenario: Learned curve overwrites the baseline
+- **GIVEN** a profile carrying an initial curve
+- **WHEN** the learning layer produces a better curve from recorded runs
+- **THEN** the profile's series is overwritten in place and the next plan uses it
+
+> Source: mstormi ([5020830338](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5020830338));
+> ties to the learning layer (wave 4).
+
 ### Requirement: Active-profile selection
 The system SHALL support selecting the active profile manually, by schedule/season, and
 programmatically (rules or detection), with the switch taking effect at the next

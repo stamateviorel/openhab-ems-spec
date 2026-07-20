@@ -28,9 +28,18 @@ named profile, updating it as new runs are recorded.
 - **THEN** a named profile with the measured curve becomes available for scheduling,
   replacing the flat-consumption assumption
 
+#### Scenario: SG-ready device with richer telemetry
+- **GIVEN** a heat pump controlled only through SG-ready modes but exposing live power or
+  metrics over Modbus or a cloud interface
+- **WHEN** that telemetry is persisted
+- **THEN** the learning layer refines the device's consumption prediction from it, even
+  though the control surface carries no power setpoint
+
 > Source: jlaur's founding idea ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141));
 > mstormi's "adapt/replace the consumption TimeSeries profile from recorded historic
-> data" ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379));
+> data" ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379))
+> and SG-ready-but-measured dynamic consumers
+> ([5020830338](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5020830338));
 > normalized-pattern observation (lsiepel,
 > [5003008753](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5003008753)).
 

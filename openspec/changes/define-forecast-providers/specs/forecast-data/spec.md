@@ -16,6 +16,35 @@ the same storage capability as prices.
 > [1481931313](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931313));
 > Kai's need #1 ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209)).
 
+### Requirement: Layered prediction series
+A prediction series (generation, consumption, or price) SHALL be read-write and updatable
+at any time over any of its entries — past, present or future — so a long-range baseline
+can be pre-filled and then progressively overwritten by better sources as they arrive,
+including a known cap written directly onto the affected entries.
+
+#### Scenario: PV baseline refined by forecast
+- **GIVEN** a PV generation series pre-filled for the whole year from daily sunshine
+  duration (its daylight window shifting a few minutes per day)
+- **WHEN** a solar or weather forecast becomes available for the coming days
+- **THEN** those days' entries are overwritten with the forecast while the rest of the
+  year keeps the baseline
+
+#### Scenario: Hard generation cap written into today
+- **GIVEN** an inverter with a built-in generation limit, or a §14a dimming limit in
+  effect, that openHAB cannot otherwise read or control
+- **WHEN** the cap applies to part of today
+- **THEN** the affected entries of today's generation prediction are overwritten to the
+  capped value
+
+#### Scenario: Forecast source fails
+- **GIVEN** a series carrying a pre-filled baseline
+- **WHEN** the internet or forecast provider is unavailable for any duration
+- **THEN** the EMS keeps planning on the baseline instead of losing the series
+
+> Source: mstormi ([5020830338](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5020830338)) —
+> read-write TimeSeries, a PV-year baseline refined live, inverter/§14a caps written into
+> the prediction, and graceful fallback when live sources fail.
+
 ### Requirement: Solar production forecast
 The system SHALL provide plant-level PV production forecasts through the common surface,
 sourced from pluggable services, at hourly or finer resolution, so engines can plan
