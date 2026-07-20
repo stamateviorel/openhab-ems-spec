@@ -82,12 +82,22 @@ self-consumption against export honestly.
 > [1482078918](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1482078918)).
 
 ### Requirement: Time resolution
-All price handling SHALL be resolution-agnostic ("timeResolution", not "granularity"),
-correct for 60- and 15-minute market slots.
+All price and forecast handling SHALL be resolution-agnostic ("timeResolution", not
+"granularity") and accept non-uniform intervals within one series, so a firm near-term
+segment and a coarser far-term segment can share a single TimeSeries.
 
 #### Scenario: Market switches to 15 minutes
 - **WHEN** a source starts publishing 96 slots/day
 - **THEN** composition, calculations and level derivation keep working unchanged
 
+#### Scenario: Mixed intervals in one series
+- **GIVEN** a series holding 15-minute day-ahead prices for tomorrow and hourly predicted
+  prices for the rest of the week
+- **WHEN** calculations run over it
+- **THEN** each entry is treated by its own timestamp and interval, with no assumption of
+  a fixed slot width
+
 > Source: masipila ([1481931313](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931313),
-> naming in [1482324097](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1482324097)).
+> naming in [1482324097](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1482324097));
+> non-uniform and mixed intervals in one series (day/week/year provider examples) from
+> mstormi ([5019271702](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5019271702)).

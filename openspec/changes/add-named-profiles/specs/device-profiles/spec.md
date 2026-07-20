@@ -20,17 +20,28 @@ participant's class, with exactly one profile active at a time.
 > ([1481931141](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931141)).
 
 ### Requirement: Profile contents
-Each named profile SHALL be able to carry a load curve as a TimeSeries together with a
-scale factor, plus the class parameters it overrides (demand, deadline, protections),
-so the same representation covers consumer programs and seasonal producer curves.
+Each named profile SHALL be able to carry a load curve as a TimeSeries (of any range and
+interval spacing) together with a scale factor, plus the class parameters it overrides
+(demand, deadline, protections), so the same representation covers consumer programs and
+seasonal producer curves.
 
 #### Scenario: Washing program curve
 - **WHEN** the `fullsize` profile carries its measured curve (peak 1:30 in, one hour
   long) and a scale factor
 - **THEN** window cost is computed over that curve, not over a flat average
 
+#### Scenario: Range and intervals suit the device
+- **GIVEN** a white-goods profile spanning a day at 1-minute intervals and a heat-pump
+  profile spanning a year with mixed intervals
+- **WHEN** each profile is scheduled
+- **THEN** both are carried as a single variable-interval TimeSeries sized to the
+  device's cycle
+
 > Source: "The TimeSeries and the scale factor should be part of the profile"
 > ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379));
+> range/interval flexibility, mixed intervals in one series (white goods a day, car a
+> week or two, heat pump a year) from mstormi
+> ([5019271702](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5019271702));
 > per-level PowerProfiles (lsiepel,
 > [1481931303](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931303));
 > curve shape precedent: jlaur's mapped dishwasher program
