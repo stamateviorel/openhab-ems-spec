@@ -71,6 +71,11 @@ openspec init   # wire up your own AI tool; then /opsx:explore or /opsx:propose
 openspec validate --all --strict
 ```
 
+[`openspec/config.yaml`](openspec/config.yaml) carries the openHAB
+[coding guidelines](https://www.openhab.org/docs/developer/guidelines.html) and
+[contribution process](https://github.com/openhab/openhab-core/blob/main/CONTRIBUTING.md)
+as injected context — any AI generating artifacts here inherits them automatically.
+
 This repo is also a registered-capable OpenSpec **store** (beta) — a planning repo that
 code repos can reference. To work against it by name from anywhere:
 

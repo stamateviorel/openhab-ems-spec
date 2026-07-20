@@ -15,9 +15,32 @@ context: |
   Wave order: 1 participant model + energy levels, 2 price/forecast data planes,
   3 grid constraints + named profiles, 4 adaptive learning.
 
+  Implementation must follow the openHAB coding guidelines
+  (https://www.openhab.org/docs/developer/guidelines.html — also the PR review checklist):
+    - Java 21; OSGi R8 with Declarative Services annotations (@Component/@Activate/@Reference).
+    - SLF4J logging only; logger is non-static final, named "logger".
+    - EPL-2.0 license header on every Java file (mvn license:format adds missing ones).
+    - @NonNullByDefault on every class except DTOs; code must compile without warnings.
+    - Classes live under .internal packages unless they are cross-bundle/script API.
+    - JavaDoc + @author tags on every class/interface and default+ visible member (DTOs exempt).
+    - Formatting enforced by Spotless (mvn spotless:apply); XML 120 chars, tabs (pom: 2 spaces).
+    - Naming: thing/channel-type ids lower-case-hyphen, config parameters camelCase.
+    - Never create threads — use the shared schedulers; prefer scheduleWithFixedDelay.
+    - Bundles must start/stop cleanly and stay off the CPU when idle.
+  Contribution process (openhab-core CONTRIBUTING.md):
+    - Discuss ambitious designs on the community forum before coding.
+    - Feature branches tie to an enhancement issue, named XXX-something.
+    - Unit tests are required; the full suite runs green before a PR and after every commit.
+    - Documentation changes land in the same commit as the feature.
+    - Commit subject: imperative, capitalized, max 50 chars; squash to logical units.
+    - Every commit carries a DCO sign-off (Signed-off-by: Real Name <email>).
+
 rules:
   proposal:
     - Always include a "Non-goals" section
     - Name the wave the change belongs to
   specs:
     - Every requirement ends with a "Source:" line citing its origin
+    - One SHALL per requirement; scenarios use GIVEN/WHEN/THEN
+  tasks:
+    - Implementation-phase tasks end with spotless:apply, a green full test suite, and DCO-signed commits
