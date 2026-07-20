@@ -31,6 +31,17 @@ that is a bug.
   participants.
 - **Semantic model, persistence services, UoM** — assumed throughout.
 
+## Fresh proposals (not thread-sourced — flagged as such)
+
+- **`discover-participants-from-model`** (owner + assistant, 2026-07-20) — auto-propose the
+  participant set from openHAB's **semantic model**. Not raised in #3478; grounded in the
+  verifiable default tags (`openhab-core` `SemanticTags.csv`: Equipment
+  `Battery`/`Inverter`/`SolarPanel`/`EVSE`/`ElectricMeter`/`HeatPump`/`Boiler`/`WhiteGood`…;
+  Points `Measurement`/`Setpoint`/`Switch`/`Control`/`Forecast`; Properties
+  `Power`/`Energy`/`Current`/`Voltage`) plus Kai's 2023 metadata-marking + out-of-the-box UI
+  intent. Its `proposal.md` and the README carry the same provenance note. Kept honest so a
+  reviewer treats it as a proposal, not consensus.
+
 ## Adjacent prior art (referenced, not absorbed)
 
 - [EVCC](https://evcc.io) charge modes (off / pv-surplus / min+pv / max) — level-mapping

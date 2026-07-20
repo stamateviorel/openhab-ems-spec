@@ -38,6 +38,7 @@ them with everything learned since.
 |---|---|---|
 | 1 | [`define-participant-model`](openspec/changes/define-participant-model/) | The `energy:` namespace, providers/consumers, the four device classes + protections |
 | 1 | [`define-energy-levels`](openspec/changes/define-energy-levels/) | The 4-level energy-availability model (SG-ready / EVCC compatible) |
+| 1† | [`discover-participants-from-model`](openspec/changes/discover-participants-from-model/) | Auto-propose the participant set from openHAB's semantic model (assisted setup) |
 | 2 | [`define-price-providers`](openspec/changes/define-price-providers/) | Price data plane: components, tariffs, common calculations |
 | 2 | [`define-forecast-providers`](openspec/changes/define-forecast-providers/) | Forecast data plane: solar/weather/demand as TimeSeries |
 | 3 | [`define-grid-constraints`](openspec/changes/define-grid-constraints/) | Capacity tariffs, peak fees, load balancing |
@@ -47,6 +48,11 @@ them with everything learned since.
 Open architecture questions (core vs. new add-on types, metadata vs. description
 providers) are collected in the wave-1 [`design.md`](openspec/changes/define-participant-model/design.md) —
 deliberately as questions, not answers.
+
+† `discover-participants-from-model` is a **fresh proposal (2026-07-20), not yet raised in
+#3478** — unlike the other changes, whose requirements each trace to a thread comment. It
+rests on openHAB's existing semantic model and Kai's metadata/out-of-the-box intent; its
+proposal.md says so up front.
 
 ## Reviewing a change
 
