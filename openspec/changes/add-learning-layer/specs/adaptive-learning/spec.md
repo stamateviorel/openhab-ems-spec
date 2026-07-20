@@ -36,11 +36,12 @@ named profile, updating it as new runs are recorded.
 
 ### Requirement: Propose, don't override
 Learned values SHALL be applied as reviewable proposals or clearly-flagged overrides —
-never silently replacing user configuration — and safety-relevant limits SHALL remain
-user-owned.
+never silently replacing user configuration, with safety-relevant limits always
+remaining user-owned.
 
 #### Scenario: Model drifts
-- **WHEN** the learned model's error metric degrades (sensor moved, renovation)
+- **GIVEN** a previously converged model
+- **WHEN** its error metric degrades (sensor moved, renovation)
 - **THEN** the system falls back to the user-configured values and surfaces the change,
   rather than acting on a bad model
 

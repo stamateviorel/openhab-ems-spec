@@ -4,8 +4,8 @@
 
 ### Requirement: Prices as future-timestamped series
 The system SHALL represent energy prices as future-timestamped TimeSeries of
-`Number:EnergyPrice`, where a newly published value for a timestamp overwrites the
-older value, and SHALL NOT represent time slots as per-hour channels.
+`Number:EnergyPrice` — not as per-slot channels — where a newly published value for a
+timestamp overwrites the older value.
 
 #### Scenario: Day-ahead arrival
 - **WHEN** tomorrow's 24 (or 96) prices are published by a source

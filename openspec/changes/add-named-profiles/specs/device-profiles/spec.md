@@ -8,9 +8,10 @@ The system SHALL allow a participant to carry multiple named profiles (e.g.
 participant's class, with exactly one profile active at a time.
 
 #### Scenario: Heat pump summer profile
-- **WHEN** the heat pump's `summer` profile is active
-- **THEN** the engine plans one uninterrupted DHW cycle per day instead of the winter
-  all-day behavior
+- **GIVEN** the heat pump's `summer` profile is active
+- **WHEN** the engine plans the day
+- **THEN** it schedules one uninterrupted DHW cycle instead of the winter all-day
+  behavior
 
 > Source: mstormi ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379)),
 > seconded from a second installation by masipila

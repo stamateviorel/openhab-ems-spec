@@ -1,0 +1,3 @@
+version: 1
+id: openhab-ems-spec
+remote: https://github.com/stamateviorel/openhab-ems-spec.git

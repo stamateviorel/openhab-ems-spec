@@ -48,6 +48,21 @@ Open architecture questions (core vs. new add-on types, metadata vs. description
 providers) are collected in the wave-1 [`design.md`](openspec/changes/define-participant-model/design.md) —
 deliberately as questions, not answers.
 
+## Reviewing a change
+
+Per OpenSpec's [review guide](https://github.com/Fission-AI/OpenSpec/blob/main/docs/reviewing-changes.md),
+read each change in this order — and quit early if something is wrong:
+
+1. `proposal.md` — is this the right problem and scope?
+2. `specs/…/spec.md` — is "done" defined correctly? (each requirement = one SHALL +
+   scenarios; each carries a `Source:` link to the person who stated it)
+3. `tasks.md` — is the plan of work sane?
+
+Feedback: open an issue or a PR against the change folder here, or comment in
+[#3478](https://github.com/openhab/openhab-core/issues/3478). When a change is agreed,
+it gets archived into `openspec/specs/` — which starts empty on purpose and accumulates
+only agreed material.
+
 ## Working with it
 
 ```bash
@@ -55,6 +70,19 @@ npm install -g @fission-ai/openspec@latest
 openspec init   # wire up your own AI tool; then /opsx:explore or /opsx:propose
 openspec validate --all --strict
 ```
+
+This repo is also a registered-capable OpenSpec **store** (beta) — a planning repo that
+code repos can reference. To work against it by name from anywhere:
+
+```bash
+git clone https://github.com/stamateviorel/openhab-ems-spec ~/openspec/openhab-ems-spec
+openspec store register ~/openspec/openhab-ems-spec
+openspec show define-participant-model --store openhab-ems-spec
+```
+
+(A code repo can later declare `references: [openhab-ems-spec]` in its own
+`openspec/config.yaml` to give agents read-only access to these specs. Store tooling is
+beta; the plain files work regardless.)
 
 Prior art referenced throughout: [storm.house](https://storm.house/docs/) (@mstormi's
 commercial EMS), [openhab-spot-price-optimizer](https://github.com/masipila/openhab-spot-price-optimizer/wiki)

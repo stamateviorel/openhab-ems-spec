@@ -28,13 +28,14 @@ on live PV excess, with the number of hours assigned to each non-normal level
 user-configurable — including via rules, so e.g. cold weather can reduce blocked hours.
 
 #### Scenario: Cheapest-hours classification
-- **WHEN** tomorrow's 24 prices arrive and the user configured 4 overcapacity, 4 low-price
-  and 4 blocked hours
+- **GIVEN** a user configuration of 4 overcapacity, 4 low-price and 4 blocked hours
+- **WHEN** tomorrow's 24 prices arrive
 - **THEN** the planned levels mark the 4 cheapest hours overcapacity, the next 4
   low-price, the 4 most expensive blocked, and the rest normal
 
 #### Scenario: PV escalation
-- **WHEN** live PV surplus appears during a normal-level hour
+- **GIVEN** an hour whose planned level is normal
+- **WHEN** live PV surplus appears
 - **THEN** the current level escalates for the duration of the surplus
 
 > Source: mstormi's base-plus-escalation with user-configurable hours ("that's key to
@@ -48,7 +49,8 @@ the current level (an Item) as separate artifacts, where live conditions may ove
 the plan for the current slot.
 
 #### Scenario: Plan says normal, sun says overcapacity
-- **WHEN** the planned series holds "normal" for this hour but PV excess is live
+- **GIVEN** a planned series holding "normal" for the current hour
+- **WHEN** PV excess is live
 - **THEN** the current-level Item reads overcapacity while the stored plan stays intact
 
 > Source: masipila's planned-mode / current-mode decoupling
@@ -57,8 +59,8 @@ the plan for the current slot.
 
 ### Requirement: Window strategies
 The level classifier SHALL support both non-consecutive selection (N cheapest slots) and
-consecutive windows (for loads that must not be interrupted), and SHALL remain correct
-when market time resolution changes from 60 to 15 minutes.
+consecutive windows (for loads that must not be interrupted), independent of the market
+time resolution (60- or 15-minute slots).
 
 #### Scenario: Consecutive window at 15-minute resolution
 - **WHEN** prices arrive in 15-minute slots and a consumer needs 2 uninterrupted hours

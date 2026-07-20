@@ -40,7 +40,8 @@ carrying a setpoint target, a [min, max] power clamp, and a state-of-charge read
 and acting as a "negative load" when grid cost is high.
 
 #### Scenario: Battery as negative load
-- **WHEN** grid prices are high and the battery has charge above its reserve
+- **GIVEN** a declared battery provider with charge above its reserve
+- **WHEN** grid prices are high
 - **THEN** the engine may command the battery to discharge within its declared clamp
 
 > Source: Kai's need #8 and controllable-provider commands
@@ -81,13 +82,13 @@ must run to completion once started).
 ### Requirement: Simple-consumer protection parameters
 The Simple class SHALL support the full protection set proven in production: a
 per-consumer surplus on-threshold, minimum and maximum ON runtime, minimum OFF time
-(cooldown), and maximum OFF time (duty-cycle guarantee) — and after a forced restart the
-minimum runtime SHALL act as the catch-up time.
+(cooldown), and maximum OFF time (duty-cycle guarantee) — with the minimum runtime
+doubling as the catch-up time after a forced restart.
 
 #### Scenario: Fridge duty-cycle guarantee
-- **WHEN** a cooling device declares a maximum OFF time of 45 minutes
-- **THEN** the engine switches it back ON no later than 45 minutes after it went OFF,
-  regardless of price or surplus
+- **GIVEN** a cooling device that declares a maximum OFF time of 45 minutes
+- **WHEN** 45 minutes have passed since it went OFF
+- **THEN** the engine switches it back ON, regardless of price or surplus
 
 #### Scenario: Cooldown respected
 - **WHEN** a compressor load declares a minimum OFF time
@@ -100,8 +101,8 @@ minimum runtime SHALL act as the catch-up time.
 ### Requirement: Demand declaration
 The system SHALL let any consumer declare future demand as an energy amount with a
 deadline (e.g. "4 kWh ready by 07:00", "charged to 80% by noon", "run 5 h within the
-next 12 h"), and Batch-class demand SHALL additionally support a load curve so
-scheduling can account for when within the program the power is drawn.
+next 12 h"), with Batch-class demand additionally carrying a load curve so scheduling
+can account for when within the program the power is drawn.
 
 #### Scenario: Dishwasher ready by 7am
 - **WHEN** a dishwasher declares its most-used program's load curve and a 07:00 deadline
@@ -122,7 +123,8 @@ Every consumer SHALL carry a priority that deterministically orders surplus allo
 and load selection when available (cheap) power cannot serve all consumers.
 
 #### Scenario: Two consumers, limited surplus
-- **WHEN** PV surplus suffices for only one of two eligible consumers
+- **GIVEN** two eligible consumers with different priorities
+- **WHEN** PV surplus suffices for only one of them
 - **THEN** the one with the better priority is served, and the allocation order does not
   depend on incidental iteration order
 
@@ -135,8 +137,9 @@ A consumer SHALL be able to declare a readiness condition (a "start-ready" flag)
 gates any engine-initiated start, so devices are only steered when physically prepared.
 
 #### Scenario: Not ready, not started
-- **WHEN** a pool pump's readiness Item is OFF
-- **THEN** the engine does not start it even in surplus, without treating this as an error
+- **GIVEN** a pool pump whose readiness Item is OFF
+- **WHEN** surplus would otherwise start it
+- **THEN** the engine does not start it, without treating this as an error
 
 > Source: storm.house "startklar" ([5012316336](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5012316336),
 > [docs](https://storm.house/docs/#AN-AUS_Verbraucher)).

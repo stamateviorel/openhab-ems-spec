@@ -39,9 +39,9 @@ slots instead of overlapping.
 > ([1481931351](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931351)).
 
 ### Requirement: Region-configurable definitions
-Constraint/fee definitions SHALL be configurable per region and date-dependent, and
-SHALL be updatable outside the core release cycle (e.g. as data files or add-ons),
-because these rules change on regulatory timetables, not openHAB's.
+Constraint/fee definitions SHALL be configurable per region, date-dependent, and
+updatable outside the core release cycle (e.g. as data files or add-ons), because
+these rules change on regulatory timetables, not openHAB's.
 
 #### Scenario: Tariff rule changes mid-year
 - **WHEN** a grid operator changes its peak-fee formula effective a given date
