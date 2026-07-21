@@ -37,6 +37,8 @@ them with everything learned since.
 | Wave | Change | What it defines |
 |---|---|---|
 | 1 | [`define-participant-model`](openspec/changes/define-participant-model/) | The `energy:` namespace, providers/consumers, the four device classes + protections |
+| 1 | [`define-engine-contract`](openspec/changes/define-engine-contract/) | The core-owned runtime: evaluation, conflict resolution, the electrical-limit floor, shadow mode, swappable algorithms (scripts first-class) |
+| 1 | [`define-extension-points`](openspec/changes/define-extension-points/) | How add-ons and scripts contribute providers/consumers/algorithms at runtime |
 | 1 | [`define-energy-levels`](openspec/changes/define-energy-levels/) | The 4-level energy-availability model (SG-ready / EVCC compatible) |
 | 1† | [`discover-participants-from-model`](openspec/changes/discover-participants-from-model/) | Auto-propose the participant set from openHAB's semantic model (assisted setup) |
 | 2 | [`define-price-providers`](openspec/changes/define-price-providers/) | Price data plane: components, tariffs, common calculations |
