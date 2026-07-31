@@ -27,7 +27,18 @@ mechanics"). Related: whether actuation adapters are themselves an extension poi
 levels, per-participant state. The reference's context object is prior art; the core
 version should be decided with the participant-model mechanism (wave-1 design.md §1).
 
-## 5. Provenance recap
+## 5. Precedence between protections and the limit floor
+
+Two requirements carry "regardless" clauses that can collide: the duty-cycle guarantee
+switches a cooling device back ON "regardless of price or surplus" (participant model),
+and the limit floor trims loads "regardless of what the plan proposed". If honoring a
+max-OFF guarantee would exceed the electrical budget, which wins? Physics says the limit
+floor; the fridge then runs as soon as headroom exists. Proposed ladder (to confirm):
+**electrical limits > device protections > level gates > optimization** — matching the
+reference's priority ordering, but never discussed in the thread, so flagged as an open
+design decision rather than encoded as a requirement.
+
+## 6. Provenance recap
 
 Thread-sourced: central evaluation, conflict resolution, limits (budget/phase), shadow
 mode, replaceable algorithm. Reference-sourced (flagged inline): master stop, ACK

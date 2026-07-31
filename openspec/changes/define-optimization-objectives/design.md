@@ -21,7 +21,14 @@ hours" over "cheapest hours"
 ([1481931363](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931363)).
 API and UI vocabulary should follow ("best window", not "cheapest window").
 
-## 4. Feed-in under non-cost objectives
+## 4. Objective availability without its data plane
+
+Selecting the carbon objective when no carbon-intensity source is installed is
+undefined as written. Options: hide unavailable objectives, fall back to cost with a
+visible notice, or refuse selection. Interacts with the extension surface's degraded-
+source reporting. Undecided.
+
+## 5. Feed-in under non-cost objectives
 
 Negative feed-in prices (`price-data`) interact oddly with self-consumption and carbon
 objectives (exporting green power vs. consuming it locally). Needs a worked example

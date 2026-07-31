@@ -15,7 +15,7 @@ is removed.
 
 #### Scenario: Clean removal
 - **GIVEN** the provided energy pages
-- **WHEN** the EMS is uninstalled
+- **WHEN** the EMS is disabled or uninstalled
 - **THEN** the pages disappear without orphaned UI configuration
 
 > Source: Kai — "suitable widgets and whole pages for the Main UI … out of the box"

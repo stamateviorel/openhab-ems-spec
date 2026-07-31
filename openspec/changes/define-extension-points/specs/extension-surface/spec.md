@@ -69,11 +69,20 @@ state.
 - **THEN** the engine keeps planning on the baseline and the remaining participants, and
   reports the degraded source
 
+#### Scenario: Safety input lost — degrade safe, not blind
+- **GIVEN** a live power measurement that feeds the electrical-limit floor
+- **WHEN** its source disappears or goes stale
+- **THEN** the engine does NOT keep optimizing on stale safety data — it falls back to a
+  conservative safe state for engine-steered loads (floor levels or pause) until the
+  measurement returns
+
 > Source: the baseline-fallback behaviour from mstormi — the EMS "to run well even if
 > your internet connection or forecast provider fails for whatever reason, for whatever
 > outage duration" ([5020830338](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5020830338)),
 > extended here from data sources to any contributor; extension marked as design
-> generalization.
+> generalization. The safety-input distinction is **reference-production-sourced**
+> (a staleness gate capping all loads when the live-measurement bridge goes silent) —
+> data-plane loss degrades to baselines, safety-input loss degrades to safe.
 
 ### Requirement: Core-shipped defaults without privilege
 The framework SHALL allow generic default implementations to ship with the core itself —
