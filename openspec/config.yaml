@@ -12,8 +12,10 @@ context: |
   design.md files as open questions, not in requirements.
   Every requirement carries a Source line pointing at the #3478 comment or production
   system it came from (storm.house, openhab-spot-price-optimizer, openhab-binding-emsmanager).
-  Wave order: 1 participant model + energy levels, 2 price/forecast data planes,
-  3 grid constraints + named profiles, 4 adaptive learning.
+  Wave order: 1 spine (participant model, engine contract, extension points, energy
+  levels, + semantic-model discovery as onboarding), 2 data planes (prices, forecasts,
+  optimization objectives), 3 grid constraints + named profiles + energy UI (setup and
+  visualization), 4 adaptive learning. Executable acceptance vectors live in fixtures/.
 
   Implementation must follow the openHAB coding guidelines
   (https://www.openhab.org/docs/developer/guidelines.html — also the PR review checklist):

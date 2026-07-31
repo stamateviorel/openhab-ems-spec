@@ -49,6 +49,10 @@ that is a bug.
   `Power`/`Energy`/`Current`/`Voltage`) plus Kai's 2023 metadata-marking + out-of-the-box UI
   intent. Its `proposal.md` and the README carry the same provenance note. Kept honest so a
   reviewer treats it as a proposal, not consensus.
+- **Guided setup surface** (one requirement inside `define-energy-ui`; owner-directed,
+  2026-07-31) — a UI surface for declaring participants/intent and confirming discovery
+  proposals. Follows from Kai's out-of-the-box intent and the discovery confirm flow, but
+  the explicit requirement is not thread-stated; flagged inline where it is defined.
 
 ## Adjacent prior art (referenced, not absorbed)
 

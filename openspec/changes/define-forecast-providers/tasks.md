@@ -9,6 +9,9 @@
 
 - [ ] 2.1 Define units/quantities per forecast kind (Power, Temperature, ratio)
 - [ ] 2.2 Specify derived-forecast registration (who computes, when it refreshes)
+- [ ] 2.3 Decide writer precedence for layered series (design.md §2 — cap vs refresh)
+- [ ] 2.4 Survey which persistence services implement ModifiablePersistenceService
+      (design.md §1 — past-entry overwrite depends on it)
 
 ## 3. Prototype path
 
