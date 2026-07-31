@@ -29,7 +29,8 @@ maximum power and priority, so mutually exclusive loads are serialized onto the 
 slots instead of overlapping.
 
 #### Scenario: Boiler and heater never together
-- **WHEN** a 3 kW boiler and 9 kW heating both need hours and the budget is 10 kW
+- **GIVEN** a 3 kW boiler and 9 kW heating that both need hours under a 10 kW budget
+- **WHEN** both are scheduled
 - **THEN** the higher-priority load gets the best window and the other gets the next
   best non-overlapping one
 

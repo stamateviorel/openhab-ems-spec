@@ -27,8 +27,9 @@ grid role carries the canonical sign convention (positive = export, negative = i
 from which surplus is derived.
 
 #### Scenario: PV and grid declared
-- **WHEN** a PV production Item and a grid meter Item are declared as providers
-- **THEN** the engine can compute current surplus without further configuration
+- **GIVEN** a PV production Item and a grid meter Item declared as providers
+- **WHEN** the engine evaluates
+- **THEN** it computes current surplus without further configuration
 
 > Source: lsiepel's provider module ([1481931215](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931215)),
 > Kai's needs #5/#6 ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209)),
@@ -60,9 +61,9 @@ must run to completion once started).
 - **THEN** the engine steers it strictly via ON/OFF
 
 #### Scenario: Wallbox as Controllable
-- **WHEN** a wallbox is declared Controllable with min 6 A and max 32 A
-- **THEN** the engine regulates its current within that range and never below the
-  minimum while charging
+- **GIVEN** a wallbox declared Controllable with min 6 A and max 32 A
+- **WHEN** the engine regulates its current
+- **THEN** it stays within that range and never below the minimum while charging
 
 #### Scenario: SG-ready heat pump as ModeControllable
 - **WHEN** a heat pump is declared with the ordered modes blocked/normal/encouraged/forced
@@ -105,9 +106,11 @@ next 12 h"), with Batch-class demand additionally carrying a load curve so sched
 can account for when within the program the power is drawn.
 
 #### Scenario: Dishwasher ready by 7am
-- **WHEN** a dishwasher declares its most-used program's load curve and a 07:00 deadline
-- **THEN** the engine picks the start time minimizing cost over the actual curve, not
-  over an assumed flat draw
+- **GIVEN** a dishwasher that declares its most-used program's load curve and a 07:00
+  deadline
+- **WHEN** the engine schedules it
+- **THEN** the start time minimizes cost over the actual curve, not over an assumed flat
+  draw
 
 #### Scenario: Consecutive-hours demand
 - **WHEN** a boiler declares demand that must not be interrupted
@@ -131,6 +134,29 @@ and load selection when available (cheap) power cannot serve all consumers.
 > Source: Kai's need #7 ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209)),
 > storm.house priority parameter — adopting it fixed a real ordering bug in the
 > reference ([5014707374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5014707374)).
+
+### Requirement: Level-gated operation
+A Simple consumer SHALL be able to declare the minimum site energy level at which the
+engine runs it ("on at level ≥ N"), including a "never" setting for devices the engine
+must leave alone, as its coupling to the shared level signal.
+
+#### Scenario: Pool pump waits for encouraged
+- **GIVEN** a pool pump declaring "run at encouraged or above"
+- **WHEN** the site level rises to encouraged
+- **THEN** the engine may switch it ON, and switches it OFF again when the level drops
+  below (protection times still respected)
+
+#### Scenario: Manual-only device
+- **GIVEN** a consumer declaring the "never" gate
+- **WHEN** any level is reached
+- **THEN** the engine does not steer it
+
+> Source: storm.house "Schaltniveau" (AN-AUS consumers,
+> [docs](https://storm.house/docs/#AN-AUS_Verbraucher),
+> [5012316336](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5012316336));
+> carried over and confirmed in-thread — "schaltniveau (on at energy level >= N)"
+> ([5014707374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5014707374));
+> the level scale itself is defined in `energy-levels`.
 
 ### Requirement: Readiness interlock
 A consumer SHALL be able to declare a readiness condition (a "start-ready" flag) that

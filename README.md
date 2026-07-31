@@ -46,7 +46,7 @@ them with everything learned since.
 | 2 | [`define-optimization-objectives`](openspec/changes/define-optimization-objectives/) | Selectable objective: cost / self-consumption / carbon ("best hours", not "cheapest") |
 | 3 | [`define-grid-constraints`](openspec/changes/define-grid-constraints/) | Capacity tariffs, peak fees, load balancing |
 | 3 | [`add-named-profiles`](openspec/changes/add-named-profiles/) | Multiple named profiles per device (programs, seasons) |
-| 3 | [`define-energy-ui`](openspec/changes/define-energy-ui/) | Out-of-the-box MainUI energy pages, participant-driven, fast at long ranges |
+| 3 | [`define-energy-ui`](openspec/changes/define-energy-ui/) | Out-of-the-box MainUI energy **setup + visualization**: guided setup surface, participant-driven pages, fast long ranges |
 | 4 | [`add-learning-layer`](openspec/changes/add-learning-layer/) | Learned settings and learned profiles |
 
 Open architecture questions (core vs. new add-on types, metadata vs. description

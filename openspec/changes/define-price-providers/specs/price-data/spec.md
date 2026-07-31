@@ -23,9 +23,10 @@ components (e.g. spot price, grid tariff, taxes), where each component may come 
 different source, and the user selects which components/Items are included.
 
 #### Scenario: Spot from one binding, tariff from another
-- **WHEN** spot prices come from an ENTSO-E source and the grid tariff from a separate
+- **GIVEN** spot prices from an ENTSO-E source and the grid tariff from a separate
   calculator
-- **THEN** window optimization runs on the summed effective price
+- **WHEN** window optimization runs
+- **THEN** it runs on the summed effective price
 
 > Source: jlaur's elements model + "user should be able to configure which items to
 > include" ([1482016387](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1482016387),
@@ -40,7 +41,8 @@ conversion such as EUR/MWh → ct/kWh, fixed fees, simple conditional tariffs), 
 cases need no custom binding.
 
 #### Scenario: ENTSO-E raw to consumer price
-- **WHEN** a source publishes EUR/MWh without VAT and the user configures ×VAT and /10
+- **GIVEN** a source publishing EUR/MWh without VAT
+- **WHEN** the user configures ×VAT and /10
 - **THEN** the effective series is in ct/kWh with VAT, without any add-on dependency
 
 #### Scenario: Seasonal/day-night tariff

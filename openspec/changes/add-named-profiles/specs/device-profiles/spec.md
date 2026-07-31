@@ -26,9 +26,10 @@ interval spacing) together with a scale factor, plus the class parameters it ove
 seasonal producer curves.
 
 #### Scenario: Washing program curve
-- **WHEN** the `fullsize` profile carries its measured curve (peak 1:30 in, one hour
+- **GIVEN** the `fullsize` profile carrying its measured curve (peak 1:30 in, one hour
   long) and a scale factor
-- **THEN** window cost is computed over that curve, not over a flat average
+- **WHEN** a window is costed for it
+- **THEN** the cost is computed over that curve, not over a flat average
 
 #### Scenario: Range and intervals suit the device
 - **GIVEN** a white-goods profile spanning a day at 1-minute intervals and a heat-pump

@@ -63,7 +63,8 @@ consecutive windows (for loads that must not be interrupted), independent of the
 time resolution (60- or 15-minute slots).
 
 #### Scenario: Consecutive window at 15-minute resolution
-- **WHEN** prices arrive in 15-minute slots and a consumer needs 2 uninterrupted hours
+- **GIVEN** a consumer that needs 2 uninterrupted hours
+- **WHEN** prices arrive in 15-minute slots
 - **THEN** the classifier finds the cheapest consecutive 8-slot window
 
 > Source: masipila's consecutive vs. non-consecutive discussion and 15-minute market
@@ -76,7 +77,8 @@ winter, fewer in summer) selectable automatically by date, as production experie
 shows one static configuration does not fit the year.
 
 #### Scenario: Winter widens cheap windows
-- **WHEN** seasonal mode is on and the date enters winter
+- **GIVEN** seasonal mode is on
+- **WHEN** the date enters winter
 - **THEN** the configured winter hour-counts replace the summer ones without user action
 
 > Source: seasonal profiles raised by mstormi ([5016228379](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016228379));

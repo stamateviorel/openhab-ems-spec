@@ -23,7 +23,7 @@ it deserves to be a first-class core concept.
 
 - The price/forecast data the derivation reads (wave 2).
 - Per-device behavior at a given level — that is the participant model's job
-  (`runAtLevel` gating is already covered there conceptually).
+  (the per-consumer level gate is the "Level-gated operation" requirement there).
 
 ## Impact
 

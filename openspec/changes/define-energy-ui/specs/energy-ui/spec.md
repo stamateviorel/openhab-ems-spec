@@ -25,6 +25,28 @@ is removed.
 > feasibility **reference-sourced**: pages served via the core UI-component provider
 > mechanism, installed/removed with the bundle, running in production.
 
+### Requirement: Guided setup surface
+The system SHALL provide a UI surface for declaring and editing participants and their
+intent — demand, deadlines, priorities, level gates, objective selection — and for
+confirming discovery proposals, so setup does not require hand-editing metadata or
+configuration files.
+
+#### Scenario: Boiler declared without textual config
+- **GIVEN** a user who has never edited a `.items` file
+- **WHEN** they declare their boiler through the setup surface
+- **THEN** a participant declaration equivalent to a hand-written one is created
+
+#### Scenario: Discovery proposals reviewed in place
+- **GIVEN** pending proposals from semantic-model discovery
+- **WHEN** the user reviews them in the setup surface
+- **THEN** accepted proposals become declarations and rejected ones are discarded
+
+> Source: follows from Kai's "out of the box" intent
+> ([1481931227](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931227))
+> and the propose-and-confirm flow of `discover-participants-from-model`; the explicit
+> setup-surface requirement itself is **owner-directed (2026-07-31), not stated in the
+> thread** — flagged like the discovery change.
+
 ### Requirement: Driven by declared participants
 The energy pages SHALL derive their content from the declared participants — a
 participant added, changed or removed is reflected without page editing.

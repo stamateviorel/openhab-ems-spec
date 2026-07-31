@@ -1,4 +1,4 @@
-# Define the out-of-the-box energy UI
+# Define the out-of-the-box energy UI (setup + visualization)
 
 **Wave 3** — the part users actually see; the thread's most repeated wish.
 
@@ -17,15 +17,17 @@ It is also the wish behind the recurring community question that keeps this topi
 Yet the corpus so far had zero UI requirements. This change keeps them minimal —
 behaviour, not design — because mstormi's warning about UI time-sinks is real.
 
-> **Provenance note.** The requirements are thread-sourced; the *feasibility* evidence
-> (pages served and removed with a bundle, participant-driven live rebuild, fast
-> long-range views) is **reference-production-sourced** and flagged inline.
+> **Provenance note.** The visualization requirements are thread-sourced; the
+> *feasibility* evidence (pages served and removed with a bundle, participant-driven
+> live rebuild, fast long-range views) is **reference-production-sourced**, and the
+> guided-setup requirement is **owner-directed (2026-07-31)** — both flagged inline.
 
 ## What changes
 
-- Define the `energy-ui` capability: pages that exist without dashboard-building, derive
-  from the declared participants, show past and future in one view, and stay fast at
-  long ranges.
+- Define the `energy-ui` capability: pages that exist without dashboard-building, a
+  guided setup surface (declare participants and intent, confirm discovery proposals),
+  participant-driven content, past and future in one view, and long-range views at
+  bounded point counts.
 
 ## Non-goals
 
