@@ -43,8 +43,10 @@ them with everything learned since.
 | 1† | [`discover-participants-from-model`](openspec/changes/discover-participants-from-model/) | Auto-propose the participant set from openHAB's semantic model (assisted setup) |
 | 2 | [`define-price-providers`](openspec/changes/define-price-providers/) | Price data plane: components, tariffs, common calculations |
 | 2 | [`define-forecast-providers`](openspec/changes/define-forecast-providers/) | Forecast data plane: solar/weather/demand as TimeSeries |
+| 2 | [`define-optimization-objectives`](openspec/changes/define-optimization-objectives/) | Selectable objective: cost / self-consumption / carbon ("best hours", not "cheapest") |
 | 3 | [`define-grid-constraints`](openspec/changes/define-grid-constraints/) | Capacity tariffs, peak fees, load balancing |
 | 3 | [`add-named-profiles`](openspec/changes/add-named-profiles/) | Multiple named profiles per device (programs, seasons) |
+| 3 | [`define-energy-ui`](openspec/changes/define-energy-ui/) | Out-of-the-box MainUI energy pages, participant-driven, fast at long ranges |
 | 4 | [`add-learning-layer`](openspec/changes/add-learning-layer/) | Learned settings and learned profiles |
 
 Open architecture questions (core vs. new add-on types, metadata vs. description
@@ -55,6 +57,10 @@ deliberately as questions, not answers.
 #3478** — unlike the other changes, whose requirements each trace to a thread comment. It
 rests on openHAB's existing semantic model and Kai's metadata/out-of-the-box intent; its
 proposal.md says so up front.
+
+**Executable acceptance vectors** live in [`fixtures/`](fixtures/) — @masipila's 2023
+worked price/level/scheduling tables, extracted verbatim from the thread and
+machine-verified internally consistent. A conforming implementation must reproduce them.
 
 ## Reviewing a change
 

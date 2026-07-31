@@ -29,6 +29,14 @@ that is a bug.
   the thread, resolved ([confirmation](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1963625777)).
 - **Item metadata namespaces** — the mechanism Kai's sketch proposed for marking energy
   participants.
+- **Persistence extensions already cover the founding calculation need** — openhab-core
+  today ships `riemannSum{Since,Between,Until}` (power → energy), `delta{Since,Between,Until}`
+  (accumulated counter → per-period increment), plus average/min/max/median/variance/
+  evolutionRate, all rule-callable. jlaur's original "totals, not hourly contributions"
+  post-processing ([issue body](https://github.com/openhab/openhab-core/issues/3478)) is
+  `deltaBetween` — no new statistics capability is specified in this corpus for it. What
+  remains is only the *UI-path* concern (bounded point counts for long-range views), which
+  lives in [`define-energy-ui`](../openspec/changes/define-energy-ui/).
 - **Semantic model, persistence services, UoM** — assumed throughout.
 
 ## Fresh proposals (not thread-sourced — flagged as such)
