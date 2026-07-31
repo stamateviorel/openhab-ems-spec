@@ -1,6 +1,6 @@
 # Define the extension points
 
-**Wave 1** — how everything that is *not* core plugs in. This change frames Kai's one
+**Wave 1** — how everything that is _not_ core plugs in. This change frames Kai's one
 stated architectural uncertainty without answering it.
 
 ## Why
@@ -14,9 +14,9 @@ scripts" ([1481931374](https://github.com/openhab/openhab-core/issues/3478#issue
 and in 2026: "we might introduce **new types of add-ons** to make the EMS extensible —
 but we will have to work out to what extend this makes sense"
 ([5016907260](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016907260)).
-For that to hold, the *behaviour* of the extension surface must be specified —
+For that to hold, the _behaviour_ of the extension surface must be specified —
 contribution at runtime, coexistence, lean interfaces, graceful degradation — while the
-*mechanism* (plain bindings vs. new add-on types vs. scripts vs. service whiteboard)
+_mechanism_ (plain bindings vs. new add-on types vs. scripts vs. service whiteboard)
 stays an open design question.
 
 ## What changes

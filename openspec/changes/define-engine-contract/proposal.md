@@ -6,7 +6,7 @@ floor no algorithm can bypass.
 ## Why
 
 Kai's placement is explicit: the framework belongs in openhab-core, with "new interfaces,
-registries and providers", while the energy-management *algorithm* "could possibly even be
+registries and providers", while the energy-management _algorithm_ "could possibly even be
 as simple as a rule template, so that people could implement easily alternative energy
 management algorithms and also do this through scripts"
 ([1481931374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931374)).

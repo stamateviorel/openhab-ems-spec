@@ -3,12 +3,14 @@
 ## ADDED Requirements
 
 ### Requirement: Learned thermal model
+
 The system SHALL be able to learn a building thermal model (heat-loss rate / thermal
 mass) from persisted indoor temperature, weather and heating-power data, expose its
 quality (error metric), and use it to derive settings such as maximum heating-off
 duration and pre-heat lead time.
 
 #### Scenario: Max-off from the model
+
 - **WHEN** the learned model has converged within its error bound
 - **THEN** the engine can compute how long heating may stay off before the configured
   comfort floor is reached, instead of using a hand-tuned constant
@@ -19,16 +21,19 @@ duration and pre-heat lead time.
 > ([repo](https://github.com/stamateviorel/openhab-binding-emsmanager)).
 
 ### Requirement: Learned load profiles
+
 The system SHALL be able to derive a device's load-curve profile from persisted runs
 (automatically mapping a program from its recorded consumption) and publish it as a
 named profile, updating it as new runs are recorded.
 
 #### Scenario: Program mapped from history
+
 - **WHEN** enough runs of the "60 °C cottons" program are persisted
 - **THEN** a named profile with the measured curve becomes available for scheduling,
   replacing the flat-consumption assumption
 
 #### Scenario: SG-ready device with richer telemetry
+
 - **GIVEN** a heat pump controlled only through SG-ready modes but exposing live power or
   metrics over Modbus or a cloud interface
 - **WHEN** that telemetry is persisted
@@ -44,11 +49,13 @@ named profile, updating it as new runs are recorded.
 > [5003008753](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5003008753)).
 
 ### Requirement: Propose, don't override
+
 Learned values SHALL be applied as reviewable proposals or clearly-flagged overrides —
 never silently replacing user configuration, with safety-relevant limits always
 remaining user-owned.
 
 #### Scenario: Model drifts
+
 - **GIVEN** a previously converged model
 - **WHEN** its error metric degrades (sensor moved, renovation)
 - **THEN** the system falls back to the user-configured values and surfaces the change,
@@ -60,9 +67,11 @@ remaining user-owned.
 > thread participant.
 
 ### Requirement: On-premise learning
+
 All learning SHALL run on locally persisted data without requiring cloud services.
 
 #### Scenario: Offline site
+
 - **WHEN** the installation has no internet beyond its forecast sources
 - **THEN** thermal-model and profile learning still function on local persistence
 

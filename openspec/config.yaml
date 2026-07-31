@@ -27,6 +27,24 @@ context: |
     - Naming: thing/channel-type ids lower-case-hyphen, config parameters camelCase.
     - Never create threads — use the shared schedulers; prefer scheduleWithFixedDelay.
     - Bundles must start/stop cleanly and stay off the CPU when idle.
+    - Logging levels: error = setup tremendously wrong / irrecoverable failure worth a bug
+      report; warn = something seems wrong but the system still functions, or recoverable
+      abnormal paths; info = sparse (component started, file loaded); debug/trace = detail.
+      Parameterized logging only (no string concatenation); exceptions with stacktraces in
+      the log are treated as bugs; logging never replaces the framework's update* methods.
+    - Null annotations detail: @Nullable on nullable fields/returns;
+      @NonNullByDefault({}) for DS-injected references; DTOs live in a dto package or
+      carry a DTO suffix.
+    - Static code analysis (openhab/static-code-analysis) runs in the build; any
+      priority-1 finding fails the build.
+    - External dependencies only from the approved default-library list (gson, jetty
+      client/websocket, xstream, jax-rs client/core/sse, ...); anything else needs
+      maintainer discussion first.
+    - Copied code must be EPL-2.0-compatible (Apache, EPL-1.0, MIT, BSD); keep author
+      attributions and license headers, and record filename/author/license in the
+      bundle's NOTICE file (short snippets exempt).
+    - Markdown follows the openhab-docs markdownlint config (this repo lints clean
+      against it).
   Contribution process (openhab-core CONTRIBUTING.md):
     - Discuss ambitious designs on the community forum before coding.
     - Feature branches tie to an enhancement issue, named XXX-something.

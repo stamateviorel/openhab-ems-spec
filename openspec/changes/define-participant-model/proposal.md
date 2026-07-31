@@ -19,7 +19,7 @@ change turns that converged shape into reviewable requirements.
 - Define the `energy-participants` capability: how existing Items are declared as
   energy providers/consumers, the provider roles, and the four consumer profile classes
   with their protection parameters.
-- Requirements are mechanism-neutral: *that* users mark Items and *what* must be
+- Requirements are mechanism-neutral: _that_ users mark Items and _what_ must be
   expressible — whether via item metadata, description providers, or a new add-on type
   is an open question in `design.md`.
 

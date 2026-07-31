@@ -3,17 +3,20 @@
 ## ADDED Requirements
 
 ### Requirement: Runtime contribution
+
 The system SHALL let separately installed add-ons and user scripts contribute energy
 participants, data providers, profiles and algorithms at runtime — registered when the
 contributor appears and unregistered when it goes away — without modifying or restarting
 the core.
 
 #### Scenario: Price binding installed
+
 - **GIVEN** a running EMS with no price source
 - **WHEN** the user installs a price-provider add-on
 - **THEN** its provider becomes available to the engine without a core change or restart
 
 #### Scenario: Script-contributed consumer
+
 - **GIVEN** a user script that computes an individual demand description
 - **WHEN** the script registers it
 - **THEN** the engine treats it exactly like an add-on-contributed one
@@ -26,10 +29,12 @@ the core.
 > ([1483930195](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1483930195)).
 
 ### Requirement: Multiple contributors, user selection
+
 When multiple contributors provide the same kind of data, the user SHALL select or
 combine which contributions are used in the calculations.
 
 #### Scenario: Two price sources, one composition
+
 - **GIVEN** one binding providing spot prices and another providing grid tariffs
 - **WHEN** the user configures the composition
 - **THEN** the engine uses exactly the selected items, and an unselected source changes
@@ -42,11 +47,13 @@ combine which contributions are used in the calculations.
 > generalizes it to every contribution kind.
 
 ### Requirement: Contributor-owned complexity
+
 Provider-specific logic — fetching, pricing math, device quirks, forecast modelling —
 SHALL remain inside the contributor, with the engine-facing interface carrying only the
 generic data: declarations and series of timestamped values.
 
 #### Scenario: New provider, untouched engine
+
 - **GIVEN** a new energy provider with an exotic upstream API
 - **WHEN** it is contributed
 - **THEN** the engine consumes its generic series without any provider-specific code in
@@ -59,17 +66,20 @@ generic data: declarations and series of timestamped values.
 > ([1481931283](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931283)).
 
 ### Requirement: Graceful degradation on contributor loss
+
 When a contributor fails or is removed, the engine SHALL continue operating with the
 remaining participants and any persisted baselines rather than halting or discarding
 state.
 
 #### Scenario: Forecast source removed mid-day
+
 - **GIVEN** planning that uses a contributed solar forecast with a persisted baseline
 - **WHEN** that add-on is uninstalled or its service goes dark
 - **THEN** the engine keeps planning on the baseline and the remaining participants, and
   reports the degraded source
 
 #### Scenario: Safety input lost — degrade safe, not blind
+
 - **GIVEN** a live power measurement that feeds the electrical-limit floor
 - **WHEN** its source disappears or goes stale
 - **THEN** the engine does NOT keep optimizing on stale safety data — it falls back to a
@@ -85,11 +95,13 @@ state.
 > data-plane loss degrades to baselines, safety-input loss degrades to safe.
 
 ### Requirement: Core-shipped defaults without privilege
+
 The framework SHALL allow generic default implementations to ship with the core itself —
 the configurable grid-price provider being the named case — usable with zero add-ons
 installed and replaceable by contributed alternatives on equal terms.
 
 #### Scenario: Works out of the box, replaceable later
+
 - **GIVEN** a fresh installation with no energy add-ons
 - **WHEN** the user configures the core's generic grid-price provider
 - **THEN** the EMS is functional, and later installing a dedicated price binding can take

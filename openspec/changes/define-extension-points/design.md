@@ -26,7 +26,7 @@ Parked here so the naming pass happens consciously.
 
 ## 3. Are actuation adapters an extension point?
 
-Device-quirk handling on the *write* side (ACK windows, mode mapping — see
+Device-quirk handling on the _write_ side (ACK windows, mode mapping — see
 `define-engine-contract` §3) could itself be contributable, e.g. an EEBus add-on acting
 as "one implementation behind the interfaces"
 ([2016826350](https://github.com/openhab/openhab-core/issues/3478#issuecomment-2016826350)).

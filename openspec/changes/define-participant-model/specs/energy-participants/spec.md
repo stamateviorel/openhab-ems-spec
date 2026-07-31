@@ -3,17 +3,20 @@
 ## ADDED Requirements
 
 ### Requirement: Declaring participants on existing Items
+
 The system SHALL let users declare existing Items as energy participants (provider or
 consumer) without introducing a new hardware abstraction, so that "logical devices"
 wired via HTTP, rules or any binding participate equally.
 
 #### Scenario: Marking a wallbox consumer
+
 - **WHEN** a user declares an existing `Number` Item that controls a wallbox as an
   energy consumer
 - **THEN** the energy management engine discovers it without any binding-specific code
   and includes it in its planning
 
 #### Scenario: No Thing required
+
 - **WHEN** a device is modeled only as Items (no Thing)
 - **THEN** it can still be declared as a participant
 
@@ -22,11 +25,13 @@ wired via HTTP, rules or any binding participate equally.
 > [1481931263](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931263)).
 
 ### Requirement: Provider roles
+
 The system SHALL model energy providers with a role of grid, PV, or battery, where the
 grid role carries the canonical sign convention (positive = export, negative = import)
 from which surplus is derived.
 
 #### Scenario: PV and grid declared
+
 - **GIVEN** a PV production Item and a grid meter Item declared as providers
 - **WHEN** the engine evaluates
 - **THEN** it computes current surplus without further configuration
@@ -36,11 +41,13 @@ from which surplus is derived.
 > sign convention proven in emsmanager ([ENERGY_TAXONOMY](https://github.com/stamateviorel/openhab-binding-emsmanager/blob/main/docs/ENERGY_TAXONOMY.md)).
 
 ### Requirement: Controllable providers
+
 The system SHALL support controllable providers — a battery is the primary case —
 carrying a setpoint target, a [min, max] power clamp, and a state-of-charge reading,
 and acting as a "negative load" when grid cost is high.
 
 #### Scenario: Battery as negative load
+
 - **GIVEN** a declared battery provider with charge above its reserve
 - **WHEN** grid prices are high
 - **THEN** the engine may command the battery to discharge within its declared clamp
@@ -50,6 +57,7 @@ and acting as a "negative load" when grid cost is high.
 > [1481931374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931374)).
 
 ### Requirement: Four consumer profile classes
+
 The system SHALL express every consumer through one of four profile classes, chosen to
 cover the device population observed across three production systems: **Simple**
 (ON/OFF), **Controllable** (continuous power/current), **ModeControllable** (small
@@ -57,19 +65,23 @@ ordered set of discrete modes, no power setpoint), and **Batch** (a fixed progra
 must run to completion once started).
 
 #### Scenario: Boiler as Simple
+
 - **WHEN** a DHW boiler switch is declared with the Simple class
 - **THEN** the engine steers it strictly via ON/OFF
 
 #### Scenario: Wallbox as Controllable
+
 - **GIVEN** a wallbox declared Controllable with min 6 A and max 32 A
 - **WHEN** the engine regulates its current
 - **THEN** it stays within that range and never below the minimum while charging
 
 #### Scenario: SG-ready heat pump as ModeControllable
+
 - **WHEN** a heat pump is declared with the ordered modes blocked/normal/encouraged/forced
 - **THEN** the engine selects exactly one mode and never sends a power value
 
 #### Scenario: Dishwasher as Batch
+
 - **WHEN** a dishwasher program is started by the engine
 - **THEN** the engine never interrupts it before the program completes
 
@@ -81,17 +93,20 @@ must run to completion once started).
 > [emsmanager](https://github.com/stamateviorel/openhab-binding-emsmanager/blob/main/docs/ENERGY_TAXONOMY.md).
 
 ### Requirement: Simple-consumer protection parameters
+
 The Simple class SHALL support the full protection set proven in production: a
 per-consumer surplus on-threshold, minimum and maximum ON runtime, minimum OFF time
 (cooldown), and maximum OFF time (duty-cycle guarantee) — with the minimum runtime
 doubling as the catch-up time after a forced restart.
 
 #### Scenario: Fridge duty-cycle guarantee
+
 - **GIVEN** a cooling device that declares a maximum OFF time of 45 minutes
 - **WHEN** 45 minutes have passed since it went OFF
 - **THEN** the engine switches it back ON, regardless of price or surplus
 
 #### Scenario: Cooldown respected
+
 - **WHEN** a compressor load declares a minimum OFF time
 - **THEN** the engine never switches it back ON before that time has elapsed
 
@@ -100,12 +115,14 @@ doubling as the catch-up time after a forced restart.
 > ported and confirmed in [5014707374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5014707374).
 
 ### Requirement: Demand declaration
+
 The system SHALL let any consumer declare future demand as an energy amount with a
 deadline (e.g. "4 kWh ready by 07:00", "charged to 80% by noon", "run 5 h within the
 next 12 h"), with Batch-class demand additionally carrying a load curve so scheduling
 can account for when within the program the power is drawn.
 
 #### Scenario: Dishwasher ready by 7am
+
 - **GIVEN** a dishwasher that declares its most-used program's load curve and a 07:00
   deadline
 - **WHEN** the engine schedules it
@@ -113,6 +130,7 @@ can account for when within the program the power is drawn.
   draw
 
 #### Scenario: Consecutive-hours demand
+
 - **WHEN** a boiler declares demand that must not be interrupted
 - **THEN** the scheduled hours are consecutive
 
@@ -122,10 +140,12 @@ can account for when within the program the power is drawn.
 > masipila's consecutive stories ([1481931272](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931272)).
 
 ### Requirement: Priority
+
 Every consumer SHALL carry a priority that deterministically orders surplus allocation
 and load selection when available (cheap) power cannot serve all consumers.
 
 #### Scenario: Two consumers, limited surplus
+
 - **GIVEN** two eligible consumers with different priorities
 - **WHEN** PV surplus suffices for only one of them
 - **THEN** the one with the better priority is served, and the allocation order does not
@@ -136,17 +156,20 @@ and load selection when available (cheap) power cannot serve all consumers.
 > reference ([5014707374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5014707374)).
 
 ### Requirement: Level-gated operation
+
 A Simple consumer SHALL be able to declare the minimum site energy level at which the
 engine runs it ("on at level ≥ N"), including a "never" setting for devices the engine
 must leave alone, as its coupling to the shared level signal.
 
 #### Scenario: Pool pump waits for encouraged
+
 - **GIVEN** a pool pump declaring "run at encouraged or above"
 - **WHEN** the site level rises to encouraged
 - **THEN** the engine may switch it ON, and switches it OFF again when the level drops
   below (protection times still respected)
 
 #### Scenario: Manual-only device
+
 - **GIVEN** a consumer declaring the "never" gate
 - **WHEN** any level is reached
 - **THEN** the engine does not steer it
@@ -159,10 +182,12 @@ must leave alone, as its coupling to the shared level signal.
 > the level scale itself is defined in `energy-levels`.
 
 ### Requirement: Readiness interlock
+
 A consumer SHALL be able to declare a readiness condition (a "start-ready" flag) that
 gates any engine-initiated start, so devices are only steered when physically prepared.
 
 #### Scenario: Not ready, not started
+
 - **GIVEN** a pool pump whose readiness Item is OFF
 - **WHEN** surplus would otherwise start it
 - **THEN** the engine does not start it, without treating this as an error

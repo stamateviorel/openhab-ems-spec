@@ -20,8 +20,8 @@ plus one from the sketch:
 Working hypothesis worth testing: (a) for user declaration, (b) as the SPI so add-ons
 can contribute the same information, (d) for the pluggable pieces (price sources,
 forecast sources, algorithms) — mirroring how persistence/transformation services are
-add-on types today. Flat metadata demonstrably struggles with wave-3 *named profiles
-carrying TimeSeries payloads* — one reason not to hard-commit to (a) alone.
+add-on types today. Flat metadata demonstrably struggles with wave-3 _named profiles
+carrying TimeSeries payloads_ — one reason not to hard-commit to (a) alone.
 
 ## 2. Core vs. add-on boundary
 

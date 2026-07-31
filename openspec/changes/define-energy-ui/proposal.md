@@ -18,7 +18,7 @@ Yet the corpus so far had zero UI requirements. This change keeps them minimal �
 behaviour, not design — because mstormi's warning about UI time-sinks is real.
 
 > **Provenance note.** The visualization requirements are thread-sourced; the
-> *feasibility* evidence (pages served and removed with a bundle, participant-driven
+> _feasibility_ evidence (pages served and removed with a bundle, participant-driven
 > live rebuild, fast long-range views) is **reference-production-sourced**, and the
 > guided-setup requirement is **owner-directed (2026-07-31)** — both flagged inline.
 

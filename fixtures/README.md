@@ -26,9 +26,9 @@ acceptance vectors, not illustrations.
 | File | Contents | Exercises |
 |---|---|---|
 | `dayahead-prices.csv` | 24 hourly day-ahead prices (ct/kWh), 2023-03-23T23:00Z → 2023-03-24T22:00Z | input for all three below |
-| `expected-planned-levels.csv` | the planned level series for those prices with 4/4/4 hour counts | `energy-levels` → *Level derivation* ("Cheapest-hours classification" scenario) |
-| `expected-heating-control.csv` | 9 kW direct heating, 8 h needed, priority 1 → ON/OFF per slot | `energy-levels` → *Window strategies* (non-consecutive selection) |
-| `expected-boiler-control.csv` | 3 kW boiler, 3 h needed, priority 2, must not overlap heating (10 kW budget) | `grid-constraints` → *Load balancing under a power budget*; `engine-contract` → *Deterministic conflict resolution* |
+| `expected-planned-levels.csv` | the planned level series for those prices with 4/4/4 hour counts | `energy-levels` → _Level derivation_ ("Cheapest-hours classification" scenario) |
+| `expected-heating-control.csv` | 9 kW direct heating, 8 h needed, priority 1 → ON/OFF per slot | `energy-levels` → _Window strategies_ (non-consecutive selection) |
+| `expected-boiler-control.csv` | 3 kW boiler, 3 h needed, priority 2, must not overlap heating (10 kW budget) | `grid-constraints` → _Load balancing under a power budget_; `engine-contract` → _Deterministic conflict resolution_ |
 
 ## Using them
 

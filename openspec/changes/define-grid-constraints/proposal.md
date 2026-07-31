@@ -1,7 +1,7 @@
 # Define grid constraints and peak fees
 
-**Wave 3** — the "local government creativity" layer: costs that depend on *how* you
-draw power, not just *when*.
+**Wave 3** — the "local government creativity" layer: costs that depend on _how_ you
+draw power, not just _when_.
 
 ## Why
 

@@ -53,8 +53,8 @@ Open architecture questions (core vs. new add-on types, metadata vs. description
 providers) are collected in the wave-1 [`design.md`](openspec/changes/define-participant-model/design.md) —
 deliberately as questions, not answers.
 
-† `discover-participants-from-model` is a **fresh proposal (2026-07-20), not yet raised in
-#3478** — unlike the other changes, whose requirements each trace to a thread comment. It
+† `discover-participants-from-model` is a **fresh proposal (2026-07-20), not yet raised
+in #3478** — unlike the other changes, whose requirements each trace to a thread comment. It
 rests on openHAB's existing semantic model and Kai's metadata/out-of-the-box intent; its
 proposal.md says so up front.
 
@@ -68,9 +68,9 @@ Per OpenSpec's [review guide](https://github.com/Fission-AI/OpenSpec/blob/main/d
 read each change in this order — and quit early if something is wrong:
 
 1. `proposal.md` — is this the right problem and scope?
-2. `specs/…/spec.md` — is "done" defined correctly? (each requirement = one SHALL +
+1. `specs/…/spec.md` — is "done" defined correctly? (each requirement = one SHALL +
    scenarios; each carries a `Source:` link to the person who stated it)
-3. `tasks.md` — is the plan of work sane?
+1. `tasks.md` — is the plan of work sane?
 
 Feedback: open an issue or a PR against the change folder here, or comment in
 [#3478](https://github.com/openhab/openhab-core/issues/3478). When a change is agreed,

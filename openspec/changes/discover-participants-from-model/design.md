@@ -3,6 +3,7 @@
 ## 1. How complete a mapping is safe to propose?
 
 The 1:1 table in the proposal is the confident core. Edge cases to decide:
+
 - **Grid vs. sub-meter.** Several `ElectricMeter`/`Power` items may exist; which is the
   grid connection vs. a device sub-meter? Location in the model (top-level vs. inside an
   Equipment) is a hint, not a guarantee. Propose-and-confirm covers it.
@@ -28,4 +29,4 @@ requirement).
 
 New proposal, owner + assistant, not yet raised in #3478. If it survives local review it
 is a good candidate to float in the thread as the "out-of-the-box" onboarding story Kai
-has repeatedly gestured at — but it is explicitly *not* presented as thread consensus.
+has repeatedly gestured at — but it is explicitly _not_ presented as thread consensus.

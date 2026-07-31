@@ -4,7 +4,7 @@
 
 `energy-levels` derives the 4-level signal from the **price** schedule (base) plus PV
 escalation. Under the carbon objective, should levels derive from the green-share series
-instead — or stay price-based while only load *placement* changes? Production systems
+instead — or stay price-based while only load _placement_ changes? Production systems
 only ever ran price-based levels; undecided. This is the main interaction to settle with
 `define-energy-levels`.
 

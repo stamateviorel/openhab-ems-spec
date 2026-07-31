@@ -1,0 +1,20 @@
+This content is produced and maintained as a community specification seed for
+native energy management in openHAB (openhab-core issue #3478).
+
+* Project home: https://github.com/stamateviorel/openhab-ems-spec
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/
+
+== Source Code
+
+https://github.com/stamateviorel/openhab-ems-spec
+
+== Third-party Content
+
+Requirement sources and the fixtures/ data tables quote public comments from
+https://github.com/openhab/openhab-core/issues/3478; each is attributed to its
+author inline and in docs/SOURCES.md.

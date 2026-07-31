@@ -7,7 +7,7 @@ An assisted-setup layer: propose the participant set from what openHAB already k
 > specific #3478 comment, this one is a **fresh design proposal (owner + assistant,
 > 2026-07-20), not yet raised in the thread.** It rests on two solid things: openHAB's
 > existing **semantic model** (verifiable — the tags below are from
-> `openhab-core` `SemanticTags.csv`) and Kai's 2023 intent to *mark* energy items via
+> `openhab-core` `SemanticTags.csv`) and Kai's 2023 intent to _mark_ energy items via
 > metadata and get energy UI "out of the box". Flagged so a reviewer treats it as a
 > proposal to react to, not thread-vetted consensus.
 
@@ -32,7 +32,7 @@ the box" wish in #3478.
 
 ## Non-goals
 
-- Replacing explicit declaration — discovery *seeds* `energy:` tags; both coexist and the
+- Replacing explicit declaration — discovery _seeds_ `energy:` tags; both coexist and the
   explicit one wins.
 - Inferring intent/sign/protections — those are not in the model (see the learning layer,
   wave 4, and confirm-at-setup).

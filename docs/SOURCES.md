@@ -35,7 +35,7 @@ that is a bug.
   evolutionRate, all rule-callable. jlaur's original "totals, not hourly contributions"
   post-processing ([issue body](https://github.com/openhab/openhab-core/issues/3478)) is
   `deltaBetween` — no new statistics capability is specified in this corpus for it. What
-  remains is only the *UI-path* concern (bounded point counts for long-range views), which
+  remains is only the _UI-path_ concern (bounded point counts for long-range views), which
   lives in [`define-energy-ui`](../openspec/changes/define-energy-ui/).
 - **Semantic model, persistence services, UoM** — assumed throughout.
 
