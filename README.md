@@ -62,6 +62,12 @@ proposal.md says so up front.
 worked price/level/scheduling tables, extracted verbatim from the thread and
 machine-verified internally consistent. A conforming implementation must reproduce them.
 
+**Building from this corpus?** Read [`docs/PROTOTYPE_TRACK.md`](docs/PROTOTYPE_TRACK.md)
+first. It separates the _prototype track_ (open now — a shadow-only draft that makes
+review cheap) from the _merge track_ (gated on maintainer decisions), and states the
+rules: never resolve an open question, shadow only, fixtures are pass/fail, report
+ambiguity instead of inventing.
+
 ## Reviewing a change
 
 Per OpenSpec's [review guide](https://github.com/Fission-AI/OpenSpec/blob/main/docs/reviewing-changes.md),
