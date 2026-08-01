@@ -47,6 +47,29 @@ context: |
       bundle's NOTICE file (short snippets exempt).
     - Markdown follows the openhab-docs markdownlint config (this repo lints clean
       against it).
+  REVIEW RULES ARE GOVERNING — see docs/REVIEW_CHECKLIST.md (reproduces the openHAB
+  maintainer rules, the 44-item Review Checklist and the org-wide merge rules).
+  Reviewers weight, in this order: (1) consistency towards the user, (2) architecture
+  consistency - use the openHAB APIs and provided features rather than re-inventing
+  them, (3) consistent runtime behaviour - status handling, clean shutdown, proper
+  logging, and explicitly NOT individual code style. Design for the first three.
+  Checklist items that apply to core code as well as add-ons:
+    - camelCase non-static fields (no underscores or prefixes); prefer primitives to
+      wrappers; refactor duplicate code
+    - every byte[]/String conversion and stream specifies a Charset; sockets and streams
+      use try-with-resources; lambdas for Runnables
+    - custom exceptions extend Exception (checked); never throw RuntimeException for
+      expected errors; never catch generic Exception (catch RuntimeException for
+      unexpected ones); special catch for InterruptedIOException beside IOException and
+      return immediately on InterruptedException/InterruptedIOException
+    - cache getConfigAs()/getConfiguration() results; annotate unavoidable warnings with
+      @SuppressWarnings; no need to test a Future for cancellation before cancelling
+    - any unavoidable thread is daemon and named; scrutinise synchronized methods for
+      deadlock
+    - conservative log levels (mostly debug; error for bugs/misconfiguration); stack
+      traces only for severe errors that indicate a bug
+    - before submitting: review target/code-analysis/report.html, run
+      mvn spotless:check -Dspotless.check.skip=false, and validate with mvn javadoc:javadoc
   Contribution process (openhab-core CONTRIBUTING.md):
     - Discuss ambitious designs on the community forum before coding.
     - Feature branches tie to an enhancement issue, named XXX-something.

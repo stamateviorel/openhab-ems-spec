@@ -37,6 +37,10 @@ is step three of the process the maintainer proposed — requirements → PRD �
    (`logger`, parameterized), `@NonNullByDefault`, `.internal` packages, JavaDoc +
    `@author`, Spotless, no thread creation, approved libraries only, EPL-2.0 headers,
    DCO sign-off. Retrofitting these later wastes the prototype's credibility.
+   The governing reference is [`docs/REVIEW_CHECKLIST.md`](REVIEW_CHECKLIST.md) — the
+   maintainers' own rules and 44-item review checklist. Note their stated priority:
+   user-facing consistency, then architecture consistency, then runtime behaviour, and
+   explicitly _not_ individual code style.
 1. **Report ambiguity instead of inventing.** Every place the spec was unclear,
    contradictory or silent goes into the build report. Those become spec changes — the
    loop closing is the point.
