@@ -105,6 +105,47 @@ applies only if/when an add-on is built from this corpus · **[C/B]** both.
 1. **[C/B]** `mvn spotless:check -Dspotless.check.skip=false`.
 1. **[C/B]** Validate JavaDoc with `mvn javadoc:javadoc`.
 
+## Default libraries (dependency rule)
+
+From [guidelines.html#default-libraries](https://www.openhab.org/docs/developer/guidelines.html#default-libraries).
+Anything outside this set needs maintainer discussion before you add it:
+
+| Purpose | Allowed packages |
+|---|---|
+| XML | `com.thoughtworks.xstream` (+ `.annotations`, `.converters`, `.io`, `.io.xml`) |
+| JSON | `com.google.gson.*` |
+| HTTP | `org.eclipse.jetty.client.*`, `.client.api.*`, `.http.*`, `.util.*` |
+| WebSocket | `org.eclipse.jetty.websocket.client`, `.websocket.api` |
+| SSE | `javax.ws.rs.client`, `.core`, `.sse` |
+
+Two architecture rules attached to these, and they matter more than the list itself
+because they are precisely the "use provided features" the maintainers weight second:
+
+- `HttpClient` instances come from the **`HttpClientFactory`** service — use the
+  **shared** instance unless you have specific configuration requirements.
+- `WebSocketClient` instances come from the **`WebSocketClientFactory`** service, same
+  shared-by-default rule.
+
+## Contribution process ([contributing.html](https://www.openhab.org/docs/developer/contributing.html))
+
+- Discuss substantial work on the community forum first; check for an existing issue;
+  open an enhancement issue for significant improvements. Documentation-only changes need
+  no issue.
+- Branches are named `NNN-something` after that issue.
+- PR descriptions reference every issue they address; a PR must not contain commits from
+  other users or branches.
+- Commit subject: capitalized, imperative, max 50 characters, then a blank line and the
+  detail. Use `Closes #NNN` / `Fixes #NNN` to auto-close.
+- Unit tests for all changes; full suite run before submitting; documentation updated
+  with the feature.
+- **DCO sign-off on every commit** — `Signed-off-by: Real Name <email>`, real name
+  matching the GitHub profile. Waived only for typos and single-line doc/comment fixes.
+- **Multi-author commits use `Also-by: Name <email>` placed before the sign-off line** —
+  this is openHAB's documented trailer, not GitHub's `Co-Authored-By`. Use it for
+  anything destined for an openHAB repository.
+- The four primary repositories: **openhab-core** (runtime framework), **openhab-addons**
+  (bindings/services), **openhab-webui** (MainUI et al.), **openhab-distro** (assembly).
+
 ## Merge-time rules (org-wide)
 
 Relevant to how a contribution eventually lands, and to how we should behave if we ever

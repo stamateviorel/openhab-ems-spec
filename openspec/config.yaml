@@ -76,7 +76,31 @@ context: |
     - Unit tests are required; the full suite runs green before a PR and after every commit.
     - Documentation changes land in the same commit as the feature.
     - Commit subject: imperative, capitalized, max 50 chars; squash to logical units.
-    - Every commit carries a DCO sign-off (Signed-off-by: Real Name <email>).
+      Reference issues with "Closes #NNN" / "Fixes #NNN" to auto-close them.
+    - Every commit carries a DCO sign-off (Signed-off-by: Real Name <email>). The
+      small-patch exception (typos, single-line doc/comment changes) is the only waiver.
+    - MULTI-AUTHOR COMMITS USE openHAB's OWN TRAILER: "Also-by: Name <email>" placed
+      BEFORE the Signed-off-by line — not GitHub's Co-Authored-By — for anything destined
+      for an openHAB repository (contributing.html, DCO section).
+    - Before coding: discuss substantial work on the community forum, check for an
+      existing issue, and open an enhancement issue for significant improvements; branch
+      names are NNN-something after that issue. Documentation-only changes need no issue.
+    - Target repositories and their split: openhab-core (runtime framework),
+      openhab-addons (bindings and services), openhab-webui (MainUI and friends),
+      openhab-distro (assembly). This corpus targets core, with UI in webui and any
+      device/protocol integration in addons.
+  DEFAULT LIBRARIES — using anything outside this set needs maintainer discussion first
+  (guidelines.html#default-libraries):
+    - XML: com.thoughtworks.xstream(.annotations/.converters/.io/.io.xml)
+    - JSON: com.google.gson.*
+    - HTTP: org.eclipse.jetty.client.*, .client.api.*, .http.*, .util.* — and obtain
+      HttpClient instances from the HttpClientFactory service, using the SHARED instance
+      unless there are specific configuration requirements
+    - WebSocket: org.eclipse.jetty.websocket.client/.api — obtain WebSocketClient from
+      the WebSocketClientFactory service, shared instance by default
+    - SSE: javax.ws.rs.client/.core/.sse
+    Using the provided shared clients rather than creating your own is exactly the
+    "architecture consistency" reviewers weight second-highest.
 
 rules:
   proposal:
