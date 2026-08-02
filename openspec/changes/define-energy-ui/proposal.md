@@ -35,8 +35,11 @@ behaviour, not design — because mstormi's warning about UI time-sinks is real.
   time-sink warning).
 - Widget-level composition for power users — the existing MainUI widget system already
   covers it.
-- Where the UI code lives (core webui vs. framework-served pages) — open question in
-  design.md.
+- Where the UI code lives (core webui vs. framework-served pages) — **decided by the
+  owner 2026-08-02 (D17, Part B UI-1)**: framework-served through core's UI-component
+  provider mechanism, from a bundle separate from the engine, so moving into MainUI later
+  is a deletion. The MainUI-native path is preserved in design.md §1 as the sequenced end
+  state. Owner decision, not thread consensus.
 
 ## Impact
 

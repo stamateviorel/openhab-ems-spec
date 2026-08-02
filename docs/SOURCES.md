@@ -5,6 +5,17 @@ Every requirement in this repo traces back to one of these origins. Permalinks a
 stated otherwise. If you find your idea uncredited or miscredited, please open an issue —
 that is a bug.
 
+Four source classes exist, and a `> Source:` line always says which one it is drawing on,
+because they carry very different weight:
+
+| Class | What it is | How a Source line shows it |
+|---|---|---|
+| **Thread** | Consensus reached by the people who run these systems, in #3478 | A person and a comment permalink |
+| **Production** | Behaviour proven in a running system (storm.house, spot-price-optimizer, the reference binding) | "production precedent", "reference-production-sourced", **flagged as not thread-stated** |
+| **Prototype** | The residue of building wave 1 from this corpus — found by one implementation, agreed by nobody | "sharpened after the wave-1 prototype surfaced …" plus a defect id ([`PROTOTYPE_FEEDBACK.md`](PROTOTYPE_FEEDBACK.md)) |
+| **Owner decision** | An answer to one of this corpus's own open questions, given by the owner of the reference implementation | `decided by the owner 2026-08-02 (D<n>, docs/OWNER_DECISIONS.md)` — see below |
+| **Reconciliation** | Two decisions landed on one behaviour from different changes and disagreed; the corpus picked one so the requirement set is consistent. **Nobody adjudicated it** | the Source line says so in words — "a reconciliation, not part of D\<n\>" — and names the design section holding the other reading ([`PROTOTYPE_FEEDBACK.md`](PROTOTYPE_FEEDBACK.md), "Reconciliations") |
+
 ## People and what they contributed
 
 | Who | Contribution | Key comments |
@@ -18,7 +29,7 @@ that is a bug.
 | **@seime** | Norwegian tiered grid fee (average of 3 highest hours/month); limit-load-within-window need; region/date-dependent config updatable outside the release cycle | [1481931351](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931351) |
 | **@J-N-K** | Money/currency as UoM (`MoneyQuantity` → landed as `Number:Currency` / `Number:EnergyPrice` in openHAB 4.1) | [1484171583](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1484171583) |
 | **@wborn** | Generalize beyond electricity — resource management (heat, water, …) as a future direction | [1696830864](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1696830864) |
-| **@stamateviorel** (openhab-binding-emsmanager) | Working realization of the 2023 sketch used to pressure-test these requirements: `energy:` namespace parser, the four profile classes, energy levels with percentile/seasonal windows, shadow-mode validation methodology, capacity-tariff controller, online-learned RC thermal model + pre-heat planner | [5005793264](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5005793264), [repo](https://github.com/stamateviorel/openhab-binding-emsmanager) |
+| **@stamateviorel** (openhab-binding-emsmanager) | Working realization of the 2023 sketch used to pressure-test these requirements: `energy:` namespace parser, the four profile classes, energy levels with percentile/seasonal windows, shadow-mode validation methodology, capacity-tariff controller, online-learned RC thermal model + pre-heat planner; and, on 2026-08-02, answers to the corpus's own open questions (D1–D20) — recorded as **owner decisions, not thread consensus** | [5005793264](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5005793264), [repo](https://github.com/stamateviorel/openhab-binding-emsmanager), [`OWNER_DECISIONS.md`](OWNER_DECISIONS.md) |
 
 ## Already landed in openHAB core (build on, don't reinvent)
 
@@ -67,6 +78,47 @@ that is a bug.
   [`PROTOTYPE_FEEDBACK.md`](PROTOTYPE_FEEDBACK.md), and every Source line carries the
   provenance inline so a reviewer can tell it apart from thread consensus without leaving
   the requirement.
+- **Owner decisions on the corpus's open questions** (2026-08-02) — the ~79 questions the
+  design files carried were put to **the owner of the reference implementation**
+  (@stamateviorel), who answered them in one session. The record, with rationale, evidence
+  and every preserved alternative, is [`OWNER_DECISIONS.md`](OWNER_DECISIONS.md): 21 rows,
+  D1–D20 plus the Part D remainder; the questions as they were put, with the options and the
+  evidence tier behind each recommendation, are kept as a historical record in
+  [`DECISIONS_PENDING.md`](DECISIONS_PENDING.md). They are a **source class of their own** — one
+  practitioner's calls in a reference implementation, weaker than thread consensus and
+  stronger than a build artefact — and the corpus never lets them read as agreement:
+  - every requirement they changed carries `decided by the owner 2026-08-02 (D<n>,
+    docs/OWNER_DECISIONS.md)` on its Source line, with a pointer to the design section
+    holding the options that lost;
+  - **no alternative was deleted.** Overturning any decision costs one requirement
+    rewrite, not an archaeology exercise;
+  - three departed from the recommendation put to the owner, and every one of them keeps
+    both readings with their arguments: **D1** (the master stop halts evaluation, not just
+    dispatch), **D11** (battery positive = charging, against the pack's positive =
+    discharge) and **D10** (surplus includes reclaimable battery charging, against the
+    pack's grid-export-only plus a second named `allocatableBudget` quantity, which said in
+    terms that a charging battery is _not_ surplus);
+  - two more carry a caution of a different kind, and a reviewer should see both before the
+    detail. **D20** (no carbon credit at a negative feed-in price) rests on reasoning
+    alone — no thread source and no production system states it — and its own requirement
+    says so in its first sentence. **D19** commits to deriving a discriminating budget
+    fixture from the owner's site and **no data exists yet**; nothing was fabricated to
+    fill the gap.
+  - what stayed open stayed open: Part D's remainder (the `EnergyProvider` replacement
+    word, the learning layer's 30-day retention as judgement rather than derivation,
+    floating discovery's provenance in #3478) is recorded as undecided, not quietly
+    settled.
+- **Reconciliations between decisions** (2026-08-02, same pass) — seven places where two of
+  the decisions above met on one behaviour from different changes and contradicted each
+  other, or where a decision's comparand was never given to the model that computes it. They
+  were closed so the requirement set is consistent, and they are **weaker than an owner
+  decision**: nobody adjudicated them, so overturning one contradicts nothing the owner said.
+  Every one is labelled as a reconciliation on the requirement's Source line, keeps the
+  reading it displaced in a `design.md`, and appears as a confirmation task in the affected
+  change. The list, with where each lands, is under "Reconciliations" in
+  [`PROTOTYPE_FEEDBACK.md`](PROTOTYPE_FEEDBACK.md). The one with a monetary consequence is
+  the capacity-tariff shed selector, where the recommendation's `min` was a sign-inverted
+  transcription and the corpus says `max`.
 
 ## Adjacent prior art (referenced, not absorbed)
 

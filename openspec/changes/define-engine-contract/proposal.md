@@ -29,14 +29,32 @@ system.
 > a defined behaviour on expiry (E8), and the enumeration of engine-owned responsibilities
 > is stated in one place and stated to be complete (N7). Each carries that provenance on
 > its Source line, and every value the sharpening left open is a numbered question in
-> `design.md` — §3 for E8, §8 for E13, §16 for N7, and §§6–20 for everything else the
+> `design.md` — §3 for E8, §8 for E13, §16 for N7, and §§6–21 for everything else the
 > prototype opened. See `docs/PROTOTYPE_FEEDBACK.md`.
+>
+> **Owner-decision note (2026-08-02).** Most of those questions have since been answered by
+> the owner of the reference implementation (`docs/OWNER_DECISIONS.md`): the ladder and the
+> master stop, shadow granularity, the trim-or-defer rule, what the floor books, the safe
+> state on a degraded safety input, where protection timing comes from, the engine-owned
+> enumeration, the acknowledgement semantics, the priority direction and the decision-outcome
+> vocabulary. The same pass wrote in the reversible parameters as **stated defaults** — a
+> 60-second tick with a 5-second debounce, a 60-second acknowledgement window, a clean slate
+> for engine-held state across a stop — and settled that a deferral is terminal for the
+> cycle, replanning belonging to `define-grid-constraints`. **They are owner decisions in a
+> reference implementation, not thread
+> consensus** — every requirement they touched says so on its Source line, and every
+> rejected alternative stays in `design.md`. Two deserve a reviewer's attention up front:
+> the master stop halts **everything** because the owner **overrode** the dispatch-only
+> recommendation put to them (§6), and the priority direction **contradicts the reference
+> binding's own live contract**, which now has to be reconciled (§19).
 
 ## What changes
 
 - Define the `engine-contract` capability: central evaluation, deterministic conflict
-  resolution, the electrical-limit floor, shadow mode, master stop, actuation semantics,
-  and algorithm replaceability with scripts as a first-class path.
+  resolution, the constraint precedence ladder, the electrical-limit floor and what it
+  books, the safe state on a degraded safety input, protection timing, shadow mode, master
+  stop, actuation semantics, published decision outcomes, and algorithm replaceability with
+  scripts as a first-class path.
 
 ## Non-goals
 

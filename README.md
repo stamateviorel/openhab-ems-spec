@@ -12,9 +12,14 @@ openhab-addons) — this repo is the shared plan that the code repos catch up to
 
 > **Status: seed.** Offered to the openHAB community as a starting point — happy to
 > transfer this repo to the `openhab` organisation, move its content into a core
-> discussion, or restructure it however the maintainers prefer. Nothing here is a
-> decision; every requirement is traceable to the person who first stated it (see
-> [`docs/SOURCES.md`](docs/SOURCES.md)).
+> discussion, or restructure it however the maintainers prefer. Every requirement is
+> traceable to the person who first stated it (see [`docs/SOURCES.md`](docs/SOURCES.md)).
+>
+> **Nothing here is a community decision** — but it is no longer true that nothing here is
+> decided. The corpus's own open questions were answered on 2026-08-02 by **one person, the
+> owner of a reference implementation**, so that it could be built from at all. Those
+> answers are labelled as his everywhere they appear, and every option they rejected is
+> still in the file next to them. See _Where this stands_ below.
 
 ## Why this exists
 
@@ -69,13 +74,61 @@ review cheap) from the _merge track_ (gated on maintainer decisions), and states
 rules: never resolve an open question, shadow only, fixtures are pass/fail, report
 ambiguity instead of inventing.
 
-**A wave-1 prototype has since been built and fed back.**
-[`docs/PROTOTYPE_FEEDBACK.md`](docs/PROTOTYPE_FEEDBACK.md) catalogues what building it
-surfaced — roughly seventy places where this corpus was ambiguous, contradictory or
-silent — and says, for each, whether a requirement was sharpened, a missing requirement
-added, or an open question recorded. Requirements amended for that reason say so in their
-`Source:` line, so **thread-sourced consensus stays distinguishable from prototype-driven
-repair**. No design decision was resolved by that pass.
+## Where this stands
+
+The corpus has been through three passes, and a reader can tell them apart at a glance
+because each one labels itself on the `Source:` line of every requirement it touched.
+
+**1. Collected and credited.** 100 requirements and 268 scenarios across the 12 changes
+above, each requirement one SHALL with a `Source:` line naming the #3478 comment, the
+production system or the core capability it rests on.
+
+**2. Built once, and the build fed back.**
+[`docs/PROTOTYPE_FEEDBACK.md`](docs/PROTOTYPE_FEEDBACK.md) catalogues what building a wave-1
+prototype from this corpus surfaced — roughly seventy places where it was ambiguous,
+contradictory or silent — and says, for each, whether a requirement was sharpened, a missing
+requirement added, or an open question recorded. Requirements amended for that reason say so,
+so **thread-sourced consensus stays distinguishable from prototype-driven repair**. No design
+decision was resolved by that pass; it only made the gaps legible.
+
+**3. The open questions were answered — by one person, and the corpus says so.** On
+2026-08-02 the owner of the reference implementation answered the ~79 questions the design
+files carried, in one session
+([`docs/OWNER_DECISIONS.md`](docs/OWNER_DECISIONS.md), 21 rows, D1–D20 plus what stayed
+open; the questions as they were put, with the options and evidence behind each
+recommendation, are kept in
+[`docs/DECISIONS_PENDING.md`](docs/DECISIONS_PENDING.md)). These are **owner decisions in a
+reference implementation, not thread consensus**, and they are recorded as a source class of
+their own ([`docs/SOURCES.md`](docs/SOURCES.md)): every requirement they changed names the
+decision on its `Source:` line, and **every rejected alternative stays in the change's
+`design.md`** — so a maintainer who disagrees overturns one by pointing at the option that
+was kept, at the cost of rewriting one requirement rather than reconstructing the argument.
+
+Five are flagged as weak on purpose:
+
+- **Three departed from the recommendation put to the owner** — the master stop halting
+  evaluation as well as dispatch (D1), the battery sign convention (D11), and surplus
+  counting reclaimable battery charging (D10). Each keeps the recommendation it overrode,
+  with its argument.
+- **One rests on reasoning alone**, with no thread and no production source: no carbon
+  credit at a negative feed-in price (D20). Its own requirement says so in its first
+  sentence.
+- **One commits to a test vector that does not exist yet** (D19). Nothing was invented to
+  fill the gap; [`fixtures/`](fixtures/) still holds only the four thread-sourced vectors.
+
+**What is still open is still open.** Of 107 design questions across the 12 changes, **81
+are answered, 10 answered in part and 16 still open** — and the open ones say so rather than
+being quietly settled. Among them: the price tie-break and the unit of the level-band
+counts, the level names, the word that replaces `EnergyProvider`, which deadline forms are
+admissible, and where a load curve belongs. Two requirements are consequently **not yet
+fully implementable**: `define-energy-levels` _Level derivation_ needs a tie-break named and
+is definite only on an hourly series, and its _Surplus escalation_ has no shipped threshold,
+so it stays inert until a site configures one. Each says as much on its own `Source:` line
+rather than leaving an implementer to find out.
+
+A handful of cross-change reconciliations were also made — places where two decisions landed
+on one behaviour from different changes and disagreed. They are marked as reconciliations,
+not decisions, and collected as confirmation tasks in the affected `tasks.md` files.
 
 ## Reviewing a change
 

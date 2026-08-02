@@ -20,6 +20,13 @@ thermal model (with error tracking) and plans pre-conditioning with it.
 - Define the `adaptive-learning` capability: learned thermal/settings models, learned
   load profiles from history, and the guardrails (learning proposes, never silently
   overrides safety).
+- Amended after the owner's decision pass of 2026-08-02 (`docs/OWNER_DECISIONS.md`, D17
+  Part B LL-0 to LL-4): the missing `design.md` now exists and holds the four questions;
+  three requirements are added — a per-learner data contract that refuses to run on
+  unpersisted inputs, two quality figures (confidence and prediction error) instead of one,
+  and a trigger rule (per completed run for profiles, online for the thermal model, never
+  nightly). Owner decisions, not thread consensus. **The thermal model's 30-day retention
+  is judgement, not derived**, and the requirement says so.
 
 ## Non-goals
 

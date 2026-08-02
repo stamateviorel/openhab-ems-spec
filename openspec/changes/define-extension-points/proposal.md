@@ -30,10 +30,20 @@ stays an open design question.
   depended on by requirements here and in `define-participant-model`. The questions the
   prototype could not answer without deciding are recorded in `design.md` §5 (see
   `docs/PROTOTYPE_FEEDBACK.md`).
+- Amended again after the owner's decision pass of 2026-08-02 (`docs/OWNER_DECISIONS.md`):
+  the mechanism question is answered **for the reference implementation** — both metadata
+  and a programmatic SPI behind one provider interface, identity = Item name, one
+  precedence chain (D5) — and three requirements are added: the actuation sink is named
+  rather than ranked (D5's exception), engine-owned prohibitions are closed to contributors
+  (D13), and core defaults register at a negative ranking so "equal terms" is testable
+  (D18). Every rejected option stays in `design.md`; these are **owner decisions, not
+  thread consensus**.
 
 ## Non-goals
 
-- Deciding the add-on-type mechanism — that is THE open question, held in `design.md`.
+- Deciding the add-on-type mechanism **for core**. The owner's pass answers it for the
+  reference implementation (design.md §1); Kai's "to what extent do new add-on types make
+  sense" is still the thread's to land, and the alternatives are preserved for it.
 - The engine behaviours themselves (`define-engine-contract`).
 - Price/forecast specifics — those changes define the data; this one defines how their
   sources arrive and leave.

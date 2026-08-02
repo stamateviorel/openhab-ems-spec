@@ -18,6 +18,14 @@ so their definitions must be updatable outside the core release cycle.
 
 - Define the `grid-constraints` capability: peak-based fee models, load balancing under
   a power budget, and region-configurable constraint definitions.
+- Amended after the owner's decision pass of 2026-08-02 (`docs/OWNER_DECISIONS.md`, D16
+  pack A14): the demand budget is denominated in the **billed, measured quantity**, booked
+  against a projection reconciled every cycle against
+  `max(month-to-date peak, minimum billable demand)` less a configurable margin, over
+  **zone-local metering quarters** rather than a rolling window — and **this change owns
+  look-ahead and replanning**, `define-engine-contract` keeping the runtime floor and a
+  terminal deferral-to-report path only. Owner decisions, not thread consensus; every
+  rejected option is preserved in `design.md`.
 
 ## Non-goals
 

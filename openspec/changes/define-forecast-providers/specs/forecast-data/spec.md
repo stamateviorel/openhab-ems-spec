@@ -5,18 +5,32 @@
 ### Requirement: Forecasts as future-timestamped series
 
 The system SHALL represent all forecasts (solar production, temperature, cloud cover,
-wind, …) as future-timestamped TimeSeries with fresh-overwrites-old semantics, reusing
-the same storage capability as prices.
+wind, …) as future-timestamped TimeSeries with fresh-overwrites-old semantics, reusing the
+same storage capability as prices and, where a forecast predicts a signed quantity, the
+same single sign convention as the reading it predicts — grid + = export,
+battery + = charging, PV + = producing, consumers + = consuming — with a source that
+disagrees normalised at the edge rather than interpreted downstream.
 
 #### Scenario: Refreshed solar forecast
 
 - **WHEN** a newer forecast run publishes values for timestamps already stored
 - **THEN** the new values replace the old ones for those timestamps
 
+#### Scenario: A demand forecast is not sign-ambiguous
+
+- **GIVEN** a derived heating-demand series in kWh per period and a PV production forecast
+  for the same hours
+- **WHEN** an engine reads both
+- **THEN** both are positive quantities, meaning consumption and production respectively,
+  with no per-source convention left to interpret
+
 > Source: masipila's common-nominator analysis
 > ([1481931272](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931272),
 > [1481931313](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931313));
-> Kai's need #1 ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209)).
+> Kai's need #1 ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209));
+> the sign convention decided by the owner 2026-08-02 (D11, docs/OWNER_DECISIONS.md), fixed
+> centrally there for every role and setpoint because real inverters disagree — alternatives
+> preserved in `define-participant-model` design.md §5.11.
 
 ### Requirement: Layered prediction series
 
@@ -63,10 +77,21 @@ PV-first scheduling and charts can overlay forecast ahead of _now_.
 - **THEN** the engine can place solar-first demand into that window instead of the
   cheapest grid hours
 
+#### Scenario: A PV window request takes the same shape as a price one
+
+- **GIVEN** a caller looking for tomorrow's best 3-hour PV window
+- **WHEN** it expresses the request
+- **THEN** the request carries a `Duration` and is answered on slot boundaries, with the
+  best partial answer and its requested-versus-granted duration when the forecast horizon
+  is shorter than the request — exactly as a price-window request behaves
+
 > Source: mstormi's forecast-service usage + pointer to the solar forecast binding
 > ([1481931328](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931328));
 > field practice in the reference (forecast series drawn ahead of now,
-> [repo](https://github.com/stamateviorel/openhab-binding-emsmanager)).
+> [repo](https://github.com/stamateviorel/openhab-binding-emsmanager)); the request shape
+> decided by the owner 2026-08-02 (D16 · pack A12, docs/OWNER_DECISIONS.md) — alternatives
+> preserved in `define-energy-levels` design.md §11 and in
+> `define-price-providers` design.md §2.
 
 ### Requirement: Derived-demand forecasts
 

@@ -1,5 +1,17 @@
 # Design notes — open questions
 
+Sections carrying an **ANSWERED** block were decided by the owner on 2026-08-02; the
+record, with rationale and evidence, is `docs/OWNER_DECISIONS.md`. Those are **the owner's
+decisions in a reference implementation, not thread consensus**, and the question each one
+answers — including every option that was not chosen — is preserved underneath it.
+
+Sections 1 and 2 carry no such block on purpose. The decision pack that produced the
+2026-08-02 answers dispositioned both in its Part C — already answered by core's own API
+rather than by anything the owner had to choose, and in one case by contradicting this
+page's premise — and the owner's recorded decision on that part was **no action**. So the
+answers exist, but no requirement in this corpus states them yet, and these two sections
+stand as written. Closing them is a documented follow-up, not a decision.
+
 ## 1. Overwriting past entries (feasibility dependency)
 
 Future entries are native core capability: TimeSeries + the `forecast` persistence
@@ -24,8 +36,28 @@ Undecided — flagged for the prototype to surface (tasks 2.3).
 
 ## 3. What the wave-1 prototype surfaced
 
+> **ANSWERED ELSEWHERE — owner decisions D13 and D16** (2026-08-02,
+> `docs/OWNER_DECISIONS.md`), both of them by requirements that live in other changes; the
+> questions are recorded here because this is where a forecast user meets them.
+>
+> _Which readings are safety inputs_ (E12, D13): neither the provider nor the consumer
+> classifies them. **The engine owns the enumeration of what counts as a safety input, and a
+> contributor may not claim that status for itself** — the same boundary that makes the
+> `never` flag, the user level gate, the readiness interlock and device protections
+> engine-owned. A contributed forecast series is therefore data-plane unless the engine's own
+> enumeration says otherwise. The requirement is `define-engine-contract`'s.
+>
+> _Where degradation is reported_ (B12, D16 · pack A8): an outcome enum plus a reason on
+> every decision, published as deduplicated events, with **one status Item** as the
+> user-visible surface. So a site planning on a year-long baseline because a forecast add-on
+> has been dark for a week finds out there. The requirement is `define-extension-points`'
+> and `define-engine-contract`'s.
+>
+> Both bullets stay below as written, since neither change to this change's own requirements
+> follows from them.
+
 Opened by building the wave-1 slice against this corpus, not by #3478. Ids are the
-prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`); recorded, not answered.
+prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`).
 
 - **Nothing says which of a contributor's readings are safety inputs (E12).**
   `extension-surface` _Graceful degradation on contributor loss_ splits contributor loss two

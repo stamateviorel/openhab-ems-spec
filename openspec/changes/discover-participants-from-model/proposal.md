@@ -9,7 +9,10 @@ An assisted-setup layer: propose the participant set from what openHAB already k
 > existing **semantic model** (verifiable — the tags below are from
 > `openhab-core` `SemanticTags.csv`) and Kai's 2023 intent to _mark_ energy items via
 > metadata and get energy UI "out of the box". Flagged so a reviewer treats it as a
-> proposal to react to, not thread-vetted consensus.
+> proposal to react to, not thread-vetted consensus. **Still true after the owner's
+> decision pass of 2026-08-02**: whether and when to float it in #3478 is recorded as
+> undecided and gated on the owner's explicit-go workflow (DP-4, design.md §4, task 1.4).
+> Nothing has been posted.
 
 ## Why
 

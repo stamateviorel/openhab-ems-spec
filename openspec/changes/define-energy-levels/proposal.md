@@ -15,9 +15,9 @@ it deserves to be a first-class core concept.
 
 ## What changes
 
-- Define the `energy-levels` capability: the 4-level scale, how the level is derived,
-  per-level user configuration, planned-schedule vs. current-level decoupling, and the
-  standard mappings (SG-ready, EVCC, ON/OFF).
+- Define the `energy-levels` capability: the 4-level scale and its central 0–3 encoding,
+  how the level is derived, per-level user configuration, planned-schedule vs.
+  current-level decoupling, and the standard mappings (SG-ready 1–4, EVCC, ON/OFF).
 
 ## Non-goals
 
@@ -29,3 +29,7 @@ it deserves to be a first-class core concept.
 
 - New core concept + one published "site energy level" signal; no existing behavior
   changes.
+- The engine **computes** that signal from its own cycle snapshot and publishes it; it
+  never reads it back. Stated once here (design.md §15) and cross-referenced from
+  `define-engine-contract`, which is where the same dependency was described running the
+  other way.

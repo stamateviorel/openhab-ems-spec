@@ -20,8 +20,9 @@ makes the objective explicit, selectable and extensible.
 ## What changes
 
 - Define the `optimization-objectives` capability: a selectable objective (cost /
-  self-consumption / carbon at minimum), carbon data as a first-class series, and
-  objective extensibility for contributed algorithms.
+  self-consumption / carbon at minimum), carbon data as a first-class series, one rule for
+  what an exported kilowatt-hour is worth to the carbon objective, and objective
+  extensibility for contributed algorithms.
 
 ## Non-goals
 

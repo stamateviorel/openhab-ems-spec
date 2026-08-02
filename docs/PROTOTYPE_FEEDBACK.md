@@ -54,119 +54,208 @@ under a "Prototype:" note — as **evidence of the cost of the silence, never as
 recommendation**. A maintainer answering one of these questions should feel no pull
 towards what the prototype happened to do.
 
+### What happened to the open questions afterwards
+
+Later on 2026-08-02 — after this pass, and as a **separate, separately sourced event** —
+the owner of the reference implementation answered most of the questions this page opened
+([`OWNER_DECISIONS.md`](OWNER_DECISIONS.md)). That does not change how a defect was
+disposed of here, and it does not make this page's material consensus: those are **owner
+decisions in a reference implementation, not thread agreement**, and the requirements they
+touched say so on their Source lines.
+
+It does change what a reader chasing a defect finds, so every catalogue row below carries
+the outcome after its disposition, in the form `Open question → closed (D<n>)`. Read the
+arrow as "and then a decision was taken, over here": the decision's rationale, its evidence
+and **every option it did not take** live in the `design.md` section the "Landed" column
+already names. Rows that still read `still open` are exactly that — nothing was closed
+quietly, and where a decision closed only half a question the row says which half.
+
 ## The catalogue
 
 Grouped by the change that owns the answer. "Landed" names the file that now carries it;
-section numbers are the `design.md` sections written for this pass.
+section numbers are the `design.md` sections written for this pass. The Disposition column
+carries two things: how this pass disposed of the defect, and — after the arrow — what the
+2026-08-02 decision session did with it.
 
 ### `define-participant-model`
 
 | Id | What the build hit | Disposition | Landed |
 |---|---|---|---|
-| A1 | The level gate is scoped to Simple consumers; the taxonomy it cites scopes it per consumer, so `never` — "leave this alone" — cannot be said about a Batch or Controllable device at all | Open question | design.md §5.7 |
-| A2 | A deadline reads as recurring in one example and absolute in another; not stated which, or both | Sharpened (_Demand declaration_) + open question | spec.md; design.md §5.3 |
-| A3 | Two of the requirement's own three examples — a state-of-charge target, a runtime-in-a-window — are not expressible in the shape it defines | Open question | design.md §5.4 |
-| A4 | Priority has no direction, no default and no tie-break; the source note "lower runs first, higher wins on conflict" points both ways in one sentence | Sharpened (_Priority_) + open question | spec.md; design.md §5.2 |
-| A5 | May a non-battery provider be controllable, and must a controllable provider declare a clamp? | Open question | design.md §5.8 |
-| A6 | The level→mode mapping must exist "without translation logic in user rules" and is specified for no mode count other than four | Open question | design.md §5.10 |
-| A7 | Is a load curve a property of the demand or of the programme? Both readings are in the text | Open question | design.md §5.5; `add-named-profiles` design.md |
-| A8 | Load curves have no bound, no sample spacing, and no statement of whether samples are instantaneous power or interval averages | Open question | design.md §5.6; `add-named-profiles` design.md |
-| A9 | The Controllable class is called a power profile and its own scenario is in amperes; provider clamps are power | Open question | design.md §5.9 |
-| A10 | `EnergyProvider` names both a participant role here and lsiepel's data-contributor role on the extension surface — a second collision on top of the one Kai already raised | Open question (naming pass) | design.md §5.16; `define-extension-points` design.md §2 |
-| A11 | Level names differ between the spec and the taxonomy it cites | Open question | `define-energy-levels` design.md §1 |
-| A12 | Participant identity is undefined exactly where the registry merges statements from several sources about "the same participant" | **Added** (_Participant identity_) + open question | spec.md; design.md §5.1 |
-| E2 | `engine-contract`'s "Phase-aware headroom" scenario opens "a consumer that declares which phase(s) it draws on", and nothing in the participant model can declare a phase | **Added** (_Phase declaration_) + open question | spec.md; design.md §5.12; `define-engine-contract` design.md §20 |
-| E3 | Per-phase headroom also needs per-phase _measurement_; providers declare one aggregate power Item, so the load on a phase is not observable | Open question | design.md §5.12; `define-engine-contract` design.md §20 |
-| E4 | A Simple consumer has no rated power, so a budget check has to reuse the surplus `onThreshold` as one | **Added** (_Consumer power figure_ — the model must _name_ the value the floor books; whether every class has one stays open) + open question | spec.md; design.md §5.13 |
-| E6 | The sign convention is fixed for the grid reading only; a battery reading and a controllable setpoint both need one and have none | Sharpened (_Provider roles_) + open question | spec.md; design.md §5.11 |
-| N1 | The per-consumer measurement Item is used by three requirements and declared by none | Open question | design.md §5.14 |
-| N2 | `minOn` "doubles as catch-up time after a forced restart" — nothing defines a forced restart or how an engine would recognise one | Open question (for @mstormi) | design.md §5.15 |
+| A1 | The level gate is scoped to Simple consumers; the taxonomy it cites scopes it per consumer, so `never` — "leave this alone" — cannot be said about a Batch or Controllable device at all | Open question → **closed 2026-08-02 (D13)** | design.md §5.7 |
+| A2 | A deadline reads as recurring in one example and absolute in another; not stated which, or both | Sharpened (_Demand declaration_) + open question → recorded answer, unwritten (Part C, D18) | spec.md; design.md §5.3 |
+| A3 | Two of the requirement's own three examples — a state-of-charge target, a runtime-in-a-window — are not expressible in the shape it defines | Open question → **closed (D17 · PM-5.4)** | design.md §5.4 |
+| A4 | Priority has no direction, no default and no tie-break; the source note "lower runs first, higher wins on conflict" points both ways in one sentence | Sharpened (_Priority_) + open question → **closed (D4)** | spec.md; design.md §5.2 |
+| A5 | May a non-battery provider be controllable, and must a controllable provider declare a clamp? | Open question → **closed in part (D16 · A10)** — which roles may be controllable still open | design.md §5.8 |
+| A6 | The level→mode mapping must exist "without translation logic in user rules" and is specified for no mode count other than four | Open question → **closed (D17 · PM-5.10)** | design.md §5.10 |
+| A7 | Is a load curve a property of the demand or of the programme? Both readings are in the text | Open question → **closed (D16 · A13)** | design.md §5.5; `add-named-profiles` design.md |
+| A8 | Load curves have no bound, no sample spacing, and no statement of whether samples are instantaneous power or interval averages | Open question → **closed (D16 · A13)** | design.md §5.6; `add-named-profiles` design.md |
+| A9 | The Controllable class is called a power profile and its own scenario is in amperes; provider clamps are power | Open question → **closed (D16 · A10)** | design.md §5.9 |
+| A10 | `EnergyProvider` names both a participant role here and lsiepel's data-contributor role on the extension surface — a second collision on top of the one Kai already raised | Open question (naming pass) → shape parked (D17 · PM-5.16); the replacement word stays a thread question (Part D) | design.md §5.16; `define-extension-points` design.md §2 |
+| A11 | Level names differ between the spec and the taxonomy it cites | Open question → **still open** — D12 fixed the codes, not the names | `define-energy-levels` design.md §1 |
+| A12 | Participant identity is undefined exactly where the registry merges statements from several sources about "the same participant" | **Added** (_Participant identity_) + open question → **closed (D5)** | spec.md; design.md §5.1 |
+| E2 | `engine-contract`'s "Phase-aware headroom" scenario opens "a consumer that declares which phase(s) it draws on", and nothing in the participant model can declare a phase | **Added** (_Phase declaration_) + open question → **closed (D16 · A10)** | spec.md; design.md §5.12; `define-engine-contract` design.md §20 |
+| E3 | Per-phase headroom also needs per-phase _measurement_; providers declare one aggregate power Item, so the load on a phase is not observable | Open question → **closed (D16 · A10)** | design.md §5.12; `define-engine-contract` design.md §20 |
+| E4 | A Simple consumer has no rated power, so a budget check has to reuse the surplus `onThreshold` as one | **Added** (_Consumer power figure_ — the model must _name_ the value the floor books; whether every class has one stays open) + open question → **closed (D15)** | spec.md; design.md §5.13 |
+| E6 | The sign convention is fixed for the grid reading only; a battery reading and a controllable setpoint both need one and have none | Sharpened (_Provider roles_) + open question → **closed (D11)** — which overrode the recommendation | spec.md; design.md §5.11 |
+| N1 | The per-consumer measurement Item is used by three requirements and declared by none | Open question → **closed (D15)** | design.md §5.14 |
+| N2 | `minOn` "doubles as catch-up time after a forced restart" — nothing defines a forced restart or how an engine would recognise one | Open question (for @mstormi) → **closed (D7 refinement)** | design.md §5.15 |
 
 ### `define-engine-contract`
 
 | Id | What the build hit | Disposition | Landed |
 |---|---|---|---|
-| E1 | "The higher-priority decision is applied" never says whether higher priority is a larger or a smaller number — A4 in the engine's public API | Open question (cross-reference) | design.md §19 |
-| E5 | A ModeControllable mode carries no power semantics, so no budget can be enforced against a mode change | Open question | design.md §10; `define-grid-constraints` design.md §2 |
-| E7 | "Surplus" is defined nowhere beyond being derived from grid export — battery, curtailed PV and a managed load's own draw are all unresolved | Open question | design.md §11 |
-| E8 | "Unacknowledged" has no window, no comparison tolerance and no rule for a changed command; a never-echoing device blocks forever | Sharpened (_Acknowledgement-aware actuation_ — the window needs a defined length _and_ a defined behaviour on expiry; what expiry does is not chosen) + open question | spec.md; design.md §3 |
-| E9 | The shadow default and the master-stop default are the same statement if the two are one control, which a design note offers as a live option | Open question | design.md §2 |
-| E10 | Does disengaging the stop resume as if it never stopped, or from a clean slate? | Open question | design.md §7 |
-| E11 | No default evaluation cadence and no event story | **Rejected** — already recorded | design.md §1 |
-| E12 | "Goes stale" and "conservative safe state" both have no operational meaning — no age, no floor | Open question | `define-extension-points` design.md §5.7; `define-forecast-providers` design.md §3 |
-| E13 | "Trimmed or deferred" never says which, when; a Switch cannot be trimmed at all | Sharpened (_Electrical limits outrank optimization_ — a defined rule settles what happens to each affected load; trim and defer are not fixed as the whole set) + open question | spec.md; design.md §8 |
-| E14 | Enforce the budget against estimates or against measurements, and how is the error reconciled? | Open question | design.md §9; `define-grid-constraints` design.md §3 |
-| E15 | Nothing says what happens to a decision naming an unknown participant | Open question | design.md §13 |
-| E16 | `fixtures/README.md` attributes the boiler vector to conflict resolution, but reproducing it needs look-ahead replanning that no requirement describes | Open question + fixture note | design.md §17; `define-grid-constraints` design.md §4; `fixtures/README.md` |
-| E17 | "The same consistent context snapshot" and nothing more; retention beyond a cycle unstated | Open question | design.md §4 |
-| E18 | Shadow output has no surface and no rate, yet a requirement's own scenario asks a user to compare | Open question | design.md §14; `define-energy-ui` design.md §5 |
-| I6 | The algorithm plane has no ownership statement; `registerAlgorithm` replaces silently | Open question | design.md §15; `define-optimization-objectives` design.md §6 |
-| N3 | The protection durations have no stated source of elapsed time, which decides whether protections survive a restart | Open question | design.md §4 |
-| N4 | Nothing says whether the master stop halts _evaluation_ or only dispatch — a stopped engine still runs third-party code every tick | Open question | design.md §6 |
-| N5 | Nothing says what a protection should do while the stop is engaged: device safety and operator safety point opposite ways | Open question | design.md §5 |
-| N6 | The corpus has no vocabulary for what became of a decision — applied, superseded, deferred, suppressed, withheld | Open question | design.md §12; `define-energy-ui` design.md §5 |
-| N7 | "Engine-owned" is enumerated once and the enumeration is incomplete; it is the security boundary of the whole extension story | Sharpened (_Replaceable algorithm, scripts first-class_ — one enumeration, stated in one place and stated to be complete; membership stays open) + open question | spec.md; design.md §16 |
+| E1 | "The higher-priority decision is applied" never says whether higher priority is a larger or a smaller number — A4 in the engine's public API | Open question (cross-reference) → **closed (D4)** | design.md §19 |
+| E5 | A ModeControllable mode carries no power semantics, so no budget can be enforced against a mode change | Open question → **closed (D15)** | design.md §10; `define-grid-constraints` design.md §2 |
+| E7 | "Surplus" is defined nowhere beyond being derived from grid export — battery, curtailed PV and a managed load's own draw are all unresolved | Open question → **closed in part (D10)** — instantaneous-vs-averaged and the running-consumer recursion still open | design.md §11 |
+| E8 | "Unacknowledged" has no window, no comparison tolerance and no rule for a changed command; a never-echoing device blocks forever | Sharpened (_Acknowledgement-aware actuation_ — the window needs a defined length _and_ a defined behaviour on expiry; what expiry does is not chosen) + open question → **closed in part (D8, D17 · EC-3a)** — where ACK handling lives, the tolerance value and the changed-command rule still open | spec.md; design.md §3 |
+| E9 | The shadow default and the master-stop default are the same statement if the two are one control, which a design note offers as a live option | Open question → **closed (D3)** | design.md §2 |
+| E10 | Does disengaging the stop resume as if it never stopped, or from a clean slate? | Open question → **closed in part (D1, D17 · EC-7)** — deferred loads and shadow comparison state still open | design.md §7 |
+| E11 | No default evaluation cadence and no event story | **Rejected** — already recorded → rejected as a re-report; the cadence is now a stated default (D17 · EC-1) | design.md §1 |
+| E12 | "Goes stale" and "conservative safe state" both have no operational meaning — no age, no floor | Open question → **closed (D14)** | `define-extension-points` design.md §5.7; `define-forecast-providers` design.md §3 |
+| E13 | "Trimmed or deferred" never says which, when; a Switch cannot be trimmed at all | Sharpened (_Electrical limits outrank optimization_ — a defined rule settles what happens to each affected load; trim and defer are not fixed as the whole set) + open question → **closed (D9)** | spec.md; design.md §8 |
+| E14 | Enforce the budget against estimates or against measurements, and how is the error reconciled? | Open question → **closed (D15**, with D16 · A14 for the billing half) | design.md §9; `define-grid-constraints` design.md §3 |
+| E15 | Nothing says what happens to a decision naming an unknown participant | Open question → **closed (D16 · A8)** | design.md §13 |
+| E16 | `fixtures/README.md` attributes the boiler vector to conflict resolution, but reproducing it needs look-ahead replanning that no requirement describes | Open question + fixture note → **closed (D16 · A14)** | design.md §17; `define-grid-constraints` design.md §4; `fixtures/README.md` |
+| E17 | "The same consistent context snapshot" and nothing more; retention beyond a cycle unstated | Open question → **still open** — not put to the owner | design.md §4 |
+| E18 | Shadow output has no surface and no rate, yet a requirement's own scenario asks a user to compare | Open question → **closed (D16 · A8)** | design.md §14; `define-energy-ui` design.md §5 |
+| I6 | The algorithm plane has no ownership statement; `registerAlgorithm` replaces silently | Open question → **closed in part (D4** — several algorithms may be active); algorithm identity and replacement still open | design.md §15; `define-optimization-objectives` design.md §6 |
+| N3 | The protection durations have no stated source of elapsed time, which decides whether protections survive a restart | Open question → **closed (D7 and its refinement)** | design.md §4 |
+| N4 | Nothing says whether the master stop halts _evaluation_ or only dispatch — a stopped engine still runs third-party code every tick | Open question → **closed (D1)** — which overrode the recommendation | design.md §6 |
+| N5 | Nothing says what a protection should do while the stop is engaged: device safety and operator safety point opposite ways | Open question → **closed (D2 with D1)** | design.md §5 |
+| N6 | The corpus has no vocabulary for what became of a decision — applied, superseded, deferred, suppressed, withheld | Open question → **closed (D16 · A8)** | design.md §12; `define-energy-ui` design.md §5 |
+| N7 | "Engine-owned" is enumerated once and the enumeration is incomplete; it is the security boundary of the whole extension story | Sharpened (_Replaceable algorithm, scripts first-class_ — one enumeration, stated in one place and stated to be complete; membership stays open) + open question → **closed (D13)** | spec.md; design.md §16 |
 
 ### `define-energy-levels`
 
 | Id | What the build hit | Disposition | Landed |
 |---|---|---|---|
-| L1 | The level→number mapping exists only in a CSV, and it runs opposite to priority's — wave 1 ships two ordinal scales pointing opposite ways, neither stated in prose | Sharpened (_Four-level scale_ — a stated encoding governs any numeric exchange; whether one is fixed centrally at all stays open) + open question | spec.md; design.md §2 |
-| L2 | The SG-ready offset is unstated; modes are 1–4 and level codes 0–3 | Open question | design.md §3 |
-| L3 | No tie-break is defined; `fixtures/README.md` itself says one is needed | Sharpened (_Level derivation_) + open question | spec.md; design.md §6 |
-| L4 | "Hours" versus "slots" — on 15-minute data "4 hours" is either 4 or 16 | Open question | design.md §7 |
-| L5 | Counts that do not fit a partial day are undefined, and partial days are routine | Open question | design.md §6 |
-| L6 | Band precedence is unspecified even without overflow | Open question | design.md §6 |
-| L7 | "Escalates" has no magnitude, no threshold and no target level, so the requirement is inert until configured | Open question | design.md §8 |
-| L8 | No hysteresis, so the published level chatters minute-to-minute on a partly cloudy day | Open question | design.md §8 |
-| L9 | The current level outside the plan is undefined | Open question | design.md §9 |
-| L11 | Level names differ between the spec and the taxonomy — same as A11 | Open question | design.md §1 |
-| L12 | Percentile and fixed-count derivation are _identical_ on tie-free data, proved on the corpus fixture; the open question is tie handling plus adaptivity | Open question + task 2.1 reframed | design.md §5; tasks.md 2.1 |
-| L13 | "Consecutive" is undefined on real data — may a series be non-uniform or gapped? | Open question (part already settled by `price-data` _Time resolution_) | design.md §11; `define-price-providers` design.md |
-| L14 | Comparing windows of unequal covered time is undefined | Open question | design.md §11; `define-price-providers` design.md |
-| L15 | Window start granularity is unstated | Open question | design.md §11 |
-| L16 | Selection ignores the load's own shape; "cheapest N slots" is correct only for a flat load | Open question | design.md §11; `define-price-providers` design.md |
-| L17 | Under-supply behaviour is unstated and user-visible, and the two candidate behaviours differ | Open question | design.md §11 |
-| L19 | Price semantics — currency, taxes, fees, and above all negative prices, where "blocked = most expensive" becomes strange | Open question (feed-in half already covered) | design.md §13; `define-price-providers` design.md |
-| L20 / L21 | Seasonal boundaries, time zone, and which local date names a delivery day that straddles two | Open question | design.md §12 |
-| L22 | Rule-updatable hour counts have no re-derivation trigger | Open question | design.md §10; tasks.md 2.2 |
-| L23 | The plan is a future-timestamped TimeSeries and the current level is an Item — one item or two, and what may be published under shadow | Open question | design.md §14 |
+| L1 | The level→number mapping exists only in a CSV, and it runs opposite to priority's — wave 1 ships two ordinal scales pointing opposite ways, neither stated in prose | Sharpened (_Four-level scale_ — a stated encoding governs any numeric exchange; whether one is fixed centrally at all stays open) + open question → **closed (D12)** | spec.md; design.md §2 |
+| L2 | The SG-ready offset is unstated; modes are 1–4 and level codes 0–3 | Open question → **closed (D12**, with D17 · EL-3c for the mode-1 cap) | design.md §3 |
+| L3 | No tie-break is defined; `fixtures/README.md` itself says one is needed | Sharpened (_Level derivation_) + open question → **still open** — D17 · EL-13 fixed relativity, not the tie-break | spec.md; design.md §6 |
+| L4 | "Hours" versus "slots" — on 15-minute data "4 hours" is either 4 or 16 | Open question → **still open** | design.md §7 |
+| L5 | Counts that do not fit a partial day are undefined, and partial days are routine | Open question → **still open** | design.md §6 |
+| L6 | Band precedence is unspecified even without overflow | Open question → **still open** | design.md §6 |
+| L7 | "Escalates" has no magnitude, no threshold and no target level, so the requirement is inert until configured | Open question → **closed (D17 · EL-8a)** | design.md §8 |
+| L8 | No hysteresis, so the published level chatters minute-to-minute on a partly cloudy day | Open question → answered by Part C (D18 · EL-8b): no dwell timer | design.md §8 |
+| L9 | The current level outside the plan is undefined | Open question → **closed (D17 · EL-9)** | design.md §9 |
+| L11 | Level names differ between the spec and the taxonomy — same as A11 | Open question → **still open** — with A11 | design.md §1 |
+| L12 | Percentile and fixed-count derivation are _identical_ on tie-free data, proved on the corpus fixture; the open question is tie handling plus adaptivity | Open question + task 2.1 reframed → **still open** | design.md §5; tasks.md 2.1 |
+| L13 | "Consecutive" is undefined on real data — may a series be non-uniform or gapped? | Open question (part already settled by `price-data` _Time resolution_) → **closed (D16 · A12)** | design.md §11; `define-price-providers` design.md |
+| L14 | Comparing windows of unequal covered time is undefined | Open question → **closed (D16 · A12)** | design.md §11; `define-price-providers` design.md |
+| L15 | Window start granularity is unstated | Open question → **closed (D16 · A12)** | design.md §11 |
+| L16 | Selection ignores the load's own shape; "cheapest N slots" is correct only for a flat load | Open question → **closed (D16 · A12 and A13)** | design.md §11; `define-price-providers` design.md |
+| L17 | Under-supply behaviour is unstated and user-visible, and the two candidate behaviours differ | Open question → **closed (D16 · A12)** | design.md §11 |
+| L19 | Price semantics — currency, taxes, fees, and above all negative prices, where "blocked = most expensive" becomes strange | Open question (feed-in half already covered) → **closed (D17 · EL-13)** | design.md §13; `define-price-providers` design.md |
+| L20 / L21 | Seasonal boundaries, time zone, and which local date names a delivery day that straddles two | Open question → **closed (D17 · EL-12a, EL-12b, EL-12c)** | design.md §12 |
+| L22 | Rule-updatable hour counts have no re-derivation trigger | Open question → **closed (D17 · EL-10)** | design.md §10; tasks.md 2.2 |
+| L23 | The plan is a future-timestamped TimeSeries and the current level is an Item — one item or two, and what may be published under shadow | Open question → **closed in part (D6** — publication is an output); one Item or two still open | design.md §14 |
 | N8 | This change was the only wave-1 change with no `design.md`, so its open questions lived where no reader was pointed | **Fixed** — `design.md` created | design.md |
 
 ### `define-extension-points`
 
 | Id | What the build hit | Disposition | Landed |
 |---|---|---|---|
-| B1 | The `energy:` namespace is named by a requirement and specified nowhere — every key in the prototype's parser is invention the corpus cannot validate | Open question (for @kaikreuzer) | design.md §5.1 |
+| B1 | The `energy:` namespace is named by a requirement and specified nowhere — every key in the prototype's parser is invention the corpus cannot validate | Open question (for @kaikreuzer) → answered by Part C (D18 · EP-5.1) | design.md §5.1 |
 | B2 | The key vocabulary cannot express three of its own requirements — no consumer min/max, no `consecutive`, no level gate | **Added** (_Expressive declaration surface_) | spec.md |
-| B3 | Provider `price` and `schedule` keys have nowhere to land in wave 1: accept and ignore, or reject? | Open question | design.md §5.3; `define-price-providers` design.md |
-| B4 | Units are unstated and the vocabulary is internally inconsistent — some keys bake the unit into the name, others must carry it in the value | **Added** (as a qualifier on _Expressive declaration surface_ — the unit is fixed by a stated rule, which the declaration may carry or the specification may mandate) + open question | spec.md; design.md §5.2 |
-| B5 | Deadlines are unreachable in their stated forms — A3 made concrete at the mechanism boundary | Open question | `define-participant-model` design.md §5.3 |
-| B6 | No default profile class, and defaulting is safety-relevant: an unrecognised profile treated as Simple lets the engine switch a Batch programme | Open question | design.md §5.4 |
-| B7 | No default priority, scale or direction — same as A4 | Open question | `define-participant-model` design.md §5.2 |
-| B8 | Participant identity is undefined, and it is what makes cross-mechanism precedence work — same as A12 | **Added** (in `define-participant-model`) | `define-participant-model` spec.md |
-| B9 | "Explicit declaration wins" is scoped to _discovery_; it says nothing about explicit versus add-on-contributed, which is the conflict wave 1 actually produces | **Added** (_Deterministic resolution between contributors_) | spec.md; `discover-participants-from-model` design.md §5 |
-| B10 | "Multiple contributors, user selection" names no selection mechanism and no home for it | **Rejected** — already recorded | design.md §4, §5.11 |
-| B11 | Failure semantics for a bad declaration are unspecified, and there is no notion of a declaration in error and no surface to show one | Open question | design.md §5.5; `define-energy-ui` design.md §5 |
-| B12 | Degradation has no reporting surface, and the requirement covers data contributors but not a declaration contributor vanishing | Open question | design.md §5.6; `define-forecast-providers` design.md §3; `define-energy-ui` design.md §5 |
-| B13 | openHAB's `AbstractRegistry` is registration-order dependent — the exact opposite of "explicit wins" | Open question (for the core registry maintainers) | design.md §5.8 |
-| B14 | Script contributors have no unload hook, so the two contribution paths have genuinely different lifecycle guarantees that the corpus treats as equivalent | Open question | design.md §5.9 |
-| B15 | Nothing says whether a declaration may name Items that do not exist | Open question | design.md §5.10 |
-| E12 | Staleness has no age and the safe state has no floor, so the safety branch is inert by default in any faithful implementation | Open question | design.md §5.7 |
-| N9 | Actuation adapters have no selection story — the single most consequential choice in the system | Open question | design.md §5.11 |
-| N10 | "Core-shipped defaults on equal terms" has no observable definition | Open question | design.md §5.12; `define-optimization-objectives` design.md §6 |
+| B3 | Provider `price` and `schedule` keys have nowhere to land in wave 1: accept and ignore, or reject? | Open question → answered by Part C (D18 · EP-5.3) | design.md §5.3; `define-price-providers` design.md |
+| B4 | Units are unstated and the vocabulary is internally inconsistent — some keys bake the unit into the name, others must carry it in the value | **Added** (as a qualifier on _Expressive declaration surface_ — the unit is fixed by a stated rule, which the declaration may carry or the specification may mandate) + open question → **closed (D16 · A10)** | spec.md; design.md §5.2 |
+| B5 | Deadlines are unreachable in their stated forms — A3 made concrete at the mechanism boundary | Open question → **closed (D17 · PM-5.4)** | `define-participant-model` design.md §5.3 |
+| B6 | No default profile class, and defaulting is safety-relevant: an unrecognised profile treated as Simple lets the engine switch a Batch programme | Open question → **closed (D16 · A8)** | design.md §5.4 |
+| B7 | No default priority, scale or direction — same as A4 | Open question → **closed (D4)** | `define-participant-model` design.md §5.2 |
+| B8 | Participant identity is undefined, and it is what makes cross-mechanism precedence work — same as A12 | **Added** (in `define-participant-model`) → **closed (D5)** | `define-participant-model` spec.md |
+| B9 | "Explicit declaration wins" is scoped to _discovery_; it says nothing about explicit versus add-on-contributed, which is the conflict wave 1 actually produces | **Added** (_Deterministic resolution between contributors_) → **closed (D5)** | spec.md; `discover-participants-from-model` design.md §5 |
+| B10 | "Multiple contributors, user selection" names no selection mechanism and no home for it | **Rejected** — already recorded → rejected; the selection rule is now stated (D5's exception, D17 · EP-4(i)) | design.md §4, §5.11 |
+| B11 | Failure semantics for a bad declaration are unspecified, and there is no notion of a declaration in error and no surface to show one | Open question → **closed (D16 · A8)** | design.md §5.5; `define-energy-ui` design.md §5 |
+| B12 | Degradation has no reporting surface, and the requirement covers data contributors but not a declaration contributor vanishing | Open question → **closed (D16 · A8)** | design.md §5.6; `define-forecast-providers` design.md §3; `define-energy-ui` design.md §5 |
+| B13 | openHAB's `AbstractRegistry` is registration-order dependent — the exact opposite of "explicit wins" | Open question (for the core registry maintainers) → answered by Part C (D18 · EP-5.8) | design.md §5.8 |
+| B14 | Script contributors have no unload hook, so the two contribution paths have genuinely different lifecycle guarantees that the corpus treats as equivalent | Open question → answered by Part C (D18 · EP-5.9) — the premise was false | design.md §5.9 |
+| B15 | Nothing says whether a declaration may name Items that do not exist | Open question → **closed (D17 · EP-5.10)** | design.md §5.10 |
+| E12 | Staleness has no age and the safe state has no floor, so the safety branch is inert by default in any faithful implementation | Open question → **closed (D14)** | design.md §5.7 |
+| N9 | Actuation adapters have no selection story — the single most consequential choice in the system | Open question → **closed (D5's exception)** | design.md §5.11 |
+| N10 | "Core-shipped defaults on equal terms" has no observable definition | Open question → answered by Part C (D18 · EP-5.12) | design.md §5.12; `define-optimization-objectives` design.md §6 |
 
 ### Cross-cutting
 
 | Id | What the build hit | Disposition | Landed |
 |---|---|---|---|
-| I1 | _Level derivation_'s "PV escalation" scenario and _Central periodic evaluation_ are mutually recursive as written, and the corpus never says whether the site level is an engine **input** or a **product** of its own readings | Open question, recorded on both sides | `define-energy-levels` design.md §15; `define-engine-contract` design.md §4 |
-| I2 | The level plane publishes Items; the engine consumes a level. Under shadow-only nothing may be published, so the only possible coupling is in-process — and the corpus describes none | Open question, recorded on both sides | `define-energy-levels` design.md §14; `define-engine-contract` design.md §18 |
-| I3 | The seasonal derivation cannot be offered as configuration, because the corpus defines no season grammar, no zone and no straddling-day rule | Open question | `define-energy-levels` design.md §12 |
-| I4 | Nothing says at which granularity a level applies; site-global versus per-domain is a signature, not a preference | Open question | `define-energy-levels` design.md §4 |
+| I1 | _Level derivation_'s "PV escalation" scenario and _Central periodic evaluation_ are mutually recursive as written, and the corpus never says whether the site level is an engine **input** or a **product** of its own readings | Open question, recorded on both sides → **closed (D6)** | `define-energy-levels` design.md §15; `define-engine-contract` design.md §4 |
+| I2 | The level plane publishes Items; the engine consumes a level. Under shadow-only nothing may be published, so the only possible coupling is in-process — and the corpus describes none | Open question, recorded on both sides → **closed (D6)** | `define-energy-levels` design.md §14; `define-engine-contract` design.md §18 |
+| I3 | The seasonal derivation cannot be offered as configuration, because the corpus defines no season grammar, no zone and no straddling-day rule | Open question → **closed (D17 · EL-12a, EL-12b)** | `define-energy-levels` design.md §12 |
+| I4 | Nothing says at which granularity a level applies; site-global versus per-domain is a signature, not a preference | Open question → **closed (D17 · EL-4)** | `define-energy-levels` design.md §4 |
 | I5 | `package-info.java` with `@NonNullByDefault` is against the codebase's own convention | **Rejected** — not a corpus defect | this page |
-| L18 | The boiler fixture does not exercise the power budget it is filed under | Fixture note + open question | `fixtures/README.md`; `define-grid-constraints` design.md §4 |
+| L18 | The boiler fixture does not exercise the power budget it is filed under | Fixture note + open question → sourcing decided (D19); **no vector exists yet** | `fixtures/README.md`; `define-grid-constraints` design.md §4 |
 | — | The fixture CSVs carry slot _starts_ only, so the last slot's end must be inferred | **Fixed** — slot width stated | `fixtures/README.md` |
+
+## What is still open after the decision session
+
+Kept as one list so nobody has to re-derive it from the arrows. Each is either untouched by
+the decisions or the unanswered half of a question they answered in part.
+
+- **A2** — which deadline forms are admissible. The decision pack's Part C recorded an
+  answer (both forms; a bare local time resolves to the next occurrence in the site zone),
+  and the owner's Part C ruling was "no action", so no requirement states it yet.
+  `define-participant-model` design.md §5.3.
+- **A5** — which provider roles other than battery may be controllable. The clamp half is
+  closed; a curtailable PV inverter is still unaddressed. §5.8.
+- **A6 / A1 edge** — the mapping excludes two-mode devices and hands them to the level
+  gate, which is declared on Simple consumers only. Either the gate widens by one case or a
+  two-state device is declared Simple. §5.10 and §5.7.
+- **A10 / EP-2** — the word that replaces `EnergyProvider`. The collision is grounded and
+  the rename is parked for one combined pass; the word is a thread question by the owner's
+  own choice. §5.16 and `define-extension-points` design.md §2.
+- **A11 / L11** — the four level **names**. D12 fixed the codes, not the vocabulary.
+  `define-energy-levels` design.md §1.
+- **E7** — whether surplus is instantaneous, averaged or forecast, and whether an
+  already-running managed consumer's own draw counts. `define-engine-contract` design.md
+  §11.
+- **E8** — where acknowledgement handling lives, the default tolerance value, and what
+  happens to a changed command while one is outstanding. §3.
+- **E10** — what a resume does with loads the floor deferred and with shadow comparison
+  state. §7.
+- **E17** — the snapshot's minimum content, and whether an algorithm may retain one beyond
+  its cycle. §4.
+- **I6** — how an algorithm id is formed and whether replacement is permitted. The
+  multiplicity half is closed. §15.
+- **L3, L5, L6** — the tie-break between slots of equal price, counts that do not fit a
+  partial day, and band precedence. `define-energy-levels` design.md §6.
+- **L4** — hours versus slots on 15-minute data. §7. **L12** — what derivation is actually
+  about once percentile and fixed-count coincide. §5. **L23** — one Item or two for the
+  plan and the current level. §14.
+- **L18 / D19** — the discriminating budget vector. Sourcing is decided (derive one from
+  the owner's site); **no data exists yet**, and none was invented.
+- **EL-8a residue** — `encouragedFrom` has no shipped value. The decision fixed the graded
+  shape and the 2× relation to `overcapacityFrom`, never a base number, and the reference
+  has no site-level escalation threshold to source one from, so the requirement states what
+  an unset threshold means instead. `define-energy-levels` design.md §8, task 2.3.
+
+## Reconciliations — decided by neither the thread, the prototype nor the owner
+
+A later pass found seven places where **two owner decisions landed on one behaviour from
+different changes and disagreed**, or where a decision's comparand was never given to the
+model that has to compute it. Each was closed in the corpus so the requirement set is
+consistent, and each is labelled a **reconciliation** rather than a decision — nobody
+adjudicated them, so a maintainer overturns any one of them without contradicting anything
+the owner said. They are collected as confirmation tasks in the affected `tasks.md` files.
+
+- **A14's shed selector** — the capacity budget's `min(mtdPeak, minBillable)` was a
+  transcription of the reference's `Math.min(mtdPeak, −minBillableW)`, in which both terms
+  are negative; restated in unsigned watts it inverts. The corpus says `max`.
+  `define-grid-constraints` design.md §3, task 2.3.
+- **A6's two sentences** — "prefer measurement wherever both are available" versus the
+  floor booking `max(declared, measured)`. They agree only when the measurement is larger.
+  `define-participant-model` design.md §5.14.
+- **D1 versus A8** — the master stop halts evaluation, which left the `stopped` outcome
+  unreachable. `define-engine-contract` design.md §12.
+- **D9 and D13 versus D2** — a running Batch programme and a hands-off consumer both
+  outrank the electrical-limit rung the ladder declares absolute.
+  `define-engine-contract` design.md §5 and §8.
+- **D13's scope** — `never` was framed against contributed algorithms and said nothing
+  about the engine's own floor and safe state. `define-participant-model` design.md §5.7.
+- **D10's comparand** — "reclaimable" is decided by comparing a consumer's priority against
+  the battery's, and providers carried no priority. `define-participant-model` design.md
+  §5.8.
+- **D8's band** — the tolerance band was undeclarable and dimensionless.
+  `define-engine-contract` design.md §3.
 
 ## Aliases
 
@@ -231,8 +320,15 @@ age, threshold or reporting surface was chosen anywhere in this pass. Where a re
 was sharpened it now demands that something be _stated_ — and the statement itself is
 still owed by a maintainer, in the `design.md` section the table names.
 
+That is a statement about **this pass**, and it stays true of it. Many of those statements
+have since been supplied by the owner's decision session
+([`OWNER_DECISIONS.md`](OWNER_DECISIONS.md), and the arrows in the catalogue above), which
+is a different event with a different provenance — one practitioner's calls, not thread
+consensus, and never presented here as the prototype having answered its own questions.
+
 Two of the sharpened requirements are worth calling out because they read like decisions
-and are not:
+and are not — and both were answered later that day, by a decision rather than by this
+pass (_Priority_'s direction by D4, the level encoding by D12):
 
 - _Priority_ now requires a total, deterministic order **whose direction is stated**. It
   does not say which direction. The fixtures imply one and the requirement's own source
