@@ -22,6 +22,10 @@ change turns that converged shape into reviewable requirements.
 - Requirements are mechanism-neutral: _that_ users mark Items and _what_ must be
   expressible — whether via item metadata, description providers, or a new add-on type
   is an open question in `design.md`.
+- Amended after the wave-1 prototype: participant identity, a per-consumer power figure
+  and a phase declaration are stated outright, because requirements in this and other
+  changes already depend on them; the questions the prototype could not answer without
+  deciding are recorded in `design.md` §5 (see `docs/PROTOTYPE_FEEDBACK.md`).
 
 ## Non-goals
 

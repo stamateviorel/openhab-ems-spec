@@ -7,7 +7,9 @@
 The system SHALL express energy availability as an ordered four-level scale —
 blocked / normal / encouraged ("low price") / overcapacity — matching the Smart-Grid
 (SG-ready) industry model so that heat pumps, EVCC-style charge controllers and simple
-loads can consume it natively.
+loads can consume it natively, with the scale's ordering direction stated once in the
+specification and, wherever a level is exchanged as a number, that exchange governed by a
+stated encoding used identically on every side of it.
 
 #### Scenario: SG-ready mapping
 
@@ -20,16 +22,28 @@ loads can consume it natively.
 - **WHEN** a Simple ON/OFF consumer subscribes to levels
 - **THEN** the four levels collapse to allow/deny for it
 
+#### Scenario: Numeric exchange
+
+- **GIVEN** a level written as a number by one component — a published Item state, a
+  planned series, an acceptance fixture — and read back by a second, independently written
+  one
+- **WHEN** each maps between the level names and the numbers
+- **THEN** the round trip returns the level it started from, for each of the four levels
+
 > Source: mstormi's Energieniveau model ([1481931249](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931249),
 > [docs](https://storm.house/docs/#Energieniveaumanagement)), masipila's SG-mode framing
 > ([1481931320](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931320)),
-> EVCC mode equivalence ([1481931278](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931278)).
+> EVCC mode equivalence ([1481931278](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931278));
+> sharpened after the wave-1 prototype surfaced L1 (see docs/PROTOTYPE_FEEDBACK.md) — the
+> encoding itself, and whether one is fixed centrally at all, stay open in design.md §2.
 
 ### Requirement: Level derivation
 
 The system SHALL derive the level from the price schedule (base level) and escalate it
 on live PV excess, with the number of hours assigned to each non-normal level
-user-configurable — including via rules, so e.g. cold weather can reduce blocked hours.
+user-configurable — including via rules, so e.g. cold weather can reduce blocked hours —
+and with the classification of slots that tie on price settled by a stated tie-break
+rather than by the order in which slots are evaluated.
 
 #### Scenario: Cheapest-hours classification
 
@@ -37,6 +51,13 @@ user-configurable — including via rules, so e.g. cold weather can reduce block
 - **WHEN** tomorrow's 24 prices arrive
 - **THEN** the planned levels mark the 4 cheapest hours overcapacity, the next 4
   low-price, the 4 most expensive blocked, and the rest normal
+
+#### Scenario: Repeated prices
+
+- **GIVEN** more slots tied on the same price than the band being filled has room for
+- **WHEN** the plan is derived twice from that same series
+- **THEN** the same slots land in the band both times, decided by the stated tie-break
+  and not by which slot happened to be visited first
 
 #### Scenario: PV escalation
 
@@ -47,7 +68,9 @@ user-configurable — including via rules, so e.g. cold weather can reduce block
 > Source: mstormi's base-plus-escalation with user-configurable hours ("that's key to
 > applicability", [1481931249](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931249)),
 > masipila's algorithm sketch incl. rule-updatable hour counts
-> ([1481931363](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931363)).
+> ([1481931363](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931363));
+> sharpened after the wave-1 prototype surfaced L3 (see docs/PROTOTYPE_FEEDBACK.md) — the
+> tie-break itself stays open in design.md §6.
 
 ### Requirement: Planned schedule vs. current level
 

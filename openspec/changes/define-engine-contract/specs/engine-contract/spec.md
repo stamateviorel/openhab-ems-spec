@@ -51,8 +51,10 @@ order.
 ### Requirement: Electrical limits outrank optimization
 
 The engine SHALL enforce declared electrical limits — a total power budget and, where
-declared, per-phase headroom — before applying any optimization decision, so no plan can
-schedule the site past its physical limits.
+declared, per-phase headroom — ahead of any optimization decision and resolve an overload
+by a defined rule that settles what happens to each affected load, so no plan can schedule
+the site past its physical limits and the same inputs always resolve one overload the same
+way.
 
 #### Scenario: Budget respected at dispatch time
 
@@ -67,6 +69,13 @@ schedule the site past its physical limits.
 - **WHEN** one phase is near its limit
 - **THEN** the engine accounts for that phase specifically, not only the site total
 
+#### Scenario: Overload resolution is not an implementation accident
+
+- **GIVEN** an overload in which one load can be reduced to a smaller draw and another can
+  only be switched off entirely
+- **WHEN** the engine resolves the overload twice from the same inputs
+- **THEN** the outcome for each load follows the defined rule and is the same both times
+
 > Source: seime — "limit the total load within the hour (or 15 minute buckets)"
 > ([1481931351](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931351));
 > masipila — per-phase load balancing, "you can't toggle all the devices on at the same
@@ -74,7 +83,10 @@ schedule the site past its physical limits.
 > relation: `grid-constraints` covers cost-optimal _planning_ under budgets — this is the
 > runtime _floor_ beneath any plan. The "regardless of the active algorithm"
 > generalization is a design synthesis from the reference's safety chain, **flagged for
-> review**.
+> review**; sharpened after the wave-1 prototype surfaced E13 — "trimmed or deferred"
+> never said which, when (see docs/PROTOTYPE_FEEDBACK.md); which rule, which dispositions
+> it may reach for, and what it does with a load that cannot be trimmed at all, stay open
+> in design.md §8.
 
 ### Requirement: Shadow mode
 
@@ -119,8 +131,10 @@ requiring uninstallation or reconfiguration of participants.
 ### Requirement: Acknowledgement-aware actuation
 
 The engine SHALL avoid re-sending a command to a device while the previous command is
-still unacknowledged, so devices whose reported state lags the command are not flooded
-with repeats.
+still unacknowledged, within an acknowledgement window whose length and whose behaviour
+on expiry are both defined, so devices whose reported state lags the command are not
+flooded with repeats and a device that never acknowledges does not leave the engine's
+behaviour towards it undefined.
 
 #### Scenario: Charger with lagging state
 
@@ -130,15 +144,28 @@ with repeats.
 - **THEN** the command is not re-sent every cycle while the acknowledgement window is
   open
 
+#### Scenario: Device that never acknowledges
+
+- **GIVEN** a device that never reflects a commanded value in its reported state
+- **WHEN** its acknowledgement window elapses twice over
+- **THEN** the engine takes the action the stated expiry rule prescribes for that device,
+  and takes that same action both times, rather than each implementation deciding for
+  itself whether the device may be commanded again
+
 > Source: **reference production experience** — an ACK window preventing command
 > re-sends, essential for `autoupdate="false"` OCPP devices; not stated in the thread;
-> flagged as such.
+> flagged as such; sharpened after the wave-1 prototype surfaced E8 — "unacknowledged"
+> was never made operational (see docs/PROTOTYPE_FEEDBACK.md); the window's length, what
+> expiry does, what counts as an acknowledgement, and the changed-command rule all stay
+> open in design.md §3.
 
 ### Requirement: Replaceable algorithm, scripts first-class
 
 The optimization algorithm SHALL be replaceable by the user — implementable as scripts or
 rule templates, not only as compiled code — while evaluation, limits, shadow, stop and
-actuation remain engine-owned for every algorithm.
+actuation remain engine-owned for every algorithm, under one enumeration of engine-owned
+responsibilities that is stated in a single place and stated to be complete, so what an
+algorithm may take over does not follow from whatever an implementation happens to expose.
 
 #### Scenario: Script algorithm under the same guardrails
 
@@ -147,8 +174,20 @@ actuation remain engine-owned for every algorithm.
 - **THEN** they flow through the same limit enforcement, shadow gating and actuation
   semantics as the default's
 
+#### Scenario: An enumerated responsibility cannot be taken over
+
+- **GIVEN** a contributed algorithm that writes to a device directly instead of returning
+  a decision
+- **WHEN** it runs
+- **THEN** that write does not reach the device, because actuation is a member of the
+  stated engine-owned enumeration
+
 > Source: Kai — the EMS "could possibly then even be as simple as a rule template, so
 > that people could e.g. implement easily alternative energy management algorithms and
 > also do this through scripts"
 > ([1481931374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931374));
-> the guardrail tail follows from the engine-owned requirements above.
+> the guardrail tail follows from the engine-owned requirements above; sharpened after the
+> wave-1 prototype surfaced N7 — the enumeration is stated once and is not stated to be
+> complete (see docs/PROTOTYPE_FEEDBACK.md); what else belongs in it — the level gate, the
+> readiness interlock — and whether a member may be qualified rather than absolute stay
+> open in design.md §16, and it is the security boundary of the extension surface.

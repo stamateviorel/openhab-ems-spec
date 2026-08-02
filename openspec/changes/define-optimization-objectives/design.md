@@ -33,3 +33,27 @@ source reporting. Undecided.
 Negative feed-in prices (`price-data`) interact oddly with self-consumption and carbon
 objectives (exporting green power vs. consuming it locally). Needs a worked example
 before hardening.
+
+## 6. What the wave-1 prototype surfaced
+
+Opened by building the wave-1 slice against this corpus, not by #3478. Ids are the
+prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`); recorded, not answered.
+
+- **A contributed objective needs an identity story (I6).** _Objective extensibility_ makes
+  the objective an extension point that scripts may contribute. Wave 1's algorithm plane
+  registers by id and the last registration silently replaces the previous one — which is
+  what a reloaded script needs, and which also lets one contributor take over another's id
+  unnoticed. The declaration plane works ownership out carefully; the algorithm plane,
+  where a contributed objective would live, says nothing. Filed as I6 under
+  `define-engine-contract`; noted here because objectives inherit whatever it answers.
+- **"On equal terms" is undefined, and the three built-ins are its first test (N10).**
+  `extension-surface` _Core-shipped defaults without privilege_ requires core defaults to be
+  replaceable "on equal terms" without saying what makes terms equal — same registration
+  mechanism, same priority range, displaceable by id are all live readings. This change
+  ships three built-in objectives that a contributed one must be able to displace, so the
+  reading bites here first.
+- **The self-consumption objective rests on an undefined word (E7).** _Selectable
+  objective_'s first scenario places a load "into the surplus". Nothing in the corpus
+  defines surplus beyond its being derived from grid export: whether a charging battery's
+  power or curtailed PV count towards it is unstated, and each answer places the load
+  somewhere else. Filed as E7 under `define-engine-contract`.

@@ -21,3 +21,24 @@ those same entries hold the capped value. As written, a refresh arriving after t
 would silently erase it. Options: re-apply caps after any refresh, give writers a
 precedence order, or model caps as a separate constraint series composed at read time.
 Undecided — flagged for the prototype to surface (tasks 2.3).
+
+## 3. What the wave-1 prototype surfaced
+
+Opened by building the wave-1 slice against this corpus, not by #3478. Ids are the
+prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`); recorded, not answered.
+
+- **Nothing says which of a contributor's readings are safety inputs (E12).**
+  `extension-surface` _Graceful degradation on contributor loss_ splits contributor loss two
+  ways: a data-plane source going away degrades to baselines — this change's _Forecast
+  source fails_ scenario — while a lost safety input degrades to a conservative safe state.
+  The corpus never says which side a given contributed reading falls on. A forecast series
+  is assumed data-plane and never declared as such, and the safety branch has no staleness
+  age behind it, so an implementation meeting a new source cannot classify it. Open: does a
+  forecast provider's surface state that its readings are never safety inputs, or does the
+  classification belong to whatever consumes the series?
+- **Degradation has no reporting surface (B12).** _Source-agnostic consumption_ makes
+  sources swappable and `extension-surface` requires the engine to "report the degraded
+  source" — no change says where. A site planning on a year-long baseline because a forecast
+  add-on has been dark for a week has no defined way to find that out, and the baseline
+  fallback is precisely this change's headline behaviour. Recorded in
+  `define-extension-points`; noted here because this is where a user would notice.

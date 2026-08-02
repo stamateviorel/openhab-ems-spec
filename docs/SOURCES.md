@@ -53,6 +53,20 @@ that is a bug.
   2026-07-31) — a UI surface for declaring participants/intent and confirming discovery
   proposals. Follows from Kai's out-of-the-box intent and the discovery confirm flow, but
   the explicit requirement is not thread-stated; flagged inline where it is defined.
+- **Wave-1 prototype feedback** (2026-08-02) — five requirements were **added** and eight
+  **sharpened** after `org.openhab.core.energy` was built from this corpus. Added:
+  _Participant identity_, _Consumer power figure_, _Phase declaration_
+  (`define-participant-model`), _Expressive declaration surface_, _Deterministic resolution
+  between contributors_ (`define-extension-points`). Sharpened: _Provider roles_, _Demand
+  declaration_, _Priority_ (`define-participant-model`), _Electrical limits outrank
+  optimization_, _Acknowledgement-aware actuation_, _Replaceable algorithm, scripts
+  first-class_ (`define-engine-contract`), _Four-level scale_, _Level derivation_
+  (`define-energy-levels`). None was raised in #3478 — each added one is depended on by
+  requirements that predate it, and each sharpening only demands that something be
+  _stated_. Catalogued with its defect id in
+  [`PROTOTYPE_FEEDBACK.md`](PROTOTYPE_FEEDBACK.md), and every Source line carries the
+  provenance inline so a reviewer can tell it apart from thread consensus without leaving
+  the requirement.
 
 ## Adjacent prior art (referenced, not absorbed)
 

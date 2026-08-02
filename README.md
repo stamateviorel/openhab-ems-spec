@@ -69,6 +69,14 @@ review cheap) from the _merge track_ (gated on maintainer decisions), and states
 rules: never resolve an open question, shadow only, fixtures are pass/fail, report
 ambiguity instead of inventing.
 
+**A wave-1 prototype has since been built and fed back.**
+[`docs/PROTOTYPE_FEEDBACK.md`](docs/PROTOTYPE_FEEDBACK.md) catalogues what building it
+surfaced — roughly seventy places where this corpus was ambiguous, contradictory or
+silent — and says, for each, whether a requirement was sharpened, a missing requirement
+added, or an open question recorded. Requirements amended for that reason say so in their
+`Source:` line, so **thread-sourced consensus stays distinguishable from prototype-driven
+repair**. No design decision was resolved by that pass.
+
 ## Reviewing a change
 
 Per OpenSpec's [review guide](https://github.com/Fission-AI/OpenSpec/blob/main/docs/reviewing-changes.md),

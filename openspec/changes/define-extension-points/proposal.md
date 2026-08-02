@@ -24,6 +24,12 @@ stays an open design question.
 - Define the `extension-surface` capability: runtime contribution and removal, multiple
   contributors coexisting under user selection, contributor-owned complexity, graceful
   degradation, and core-shipped defaults that don't privilege themselves.
+- Amended after the wave-1 prototype: a declaration surface must be able to express every
+  participant attribute the requirements define (unit included), and a collision between
+  two contributors must resolve independently of registration order — both are already
+  depended on by requirements here and in `define-participant-model`. The questions the
+  prototype could not answer without deciding are recorded in `design.md` §5 (see
+  `docs/PROTOTYPE_FEEDBACK.md`).
 
 ## Non-goals
 
