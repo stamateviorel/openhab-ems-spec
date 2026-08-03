@@ -6,8 +6,9 @@
 
 The system SHALL let the user select the optimization objective — at minimum lowest
 cost, maximum self-consumption, and lowest carbon — instead of assuming lowest cost, the
-surplus that the self-consumption objective optimizes into being the site's grid export
-plus the battery charging the engine can reclaim, read under the corpus's single sign
+surplus that the self-consumption objective optimizes into being `max(0, grid +
+reclaimable)`: the site's signed grid reading plus the battery charging the engine can
+reclaim, netted against any import and never negative, read under the corpus's single sign
 convention.
 
 #### Scenario: Self-consumption over cheap grid
@@ -25,6 +26,13 @@ convention.
 - **THEN** it is placed now against that reclaimable charge rather than waiting for grid
   export to appear, because battery charging is a decision the engine itself made
 
+#### Scenario: Reclaimable charge under an importing meter
+
+- **GIVEN** the same objective, the site importing 1 kW, and 3 kW charging the battery
+- **WHEN** the same load is sized against the surplus
+- **THEN** 2 kW is available to it, the import being netted off first, so placing the load
+  does not deepen the import the objective exists to avoid
+
 #### Scenario: Carbon over price
 
 - **GIVEN** the carbon objective and a green-share series showing a very renewable
@@ -41,7 +49,11 @@ convention.
 > decided by the owner 2026-08-02 (D10, with the sign convention D11;
 > docs/OWNER_DECISIONS.md) — alternatives preserved in
 > `define-engine-contract` design.md §11 and in
-> `define-participant-model` design.md §5.11. Still open by the owner's
+> `define-participant-model` design.md §5.11. The `max(0, …)` composition **amends D10 as
+> literally worded** and comes from the owner's follow-up 2026-08-03 (D27,
+> docs/OWNER_DECISIONS.md), which nets the reclaimable charge against import before it is
+> offered to a load — alternatives preserved in `define-energy-levels` design.md §8 and in
+> `define-engine-contract` design.md §11. Still open by the owner's
 > own note on D10, and left open by the wording above: whether that figure is instantaneous,
 > averaged or forecast, and whether an already-running managed consumer's own draw counts.
 

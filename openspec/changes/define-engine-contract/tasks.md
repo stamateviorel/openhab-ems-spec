@@ -45,11 +45,16 @@
 - [x] 2.4 Define the decision-outcome vocabulary (§12), the shadow-output surface (§14) and
       the handling of a decision naming an unknown participant (§13) — an outcome enum plus
       a reason, published as deduplicated events, the current cycle over REST, one status
-      Item (D16 / pack A8)
+      Item (D16 / pack A8); **which component provides each surface** settled 2026-08-03
+      (D23, §23): events stay with the framework, the status Item and the REST view move to
+      a separate publishing component, so the framework writes no Item at all
 - [ ] 2.5 Define algorithm identity and ownership — who may replace whose id (§15); the
       multiplicity half is settled (several algorithms may be active at once, D4)
-- [ ] 2.6 Settle the tie-break between two _decisions_ of equal priority on one device —
-      D4 fixes the tie-break for ordering participants only (§19)
+- [x] 2.6 Settle the tie-break between two _decisions_ of equal priority on one device —
+      D4 fixes the tie-break for ordering participants only, and conflict resolution groups
+      by participant so that id always ties; **decided 2026-08-03 (D30, §19): algorithm id
+      ascending, then the rendered action**, with the `"OFF" < "ON"` consequence recorded as
+      an accepted accident rather than a designed safety ordering
 - [ ] 2.7 Confirm the four cross-change reconciliations this change carries that **no owner
       decision made** — each is a place where two decisions landed on the same behaviour
       from different changes, and each is reversible in one place: the ladder's two stated
@@ -67,3 +72,12 @@
 - [ ] 3.2 Shadow-mode harness: decisions logged + comparable against existing automation
 - [ ] 3.3 Script-algorithm proof: one trivial algorithm implemented as a JSR223 script
       driving the same engine
+- [ ] 3.4 Build the second component D23 names (`org.openhab.core.energy.publish` in the
+      reference): it consumes the framework's decision events and owns every write — the
+      status Item, the REST view, and the current level and planned TimeSeries of
+      `define-energy-levels`. Two things to prove alongside it: the framework still reports
+      by itself when the component is absent, and the no-write proof over the framework
+      still holds with the event tokens deliberately removed from its forbidden list (§23)
+- [ ] 3.5 Carry D28's persistence dependency into the framework and prove the report tells
+      "history is not being kept" from "no change observed yet" — the one case where a null
+      `lastStateChange` has two causes with different remedies (§4)

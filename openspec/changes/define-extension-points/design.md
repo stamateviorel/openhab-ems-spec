@@ -244,6 +244,18 @@ declaration looks like a working one) both stand above as the losing readings. T
 the chosen one is exactly the one the section names — a typo un-manages a device — which
 is why the reporting half is not optional.
 
+**FOLLOW-UP — D26** (owner decision, 2026-08-03; `docs/OWNER_DECISIONS.md`). The cost above
+turned out to be understated. A malformed declaration does not merely un-manage the device:
+where a **contributed** declaration exists for the same identity, withdrawing the
+higher-ranked explicit one promotes the contribution, and the device carries on being
+steered on somebody else's terms. **A malformed declaration blocks the participant
+entirely** — no lower-ranked statement inherits its place — so a typo degrades to "nothing
+happens" and never to "something else happens". The rule is normative in
+`define-participant-model` _Malformed declarations are reported, never partially accepted_,
+and _Deterministic resolution between contributors_ above now says the chain does not
+promote past a broken link; alternatives are preserved in
+`define-participant-model` design.md §5.18.
+
 ### 5.6 Where degradation is reported (B12)
 
 _Graceful degradation on contributor loss_ requires that the engine "reports the degraded
@@ -262,6 +274,15 @@ summary + Number count) that the energy pages read. Core writes no Item for deci
 `define-engine-contract`; `define-energy-ui`'s overview minimum set carries the status
 line. _Alternative preserved:_ logs only — rejected because it leaves the corpus's own
 side-by-side validation scenario untestable.
+
+**FOLLOW-UP — D23** (owner decision, 2026-08-03; `docs/OWNER_DECISIONS.md`). The surface is
+unchanged; **who provides each half of it** is now split. The deduplicated events are the
+framework's own, because posting an `Event` is not an Item write; the status Item and the
+REST view belong to a separate publishing component, because one of them is an Item write
+and the other needs a dependency outside the default-library set. A site running the
+framework alone therefore still sees a degraded contributor as an event — which is what
+_Graceful degradation on contributor loss_ above now says. The three blockers and the two
+rejected shapes are recorded once, in `define-engine-contract` design.md §23.
 
 ### 5.7 Staleness has no age, and the safe state has no floor (E12)
 
@@ -472,3 +493,60 @@ restored by moving one line: making the whole list an algorithm input, or making
 engine's own steering engine-owned too. The cost of the first is the pool-pump use case
 ("only when it's cheap") becoming advisory; the cost of the second is a planner that
 cannot meet a deadline.
+
+### 6.1 A contributor with a genuine protection claim (D25)
+
+**Opened by the wave-1 slice (`org.openhab.core.energy` STAGE1_REPORT.md §3.4).** D13
+answers what a contributor may not **invent**. It says nothing about a contributor with a
+claim that is simply **true** — a binding that knows its own compressor's duty cycle better
+than the metadata does, or the peak-shaver that the slice's own `DecisionKind` JavaDoc names
+as the legitimate electrical-limit case. The slice took the strict reading and normalised
+every proposal from a non-engine algorithm down to the level-gate rung. That is unforgeable
+— the marker interface lives in a `Private-Package` — and it is a real reduction in what a
+contribution can be, taken on a reading nobody had made explicitly.
+
+**Answered — D25** (owner decision, 2026-08-03; `docs/OWNER_DECISIONS.md`). Not thread
+consensus.
+
+_Decision._ **Corroborate the claim against the declaration.** A contributed decision is
+honoured at the device-protection rung when, and only when, the engine can see the same
+thing independently, from the same cycle's snapshot. Three conjuncts, all testable, all
+stated in _A contributed protection claim is corroborated or demoted_:
+
+1. the participant's own **effective declaration** carries the protection being claimed —
+   the declaration that survived precedence, not one the contributor supplied with the
+   decision;
+1. that protection is **due at this cycle's evaluation**, measured the way every other
+   enforcement point measures it (`define-engine-contract` _Protection timing comes from
+   device state history_);
+1. the **action the decision renders is the action that protection requires** — a maximum
+   OFF time that has elapsed requires ON, a minimum OFF time still running requires staying
+   off, and a claim pointing the other way is not corroborated by it.
+
+Anything failing one of the three is **demoted to the level-gate rung**, judged there on its
+merits, and **reported with the reason**, so a contributor learns why rather than watching
+its decision quietly not happen.
+
+_Why these three and not a weaker test._ Each closes a way the claim could otherwise
+certify itself. Without (1) a contributor asserts a protection nobody declared; without (2)
+it asserts one that is not due, which is every cycle; without (3) a declared, due protection
+becomes a general-purpose licence — the fridge's cooldown used to justify switching it on.
+And **protection-unknown does not corroborate**: an unreadable history is the absence of
+evidence, and reading it as corroboration would put the strongest reachable rung within
+reach exactly on the sites least able to check it.
+
+_What this does not open, stated rather than left to be discovered._ The **electrical-limit
+rung** has no declaration to corroborate a claim against — a site's limits are the engine's
+own inputs, not a participant's — so a contributed decision still cannot reach it, and the
+peak-shaver half of the question the slice raised is **not** closed by D25. It stays open
+here rather than being read into an answer that did not mention it.
+
+_Alternatives preserved._ (a) **The strict cap the slice shipped** — a contributed decision
+never rises above the level gate, full stop. One rule, unforgeable, nothing to test and
+nothing to get subtly wrong; its cost is that a binding which genuinely knows its device's
+duty cycle, and a peak-shaver of the kind the corpus itself calls legitimate, cannot be
+written as a contribution at all. It is the option to return to if corroboration turns out
+to be fragile in practice. (b) **Trust the claim as made** — a contributor labels its
+decision and the engine honours the label; maximum flexibility, zero mechanism, and it is
+what the slice's own record type allowed before D13; its cost is that it re-opens precisely
+the escalation D13 closed, since the label is a field anybody can set.

@@ -124,9 +124,11 @@ The current level SHALL escalate above its planned value in graded steps as site
 rises — reaching encouraged at a site-configured `encouragedFrom` threshold in watts, which
 has no shipped default, so the current level does not escalate above its planned value
 until a site sets one, and overcapacity at `overcapacityFrom`, which defaults to twice
-`encouragedFrom` — where surplus is the site's grid export plus the battery charging the
-engine can reclaim, read under the corpus's single sign convention (grid + = export,
-battery + = charging, PV + = producing, consumers + = consuming).
+`encouragedFrom` — where surplus is `max(0, grid + reclaimable)`, the site's signed grid
+reading plus the battery charging the engine can reclaim, netted against any import before
+it is compared to a threshold and never reported below zero, read under the corpus's single
+sign convention (grid + = export, battery + = charging, PV + = producing, and
+consumers + = consuming).
 
 #### Scenario: First graded step
 
@@ -149,6 +151,22 @@ battery + = charging, PV + = producing, consumers + = consuming).
 - **THEN** that 3 kW counts towards the thresholds exactly as exported power would, so a
   solar-first consumer is not starved by the battery absorbing everything
 
+#### Scenario: Importing while the battery charges
+
+- **GIVEN** a site importing 1 kW while 3 kW charges a battery the engine may reclaim, and
+  `encouragedFrom` = 2500 W
+- **WHEN** escalation is evaluated
+- **THEN** surplus reads 2 kW — what stopping the battery would actually free — so the
+  level does not escalate, rather than reading 3 kW and starting a consumer that puts the
+  site straight back into import
+
+#### Scenario: Surplus is never negative
+
+- **GIVEN** a site importing 2 kW with no battery charge to reclaim
+- **WHEN** escalation is evaluated
+- **THEN** surplus reads zero rather than a negative number, so the thresholds compare
+  against a magnitude and a deficit is read from the grid figure that carries it
+
 #### Scenario: A site that has set no threshold does not escalate
 
 - **GIVEN** a fresh site that has never configured `encouragedFrom`
@@ -163,7 +181,14 @@ battery + = charging, PV + = producing, consumers + = consuming).
 > for the shape and thresholds, D10 for what counts as surplus, D11 for the sign
 > convention; docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §8, in
 > `define-engine-contract` design.md §11 (surplus) and in
-> `define-participant-model` design.md §5.11 (signs). Still open, by the owner's note: whether
+> `define-participant-model` design.md §5.11 (signs). **The composition `max(0, grid +
+> reclaimable)` amends D10 as literally worded** and was decided by the owner 2026-08-03
+> (D27, docs/OWNER_DECISIONS.md), after the wave-1 slice reported that a literal sum of two
+> non-negative terms over-states surplus whenever the site imports while the battery charges
+> — the corpus's own battery scenario, grid 0 with battery +3 kW, does not discriminate
+> between the two readings, which is why this needs a new vector rather than a changed one;
+> alternatives preserved in design.md §8 (the literal sum; publishing an export figure and a
+> reclaimable figure separately). Still open, by the owner's note: whether
 > the surplus figure is instantaneous, averaged or forecast, and whether an already-running
 > managed consumer's own draw counts towards it. **`encouragedFrom` has no shipped value and
 > none was invented**: EL-8a gave the graded shape and the 2× relation between the two
@@ -179,7 +204,8 @@ The current level SHALL be computed by the engine from the same one-cycle snapsh
 reasons about, by calling level derivation as a pure function of that snapshot, so that
 the level and the readings it was derived from can never disagree inside one cycle —
 publication of the current level as an Item and of the plan as a TimeSeries being an
-output of that computation and never the path by which the engine obtains a level.
+output of that computation, carried out by the separate publishing component rather than by
+the framework that computes it, and never the path by which the engine obtains a level.
 
 #### Scenario: One reading, one level
 
@@ -201,7 +227,12 @@ output of that computation and never the path by which the engine obtains a leve
 > said which way the dependency ran; decided by the owner 2026-08-02 (D6,
 > docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §15, in design.md §14 and,
 > on the engine's side, in `define-engine-contract` design.md §4 and
-> `define-engine-contract` design.md §18.
+> `define-engine-contract` design.md §18. **Who performs the publication** was settled by
+> the owner 2026-08-03 (D23, docs/OWNER_DECISIONS.md), which sent every Item-writing surface
+> to a separate publishing component so the framework that derives the level writes nothing
+> — the note D6 itself carried, that a published level "becomes an output of the engine",
+> now has a component to be an output of; alternatives preserved in
+> `define-engine-contract` design.md §23.
 
 ### Requirement: Planned schedule vs. current level
 

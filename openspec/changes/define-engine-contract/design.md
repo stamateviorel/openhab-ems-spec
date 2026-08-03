@@ -14,6 +14,14 @@ section below its answer, on purpose: a maintainer who engages later can overtur
 decision by pointing at a preserved alternative, and the cost is rewriting one requirement
 rather than reconstructing the argument.
 
+**A second round carries a FOLLOW-UP block.** Building the wave-1 slice against D1–D22
+surfaced places where those answers were incomplete, contradictory or unimplementable as
+written; the owner answered them on 2026-08-03 as D23–D30 (`docs/OWNER_DECISIONS.md`). Six
+of the eight touch this change, and each appears as a FOLLOW-UP block inside the section
+that already owned the question — §4 (D28), §5 and §21 (D24), §9 (D29), §11 (D27), §19
+(D30) — plus one new section, §23 (D23), for a question no section owned. The preservation
+rule is unchanged: the reading that lost stays written down.
+
 ## 1. Evaluation cadence
 
 Kai suggested pull-based scraping "possibly up to every minute", with push "in a future
@@ -250,6 +258,28 @@ cost is that the level and the snapshot can disagree within one cycle, which is 
 in tests and shows up on partly-cloudy days. If (a) is ever adopted, publication becomes an
 _output_ of the engine rather than its input, and §18's option (b) returns with it.
 
+**FOLLOW-UP — the owner, 2026-08-03 (D28, `docs/OWNER_DECISIONS.md`).** The reporting half
+of the answer above was **not implementable as written**, and the wave-1 slice said so:
+`Item.getLastStateChange()` returns null for _this Item is not persisted_ and for _this Item
+simply has not changed since the engine started_, so an engine that reports from that one
+signal names a condition the user has no way to act on — half the reports are a
+misconfiguration to fix and half are the ordinary first minutes after a restart. **Allow the
+dependency**: the engine references `org.openhab.core.persistence` and reports which of the
+two it found. _An unpersisted protection is reported_ now says so, with a scenario for each
+condition and a third pinning that the two are told apart at the source rather than
+inferred. The cost is stated rather than hidden: this is a genuinely new dependency on a
+bundle that otherwise has three, and reviewers will notice it — a core bundle, so no
+default-library breach, but a `@Reference` a maintainer may want to argue about.
+
+_Not chosen, preserved:_ (a) **keep the weaker report** — the participant is reported
+protection-unknown, its protection runs on a first-observation clock and the report does not
+say why the history is unreadable; no new dependency at all, and the report then fires on
+every restart for every quiet protected device, which is how a diagnostic becomes noise the
+user filters out. (b) **drop the clause entirely** — report nothing, let the protection run
+on the first-observation clock and leave persistence to the site; the smallest surface of
+the three, and it puts back exactly the silent assumption D7's refinement exists to prevent,
+that a guarantee the site's configuration has degraded is still in force.
+
 **Still open:** E17 above — whether an algorithm may retain a snapshot beyond its cycle,
 and therefore whether the snapshot is part of the public API. The pack recommended an
 immutable, explicitly retainable snapshot carrying its own timestamp, with a stated minimum
@@ -312,6 +342,30 @@ dishwasher down anyway and mid-cycle. Its cost is that the taxonomy's own defini
 for the Batch class ("the engine never interrupts it before the program completes") becomes
 conditional, and a half-washed load is a real user harm the corpus chose to weigh. It is the
 option to reach for if the exception list ever grows a third member.
+
+**FOLLOW-UP — the owner, 2026-08-03 (D24, `docs/OWNER_DECISIONS.md`), on the one case where
+this ladder and §21's freeze contradicted each other outright.** D2 puts electrical limits
+above device protections; D14 says the freeze is "all subject to device protections" and, in
+the same breath, "refuse increases". A duty-cycle guarantee that comes due while the current
+clamp is stale wants to switch a fridge **on**, which is an increase — so each requirement
+stated a rule the other denied, and an implementer could satisfy either but not both.
+**The protection is let through.** The reasoning is about what the top rung actually
+outranks: an electrical limit outranks a protection when there is a **measured** overload,
+and a stale reading is not a measurement of anything. It is an unknown, and a fridge refused
+for hours because a CT went stale spoils food. Both requirements now carry the rule and
+point at each other, which is the part that matters — the wave-1 slice already behaved this
+way and said so in `ElectricalLimitFloor`'s JavaDoc, but as an inference beyond D14's flat
+wording rather than as a decision.
+
+_Not chosen, preserved:_ (a) **freeze means freeze** — no increase during a freeze whatever
+comes due, so the safe state is one sentence and one test; its cost is that every duty-cycle
+guarantee on the site lapses for as long as one sensor is bad, which converts a sensor fault
+into a food-safety event and is the failure mode the owner weighed. (b) **a bounded blind
+allowance** — a protection may increase load during a freeze up to a declared watt budget,
+so the engine is never blind by more than a stated amount; it is the most physically honest
+of the three, and it needs a number that no thread comment and no production system in this
+corpus supplies, which is the same objection that keeps `encouragedFrom` unset in
+`define-energy-levels`.
 
 _Not chosen, preserved:_ (a) **protections above electrical limits** — device safety first,
 which is the reading a fridge owner would pick; its cost is that a configuration file can
@@ -498,6 +552,25 @@ load that is not yet running) and E4 becomes the per-class figure in _Consumer p
 figure_, with `ratedPower` **optional** on Simple so live declarations stay valid and the
 absence reported as a gap rather than a rejection.
 
+**FOLLOW-UP — the owner, 2026-08-03 (D29, `docs/OWNER_DECISIONS.md`), confirming an
+interpretation rather than changing behaviour.** D15's own words are "prefer a fresh
+measurement over an estimate"; what shipped is `max(declared, measured)` while running, and
+the wave-1 slice flagged the gap honestly. The two readings agree on the case D15 was
+written for — a device measured at 8 kW that declares 3 kW books 8 kW either way — and
+disagree on its mirror: a wallbox measured at 3 kW that declares 8 kW and is two seconds
+into its ramp books 3 kW under the literal reading and 8 kW under the larger-of-the-two.
+**Book the larger.** Conservative in both directions, and it is the reading that keeps "a
+command is an envelope, not an order" true while still reserving the room the envelope
+claims. Now an owner decision; the requirement's Source line says so.
+
+_Not chosen, preserved:_ (a) **book the measurement literally**, D15 as worded — one
+quantity, no comparison, and nothing to explain to a reader of the requirement; its cost is
+that the floor under-books every ramping load, which is precisely the load most likely to
+overshoot the booking within the same cycle. (b) **always book the declaration**, ignoring
+the measurement while running — the most stable figure, and it never oscillates with a noisy
+meter; it lets a device that ignores its declared envelope stay invisible to the floor,
+which is the failure this requirement's first scenario exists to catch.
+
 _Not chosen, preserved:_ (a) **book estimates only** — one number per participant, no
 dependency on a measurement Item; its cost is that "a command is an envelope, not an order"
 becomes unverifiable and an overshooting device stays invisible. (b) **measure only** —
@@ -575,6 +648,31 @@ normative statements live where the quantity is used — `define-energy-levels` 
 escalation of the current level_ and `define-optimization-objectives` _Selectable
 objective_ — rather than being restated a third time here.
 
+**FOLLOW-UP — the owner, 2026-08-03 (D27, `docs/OWNER_DECISIONS.md`), amending D10 as
+literally worded.** "Grid export plus reclaimable battery charging" reads as a sum of two
+non-negative terms, and that is what the wave-1 slice built. It over-states surplus in one
+case, and the case is common: a site **importing** 1 kW while 3 kW goes into the battery
+reports 3 kW of surplus, where stopping the battery would free only 2 kW before the site is
+importing again. A consumer started on the 3 kW figure pushes the site straight back into
+import, which is the opposite of what a surplus figure is for. **Surplus is
+`max(0, grid + reclaimable)`** — net against import first, clamp at zero so the quantity
+stays a magnitude comparable with a threshold. Two consequences worth stating: the grid
+sign becomes load-bearing in **both** directions, where the literal sum used only the export
+half; and **no fixture in the corpus discriminates between the two readings**, because the
+scenario that exercises the battery term has grid at exactly 0, so this needs a new vector
+rather than a changed one. The normative statements are in `define-energy-levels` _Surplus
+escalation of the current level_ and `define-optimization-objectives` _Selectable
+objective_, both of which now carry an importing-while-charging scenario.
+
+_Not chosen, preserved:_ (a) **the literal sum**, D10 exactly as written — one addition, no
+clamp, and it never hides genuine surplus behind a momentary import spike (a passing cloud
+that dips the meter negative does not zero the figure); its cost is that it over-states
+surplus in exactly the condition where the site can least afford another load, and it makes
+the grid reading's import half dead weight. (b) **publish both figures separately** — an
+export surplus and a reclaimable figure, leaving the arithmetic to whoever consumes the
+pair; the most honest presentation, and it makes every threshold in the corpus ambiguous as
+to which of the two it is compared against, which is a worse defect than the one it fixes.
+
 _Not chosen, preserved:_ (a) **grid export only**, which is what the prototype used —
 unambiguous, one signed reading, nothing to explain; a 3 kW battery charge then hides all
 surplus and every surplus-driven load oscillates unless hysteresis is hand-tuned. (b)
@@ -642,10 +740,12 @@ Its cost is that the moment of stopping becomes unobservable per device: an oper
 "what was in flight when I hit the switch, and did any of it land?" gets no answer from the
 decision stream. A maintainer who prefers it deletes one enum member and one scenario.
 
-Consequence recorded here so it is not read as a contradiction: _Shadow mode_ now says
+Consequence recorded here so it is not read as a contradiction: _Shadow mode_ says
 "without writing to any **participant** Item" rather than "any item", because the engine's
-own status Item is not a control write. A maintainer who wants shadow to write nothing at
-all, status included, is overturning that one word.
+own status Item was not a control write. **That word stopped doing any work on 2026-08-03**:
+D23 (§23) moved the status Item out of the framework entirely, so shadow now writes nothing
+at all and the exemption the word bought is unused. It stays because a maintainer who
+overturns D23 needs it back.
 
 ## 13. Decisions naming an unknown participant
 
@@ -698,6 +798,12 @@ comparison becomes the same comparison any two series get, which is the nicest e
 story; it puts core in charge of persistence policy for a diagnostic. (4) **Items the
 engine writes per decision** — the most visible option, and it contradicts shadow mode
 unless shadow output is explicitly exempted, an exemption that is itself a decision.
+
+**FOLLOW-UP:** option (2) survives intact and is unchanged — but **which component emits
+it** was settled on 2026-08-03 by D23, in §23. Events stay with the framework; the REST view
+and the status Item that §12 pairs them with move to a separate publishing component. The
+choice of surface and the choice of owner are two different questions, and only the second
+was reopened.
 
 ## 15. Algorithm identity and ownership
 
@@ -758,6 +864,21 @@ where gating lives in the asset handler below every controller — "the last lin
 item is written". Structural consequence carried into `define-participant-model`: `never`
 lifts **off** the Simple profile onto the consumer, so all four classes can be marked
 hands-off (§5.7 there).
+
+**FOLLOW-UP — the owner, 2026-08-03 (D25, `docs/OWNER_DECISIONS.md`).** D13 closes the list
+against a contributor **inventing** a prohibition and says nothing about a contributor with
+a **genuine** one — a binding that really does know its compressor's duty cycle. The
+wave-1 slice took the strict reading and capped every contributed decision at the level-gate
+rung, which is unforgeable and also makes a duty-cycle-aware binding unshippable as a
+contribution. The follow-up is more permissive and more work: a contributed decision reaches
+the device-protection rung **when the engine can corroborate it** — same participant, same
+snapshot, a declared protection that is due, and an action that agrees with what that
+protection requires. The rule is stated once, in `define-extension-points`
+_A contributed protection claim is corroborated or demoted_, and its alternatives live in
+`define-extension-points` design.md §6. Note what it does **not** open: the electrical-limit
+rung, which has no declaration to corroborate a claim against, so the peak-shaver half of
+the question the slice raised stays closed and stays open — recorded there, not silently
+decided here.
 
 _Not chosen, preserved:_ (a) **everything is an algorithm input**, the list staying as it
 was — maximum freedom for a contributed planner, and the reading a scripting-first design
@@ -869,10 +990,32 @@ what a user expects "equal priority" to mean; it makes overload resolution
 unreproducible from a snapshot and kills fixture conformance, and it belongs to an
 algorithm that owns a priority rather than to the ordering primitive.
 
-**Still open, and not settled by D4:** the tie-break between two _decisions_ of equal
-priority addressing one device. D4 fixes the tie-break for ordering _participants_
-(participant id ascending); nothing states what happens when two algorithms of equal
-priority contradict each other on one device.
+**FOLLOW-UP — the owner, 2026-08-03 (D30, `docs/OWNER_DECISIONS.md`), closing what D4 could
+not reach.** D4's tie-break is "participant id ascending", which is exactly right for
+_serving_ order and cannot break this tie at all: conflict resolution groups decisions **by
+participant**, so inside a group the participant id always ties. The wave-1 slice fell
+through to a comparator of its own and reported it as the code's choice rather than the
+corpus's. **Algorithm id ascending, then the rendered action.** It keeps the three
+properties D4 protects — deterministic, stateless, reproducible from the snapshot alone —
+and needs no state the engine does not already hold. _Deterministic conflict resolution_ now
+states it, with a scenario for each of the two steps.
+
+**The accident in it is recorded, not designed.** Comparing action text means `"OFF" < "ON"`
+lexicographically, so on a dead heat between two decisions carrying the same priority _and_
+the same algorithm id, the safer action wins by alphabetical coincidence. The owner accepted
+that rather than pretending it was a safety rule: an implementer who reads the comparator
+and concludes the corpus defines a safety ordering over actions would be wrong, and the next
+action vocabulary to arrive (a mode name, a setpoint rendered as a number) would show it.
+
+_Not chosen, preserved:_ (a) **make the safety bias explicit** — define an ordering over
+actions in which the more restrictive one wins a dead heat, so the outcome above is a rule
+instead of a coincidence; it is the more honest engine, and it needs a safety ordering over
+an open, extensible action vocabulary, which is a second thing to specify and to keep
+correct as the vocabulary grows. (b) **refuse and report** — publish both decisions
+unresolved, write neither, and let the site fix the collision; the most conservative option
+and the one that surfaces a genuine configuration problem instead of silently picking; its
+cost is a device left unsteered because two algorithms happened to agree on its priority
+number, which is a common accident rather than a rare one given D4's default of 100.
 
 ## 20. Per-phase enforcement can see less than the scenario implies (E2, E3)
 
@@ -949,6 +1092,15 @@ exists for. (c) **a staleness mechanism of the EMS's own** (an ageing service, a
 — independent of how the site configures items; it duplicates `expire` and gives the
 framework a second, competing notion of "this reading is old".
 
+**FOLLOW-UP — the owner, 2026-08-03 (D24, `docs/OWNER_DECISIONS.md`), on what "all of it
+subject to device protections" means when a protection wants to _increase_ load.** D14 says
+that and "refuse every increase" in the same sentence, and the two collide the moment a
+duty-cycle guarantee comes due mid-freeze. **The protection is honoured, increase and all.**
+The full argument, and the two readings that lost — freeze-means-freeze, and a bounded blind
+allowance — are recorded once in §5, where the ladder that D14 defers to lives; both
+requirements now state the rule and cross-reference each other rather than each stating one
+the other denies.
+
 ## 22. Provenance recap
 
 Thread-sourced: central evaluation, conflict resolution, limits (budget/phase), shadow
@@ -979,3 +1131,74 @@ see before the detail:
 - **D4 (lower number wins conflicts) contradicts the reference binding's own live
   `Controller` contract.** It is a departure from running production behaviour, and the
   binding has to be reconciled — §19.
+
+Owner-sourced, second round (2026-08-03, every FOLLOW-UP block above and §23): the same
+provenance class, taken after the wave-1 slice was built against the first round and
+reported eight places where it was incomplete, contradictory or unimplementable. Six touch
+this change. **D24** (§5, §21) and **D30** (§19) and **D29** (§9) confirm what the slice
+already did and convert three code readings into decisions; **D27** (§11) amends D10 as
+literally worded; **D28** (§4) buys a more precise report with a new dependency; **D23**
+(§23) splits the observability surfaces across two components and is the only one of the
+eight that changes the shape of the artefact rather than its behaviour. One caution belongs
+here beside the two above:
+
+- **D23 deliberately widens a safety check.** The wave-1 slice proves its no-write invariant
+  with a structural test whose forbidden-token list is wider than the invariant, and events
+  were blocked by the list rather than by the rule. The list is widened knowingly and the
+  rationale is recorded next to it; **the invariant itself — this framework never commands
+  or updates an Item — does not move and stays provable.** A reviewer should check that
+  claim rather than take it, which is why §23 states it in those terms.
+
+## 23. Where A8's three observability surfaces live
+
+**Opened by the wave-1 slice (`org.openhab.core.energy` STAGE1_REPORT.md §3.1), which
+found that one accepted requirement fails three different ways inside a framework bundle
+that writes nothing — and that the earlier account had conflated the three.** D16·A8 asks
+for four things: an outcome and a reason on every decision (shipped), the current cycle
+readable (shipped), decisions **published as deduplicated events**, and **one engine status
+Item**. D6 adds a fourth surface in passing, a published current level and planned
+`TimeSeries`. Three of those need a capability the framework does not have, and for three
+different reasons:
+
+| Surface | What actually blocks it |
+|---|---|
+| Status Item, current-level Item, planned `TimeSeries` | A genuine conflict with the no-write invariant. Only a second component can do it. |
+| Decision events | Nothing in the invariant. Posting an `Event` is not an Item write; what blocked it is the slice's **own structural test**, whose forbidden-token list is deliberately wider than the rule it stands for. |
+| REST view | A dependency outside the default-library set (JAX-RS), which is a maintainer conversation rather than a safety question. |
+
+**ANSWERED — the owner, 2026-08-03 (D23, `docs/OWNER_DECISIONS.md`).** Three answers, one
+per blocker. **Events ship in the framework**, and the structural test's token list is
+widened **on purpose**, with the reason written beside it: the list was a proxy that
+over-reached the invariant, and this is the one place where "widen the safety check" is the
+correct answer rather than the tempting one. **The status Item and the REST view move to a
+separate publishing component** (`org.openhab.core.energy.publish` in the reference), which
+consumes the events the framework already emits and is also where D6's published level and
+plan belong. The framework therefore stays **provably incapable of touching a device**, and
+the proof is the same grep it always was, minus one token whose removal is argued rather
+than assumed.
+
+Three consequences worth stating, because each is visible to somebody:
+
+- **A site running the framework alone still reports.** Decisions are events; a rule or a UI
+  can subscribe. What is missing without the publishing component is the status Item and the
+  REST view — a smaller loss than "no observability at all", and the requirement now carries
+  a scenario pinning it.
+- **Shadow writes nothing at all.** The word "participant" in _Shadow mode_ was buying an
+  exemption for the framework's own status Item; that Item is gone from the framework, so
+  the exemption is unused (§12).
+- **The split is where the corpus already puts this kind of thing.** Core publishes events
+  and leaves persistence, presentation and REST to whoever wants them — the same shape as
+  `RuleStatusInfoEvent` plus a REST resource elsewhere in core.
+
+_Not chosen, preserved:_ (a) **relax A8 for the framework** — drop the events, the status
+Item and the REST view, and let "observability" mean the current cycle being readable in
+process plus the configuration-status report; no second bundle, no test edit, and the
+smallest possible artefact. Its cost is that _Shadow mode_'s own _Side-by-side validation_
+scenario stops being testable — a week of decisions has to be comparable against a week of
+the user's old automation, and a log line repeated every minute is not that — so the corpus
+would be carrying a scenario nothing can satisfy. (b) **everything in the companion
+component**, events included — one rule, uniformly applied ("the framework emits nothing at
+all"), and the structural test keeps its token list untouched, which is the tidiest answer
+for anyone whose priority is that the list never moves. Its cost is that a framework which
+cannot report its own decisions is unobservable until a second bundle is installed, and the
+event bus is precisely the surface core uses everywhere else to say what it did.

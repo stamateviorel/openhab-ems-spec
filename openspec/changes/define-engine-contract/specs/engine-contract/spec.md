@@ -77,7 +77,9 @@ cycle's control decisions.
 When multiple decisions target the same device in one cycle — and several algorithms may
 be active at once — the engine SHALL resolve the conflict deterministically in favour of
 the better priority, which is the lower number, independent of registration or iteration
-order.
+order, breaking an equal-priority tie on the contributing algorithm's id ascending and then
+on the rendered action, so that the outcome is reproducible from the cycle's snapshot alone
+and never depends on state carried between cycles.
 
 #### Scenario: Better priority wins
 
@@ -95,13 +97,38 @@ order.
 - **THEN** neither is disabled by the other's presence and the conflict is resolved by
   the same lower-number-wins rule that orders consumers
 
+#### Scenario: Equal priority, two algorithms
+
+- **GIVEN** two algorithms of the same priority proposing different values for one
+  participant
+- **WHEN** the cycle is dispatched
+- **THEN** the one whose algorithm id sorts first is applied, the other is published as
+  superseded, and restarting with the two registered in the opposite order changes nothing
+
+#### Scenario: The last tie is broken by the action itself
+
+- **GIVEN** two decisions for one participant carrying the same priority and the same
+  algorithm id, one rendering `OFF` and one rendering `ON`
+- **WHEN** the cycle is dispatched
+- **THEN** `OFF` is applied, because the rendered action is the final comparison — the
+  safer outcome here being an alphabetical accident that the corpus records rather than a
+  safety ordering it defines
+
 > Source: Kai's need #7 — "load selection must prioritize and weigh the different loads
 > against each other" ([1481931209](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931209));
 > deterministic ordering proven in the reference; decided by the owner 2026-08-02 (D4,
 > docs/OWNER_DECISIONS.md) — alternatives preserved in
 > `define-participant-model` design.md §5.2 and in design.md §19, which also record the
 > known follow-on: the reference binding's `Controller` contract says "lower runs first,
-> higher wins on conflict" and has to be reconciled with this.
+> higher wins on conflict" and has to be reconciled with this. **The equal-priority
+> tie-break is the owner's, 2026-08-03 (D30, docs/OWNER_DECISIONS.md)**: D4's "participant
+> id ascending" orders participants and cannot break this tie at all, because conflict
+> resolution groups by participant, so inside a group the id always ties — a gap the wave-1
+> slice filled with a comparator of its own and reported as the code's choice. Algorithm id
+> then action keeps the three properties D4 protects (deterministic, stateless, reproducible
+> from the snapshot); the `"OFF" < "ON"` consequence is noted and accepted, not designed —
+> alternatives preserved in design.md §19 (make the safety bias explicit; refuse and report
+> the tie).
 
 ### Requirement: Constraint precedence ladder
 
@@ -111,7 +138,11 @@ user-declared level gates, then optimization — so that no configuration and no
 algorithm can reorder them, the ladder itself stating its only two exceptions: a Batch
 programme already running and a consumer its owner marked hands-off, both of which the
 electrical-limit rung books as load the others are trimmed against rather than sheds, the
-floor refusing with a reason and reporting where the remainder still does not fit.
+floor refusing with a reason and reporting where the remainder still does not fit — and the
+ladder stating what its top rung's authority rests on, so that the degraded-input freeze
+does not silently become a third exception: an electrical limit outranks a device
+protection on the strength of a **measured** overload, so a protection that comes due while
+that measurement is stale is honoured even where honouring it increases load.
 
 #### Scenario: The fuse outranks the freezer
 
@@ -144,6 +175,14 @@ floor refusing with a reason and reporting where the remainder still does not fi
   reporting that the remainder does not fit — the exception being stated in the ladder
   rather than discovered by an implementer reading two requirements against each other
 
+#### Scenario: A stale limit reading is not an overload
+
+- **GIVEN** a cooling device past its maximum OFF time while the reading the engine counts
+  as its electrical safety input is stale
+- **WHEN** the engine resolves the two rungs against each other
+- **THEN** the protection is honoured and the device is switched on, the top rung outranking
+  it on a measured overload and a missing measurement not being one
+
 > Source: proposed in design.md §5 as the ladder the reference implements and never
 > discussed in the thread; production precedent — `constrainOnOff`'s javadoc states it
 > outright, "the fuse outranks the freezer, deliberately", and `applyBreakerGate`
@@ -158,7 +197,13 @@ floor refusing with a reason and reporting where the remainder still does not fi
 > the defect this requirement exists to prevent — the reading in which **an electrical limit
 > may interrupt a running Batch and may shed a hands-off load**, keeping the ladder
 > absolute, is preserved in design.md §5 and §8 and in
-> `define-participant-model` design.md §5.7.
+> `define-participant-model` design.md §5.7. The final clause — a protection that comes due
+> during a degraded-input freeze may increase load — was decided by the owner 2026-08-03
+> (D24, docs/OWNER_DECISIONS.md) after the wave-1 slice reported this rung and D14's freeze
+> as a live contradiction, each stating a rule the other denied; _Safe state on a degraded
+> safety input_ states the same rule from the freeze's side, so the two now agree in the
+> corpus rather than in an implementer's head — alternatives preserved in design.md §21
+> (freeze means freeze; a bounded blind allowance).
 
 ### Requirement: Electrical limits outrank optimization
 
@@ -278,14 +323,22 @@ carried from one cycle to the next.
 > states "the planner must plan on measured power, not commanded values", and stability
 > comes from smoothing the input rather than from a reserve; decided by the owner
 > 2026-08-02 (D15, docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §9.
+> **"The larger of the two" is the owner's own reading of D15's "prefer a fresh
+> measurement", confirmed 2026-08-03 (D29, docs/OWNER_DECISIONS.md)** rather than the
+> implementer's: the wave-1 slice shipped `max(declared, measured)` and reported it as an
+> interpretation, since preferring the measurement literally books the low reading a ramping
+> wallbox happens to be passing through. It is conservative in both directions and is now a
+> decision — alternatives preserved in design.md §9 (book the measurement literally; always
+> book the declaration).
 
 ### Requirement: Safe state on a degraded safety input
 
 When a reading the engine counts as a safety input is stale, the engine SHALL freeze and
-floor — refusing every increase, flooring Controllable loads at their declared minimum,
-dropping a ModeControllable load to its most restricted mode and switching Simple loads
-off — subject to device protections, and never touching a Batch programme that is already
-running or a consumer its owner marked hands-off.
+floor — refusing every increase it is free to refuse, flooring Controllable loads at their
+declared minimum, dropping a ModeControllable load to its most restricted mode and
+switching Simple loads off — subject to device protections, a protection that comes due
+during the freeze being honoured even where honouring it increases load, and never touching
+a Batch programme that is already running or a consumer its owner marked hands-off.
 
 #### Scenario: The measurement bridge goes silent
 
@@ -300,6 +353,14 @@ running or a consumer its owner marked hands-off.
 - **WHEN** the engine applies the safe state
 - **THEN** the load is held until the protection permits, the safe state refusing
   increases immediately but shedding only when the ladder allows
+
+#### Scenario: A protection that comes due during the freeze starts a load
+
+- **GIVEN** a fridge that reaches its maximum OFF time an hour into a freeze caused by a
+  current clamp that stopped updating
+- **WHEN** the engine applies the safe state
+- **THEN** the fridge is switched on, the freeze's refusal of increases covering the
+  increases the engine chooses and not the one a device protection obliges it to make
 
 #### Scenario: A running batch is not interrupted
 
@@ -328,7 +389,15 @@ running or a consumer its owner marked hands-off.
 > an operational meaning (E12, docs/PROTOTYPE_FEEDBACK.md); production precedent — the
 > reference's building caps every charger at its 6 A minimum when the measurement bridge
 > looks dead, rather than pausing the site; decided by the owner 2026-08-02 (D14,
-> docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §21. The hands-off
+> docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §21. **What "subject to
+> device protections" means for a protection that wants to increase load** was decided
+> separately by the owner 2026-08-03 (D24, docs/OWNER_DECISIONS.md), after the wave-1 slice
+> reported D14 and the ladder's D2 as contradicting each other on exactly that case: the
+> protection is honoured, because a stale reading is an unknown rather than a known
+> overload, and a fridge refused for hours because a clamp went stale spoils food. The
+> ladder states the same rule from the precedence side (_Constraint precedence ladder_), so
+> neither requirement now denies what the other asserts — alternatives preserved in
+> design.md §21. The hands-off
 > exemption is a reconciliation, not part of D14: D13 lifted `never` onto every consumer
 > class after this requirement was written, and a safe state that switches a hands-off load
 > off would make the flag advisory in exactly the situation a user relies on it — the
@@ -375,13 +444,19 @@ protection-unknown until one is.
 > the source, which decides whether a compressor's cooldown survives a restart; core
 > precedent — `Item.getLastStateChange()` exists and `PersistenceManagerImpl.restoreItemStateOnStartup`
 > restores it explicitly; decided by the owner 2026-08-02 (D7 and its refinement,
-> docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §4.
+> docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §4. The clock and the
+> engine's lack of timers are unchanged by the 2026-08-03 follow-up; what changed is only
+> how the resulting condition is **reported**, since a null last state change has two
+> causes — see _An unpersisted protection is reported_ and D28.
 
 ### Requirement: An unpersisted protection is reported
 
-The engine SHALL report every participant that carries a device protection whose Item
-state is not persisted across a restart, so that a guarantee degraded by the site's
-persistence configuration is visible rather than assumed.
+The engine SHALL report every participant that carries a device protection whose elapsed
+time it cannot read, naming which of the two conditions it found — that no persistence
+service is keeping that Item's history, a misconfiguration the site can fix, or that the
+history is kept and simply holds no state change yet, which needs nothing done — so that a
+guarantee degraded by the site's configuration is both visible and distinguishable from a
+site that has merely just restarted.
 
 #### Scenario: Protections declared, persistence absent
 
@@ -389,7 +464,24 @@ persistence configuration is visible rather than assumed.
   restores on startup
 - **WHEN** the engine evaluates it
 - **THEN** it reports that participant as one whose protection will not survive a restart,
-  and continues to steer it
+  says that the history is not being kept, and continues to steer it
+
+#### Scenario: Just restarted is not misconfigured
+
+- **GIVEN** a protected participant whose Item is persisted with restore-on-startup and
+  which has not changed state since the engine started
+- **WHEN** the engine evaluates it
+- **THEN** the report says no change has been observed yet and raises no persistence
+  problem, so the ordinary minutes after a restart do not look like a fault
+
+#### Scenario: The two conditions are told apart at the source
+
+- **GIVEN** two protected participants, one whose Item is persisted and quiet and one whose
+  Item nothing persists, both of which report no last state change
+- **WHEN** the engine builds its report
+- **THEN** each carries the condition that actually applies to it, the engine asking the
+  persistence configuration rather than inferring from an absent timestamp that cannot tell
+  the two apart
 
 #### Scenario: The report clears
 
@@ -403,7 +495,14 @@ persistence configuration is visible rather than assumed.
 > the contingency has to be visible; a departure from the reference binding, whose
 > `constrainOnOff` leaves the desired state untouched when the elapsed time is unknown;
 > decided by the owner 2026-08-02 (D7 refinement, docs/OWNER_DECISIONS.md) — alternatives
-> preserved in design.md §4.
+> preserved in design.md §4. **The precision the report carries** was decided by the owner
+> 2026-08-03 (D28, docs/OWNER_DECISIONS.md), after the wave-1 slice reported the clause
+> unimplementable as written: `Item.getLastStateChange()` returns null both for _not
+> persisted_ and for _never changed since startup_, so a report built on it alone names a
+> condition the user cannot act on. Telling them apart means consulting the persistence
+> configuration, which the owner allowed as a deliberate new dependency on a bundle that
+> otherwise has three — alternatives preserved in design.md §4 (keep the weaker
+> protection-unknown report; drop the clause).
 
 ### Requirement: Shadow mode
 
@@ -577,7 +676,9 @@ engine-owned for every algorithm: evaluation, the electrical-limit floor, shadow
 master stop, actuation, and the user's prohibitions, namely the hands-off flag, the
 user-declared level gate, the readiness interlock, device protections and which readings
 count as safety inputs — the engine's own level-derived steering being the one member an
-algorithm may override.
+algorithm may override, and a contributed decision reaching the device-protection rung only
+by corroboration against the participant's own declaration, never by labelling itself
+(`extension-surface` _A contributed protection claim is corroborated or demoted_).
 
 #### Scenario: Script algorithm under the same guardrails
 
@@ -609,6 +710,14 @@ algorithm may override.
 - **THEN** the decision stands, the engine's own steering being an input rather than a
   prohibition
 
+#### Scenario: A rung is earned, not asserted
+
+- **GIVEN** a contributed algorithm that labels its own decision a device protection for a
+  participant whose declaration carries no protection that is due
+- **WHEN** the cycle is dispatched
+- **THEN** the decision is judged at the level-gate rung instead, so the enumeration stays
+  closed against a claim that only names itself
+
 > Source: Kai — the EMS "could possibly then even be as simple as a rule template, so
 > that people could e.g. implement easily alternative energy management algorithms and
 > also do this through scripts"
@@ -618,16 +727,22 @@ algorithm may override.
 > complete (see docs/PROTOTYPE_FEEDBACK.md); its membership, and the line between a
 > prohibition and a preference, decided by the owner 2026-08-02 (D13,
 > docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §16. This is the security
-> boundary of the extension surface.
+> boundary of the extension surface. The corroboration clause is the owner's follow-up
+> 2026-08-03 (D25, docs/OWNER_DECISIONS.md), after the wave-1 slice reported that D13 was
+> silent on a **genuine** claim and that the strict reading it therefore shipped makes a
+> duty-cycle-aware binding unshippable as a contribution; the rule itself is stated once, in
+> `extension-surface` _A contributed protection claim is corroborated or demoted_ —
+> alternatives preserved in `define-extension-points` design.md §6.
 
 ### Requirement: Decision outcomes are named and published
 
 Every decision the engine produces SHALL carry one outcome from a fixed vocabulary —
 applied, shadowed, stopped, superseded, deferred, suppressed, withheld, rejected —
-together with a free-text reason, published as events that are deduplicated so an
-unchanged decision is not re-emitted, readable for the current cycle over REST, and
-summarised on one engine-published status Item, with no Item written for an individual
-decision.
+together with a free-text reason, published by the framework itself as events that are
+deduplicated so an unchanged decision is not re-emitted, while the two surfaces that need
+more than an event — one status Item summarising the cycle, and the current cycle readable
+over REST — are provided by a separate publishing component that consumes those events, so
+that the framework writes no Item at all, for an individual decision or for anything else.
 
 #### Scenario: A losing decision is named, not silent
 
@@ -651,12 +766,27 @@ decision.
   when it changes, so the comparison is made against events rather than against a log line
   repeated every cycle
 
-#### Scenario: Shadow still writes no device
+#### Scenario: Shadow writes nothing at all
 
 - **GIVEN** an engine in shadow mode publishing outcomes
 - **WHEN** a decision is produced for a participant
-- **THEN** no participant Item is written, the outcome travelling as an event and the
-  engine's own status Item being the only Item it maintains
+- **THEN** no Item is written — not the participant's and not a status Item of the
+  framework's own — the outcome travelling as an event, so "shadow writes nothing" needs no
+  exemption to stay true
+
+#### Scenario: The framework alone still reports
+
+- **GIVEN** a site running the framework with no publishing component installed
+- **WHEN** a cycle produces decisions
+- **THEN** each is published as a deduplicated event that a rule or a UI can subscribe to,
+  and the absence of the status Item and of the REST view is the only thing missing
+
+#### Scenario: The status Item belongs to the publishing component
+
+- **GIVEN** the publishing component installed beside the framework
+- **WHEN** it consumes the cycle's decision events
+- **THEN** it maintains the summarising status Item and serves the current cycle over REST,
+  and the framework itself has still written no Item and registered no REST resource
 
 > Source: surfaced by the wave-1 prototype (N6, E15, E18, docs/PROTOTYPE_FEEDBACK.md) —
 > _Shadow mode_'s own "Side-by-side validation" scenario asks a user to compare decisions
@@ -667,6 +797,13 @@ decision.
 > production precedent — `SetpointRequest.reason` is already a short human phrase used for
 > both the shadow line and the last-action channel; decided by the owner 2026-08-02 (D16 /
 > pack A8, docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §12, §13 and §14.
+> **Where each surface lives** was decided separately by the owner 2026-08-03 (D23,
+> docs/OWNER_DECISIONS.md), after the wave-1 slice reported that this one requirement fails
+> three different ways inside a framework bundle that writes nothing: an event is not an
+> Item write and stays here, a status Item genuinely is one and moves out, and a REST
+> resource needs a dependency outside the default-library set and moves out with it —
+> alternatives preserved in design.md §23 (relax the requirement for the framework;
+> everything including events in the companion component).
 
 ### Requirement: Participant conditions are reported on one surface
 
@@ -674,8 +811,9 @@ Every participant-level condition these requirements name — a declaration gap,
 participant whose protection elapsed time is unknown, an unacknowledged command, a
 declaration naming an Item that does not resolve, and a protection whose state is not
 persisted — SHALL be reported on one surface as a configuration-status message keyed on the
-Item carrying the declaration and summarised on the engine's status Item, clearing on its
-own when the condition ends and never requiring the participant to be redeclared.
+Item carrying the declaration, and summarised on the status Item that the publishing
+component of _Decision outcomes are named and published_ maintains, clearing on its own
+when the condition ends and never requiring the participant to be redeclared.
 
 #### Scenario: A declaration gap appears and then clears
 
@@ -713,7 +851,11 @@ own when the condition ends and never requiring the participant to be redeclared
 > uses, so these conditions join it rather than inventing a second one; decided by the owner
 > 2026-08-02 (D16 / pack A8, which states that "a lost or degraded contributor, a stale
 > safety input, and a protected participant whose state is not persisted all report here
-> too", docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §12 and §13. What A8
+> too", docs/OWNER_DECISIONS.md) — alternatives preserved in design.md §12 and §13. The
+> configuration-status half is the framework's own and is a **pull**, so it needs no write;
+> the summary half moved to the publishing component with the status Item when the owner
+> split the observability surfaces 2026-08-03 (D23, docs/OWNER_DECISIONS.md) —
+> alternatives preserved in design.md §23. What A8
 > defined and this makes definite are different objects: the outcome vocabulary of _Decision
 > outcomes are named and published_ describes what became of a **decision**, while these
 > conditions belong to a **registered, steered participant** whose declaration is

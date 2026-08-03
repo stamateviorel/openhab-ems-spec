@@ -136,6 +136,13 @@ choice: renaming an Item renames the participant. Engine-held state keyed on the
 therefore does not follow a rename, and a site that needs rename stability declares an
 explicit id.
 
+**FOLLOW-UP — the owner, 2026-08-03 (D26, `docs/OWNER_DECISIONS.md`).** One case of "a
+duplicate is a further statement" needed an exception, and §5.18 carries it: when the
+**higher-ranked** statement is malformed, the chain does not fall through to the next one.
+The participant is blocked rather than resolved, so precedence never turns a typo into a
+change of owner. Everything else about D5's chain is unchanged, including that a duplicate
+is never an error.
+
 ### 5.2 Priority — direction, default and tie-break (A4 / E1 / B7)
 
 _Priority_ now requires all three to be stated; the values stay open. Is the better
@@ -589,6 +596,13 @@ declarations and forces a fabricated number for SG-ready modes. (c) **a single p
 instead of a per-class rule** — one sentence in the spec rather than four; it cannot
 express that a Batch curve and a Controllable maximum are different kinds of number.
 
+**FOLLOW-UP — D29** (owner decision, 2026-08-03; `docs/OWNER_DECISIONS.md`). How the
+per-class figure above combines with a live measurement while the participant is running —
+D15's "prefer a fresh measurement", which shipped as the larger of the two — is confirmed as
+the owner's own reading rather than the implementer's. The argument and both rejected
+readings are recorded once, in `define-engine-contract` design.md §9; nothing in this
+section changes.
+
 ### 5.14 May a consumer declare its own measurement? (N1)
 
 Nothing states whether a consumer may name an Item carrying its live power, nor whether an
@@ -752,3 +766,34 @@ fallback; it lets the engine switch a Batch programme mid-run, which the taxonom
 (c) **reject the bad key only, keep the rest** — the middle road, and the one a
 configuration parser usually takes; it makes the resulting participant's behaviour depend
 on which key failed.
+
+**FOLLOW-UP — the owner, 2026-08-03 (D26, `docs/OWNER_DECISIONS.md`): what the skip does to
+the precedence chain.** The wave-1 slice reported an interaction neither D5 nor D16·A8
+contemplated. D5 says a duplicate declaration is "a further statement about the same
+participant, never an error", with explicit metadata outranking a contributed declaration;
+A8 says a malformed declaration "skips the WHOLE participant". Put together: if the user's
+own metadata for a device is malformed it is withdrawn, and the add-on's contributed
+declaration — until that moment outranked and inert — silently becomes effective. The device
+stays managed, on somebody else's terms, from one keystroke. The configuration-status error
+makes the typo visible; it does not make the transfer visible, because nothing about the
+device's behaviour says which declaration is in force.
+
+**A malformed declaration blocks the participant entirely.** No lower-ranked statement about
+that identity takes its place; the device is unmanaged until the declaration is fixed, and
+the block lifts by itself when it is. The principle is that **intent to control survives a
+wrong text**: a user who wrote a declaration meant to be the one in force, and the failure
+mode of honouring that is "nothing happens", which is diagnosable. The failure mode of the
+alternative is "something else happens", which is not — the device keeps moving and the
+configuration the user is reading is not the one steering it.
+
+_Not chosen, preserved:_ (a) **let the contributed declaration take over** — what the slice
+does today, and the reading that keeps a device managed through a configuration error, which
+is a real virtue on a site whose add-on declaration is perfectly good; its cost is the
+silent transfer of control described above, and it is worst exactly where it matters most,
+on a device whose owner cared enough to override the add-on in the first place. (b) **take
+over after acknowledgement** — the contributed declaration becomes effective once the user
+acknowledges the error on the configuration-status surface; it serves both cases honestly
+and is the option to reach for if unmanaged devices turn out to be the bigger complaint; its
+cost is a modal decision on the safety path and an acknowledgement mechanism the corpus does
+not have and would have to specify — including what an unacknowledged error means across a
+restart.

@@ -59,3 +59,8 @@
 - [ ] 3.4 Prove the security boundary (§6): a contributed algorithm cannot start a `never`
       consumer or lift a user-declared level gate, and can lift the engine's own
       level-derived steering
+- [ ] 3.5 Prove the corroboration rule (§6.1, D25): a contributed decision reaches the
+      device-protection rung when a declared protection is due and its action agrees with
+      what that protection requires, and is demoted and reported in each of the three
+      failing cases — no declared protection, none due, and one due but pointing the other
+      way. Protection-unknown is one of the failures, not a pass

@@ -47,6 +47,20 @@ system.
 > the master stop halts **everything** because the owner **overrode** the dispatch-only
 > recommendation put to them (§6), and the priority direction **contradicts the reference
 > binding's own live contract**, which now has to be reconciled (§19).
+>
+> **Follow-up round (2026-08-03).** Building the wave-1 slice against those answers found
+> eight places where they were incomplete, contradictory or unimplementable; the owner
+> answered them as D23–D30, and six touch this change. Three confirm what the slice already
+> did, and are recorded so the corpus stops presenting them as the code's reading of a
+> decision: a device protection may increase load during a degraded-input freeze (D24, which
+> resolves a **flat contradiction** between the ladder and the safe state), the limit floor
+> books the larger of the declared and measured figures (D29), and equal-priority decisions
+> on one device tie-break on algorithm id and then the rendered action (D30). Three change
+> something: surplus becomes `max(0, grid + reclaimable)`, **amending D10 as literally
+> worded** (D27); the unpersisted-protection report gains a dependency on
+> `org.openhab.core.persistence` so it can tell a misconfiguration from a fresh restart
+> (D28); and the observability surfaces split, events staying in the framework while the
+> status Item and the REST view move to a **separate publishing component** (D23, §23).
 
 ## What changes
 
@@ -62,8 +76,15 @@ system.
 - The extension/contribution mechanics (own change: `define-extension-points`).
 - Cost-optimal scheduling under fee models — that is planning (`define-grid-constraints`);
   this change is the runtime enforcement floor beneath it.
+- **Writing anything.** Under D23 the framework publishes events and computes a level;
+  every Item write and the REST view belong to the companion publishing component, which
+  consumes those events. That is what keeps "this framework cannot touch a device"
+  checkable by inspection rather than by trust.
 
 ## Impact
 
 - Core interfaces + runtime behaviour contract; everything else in the corpus plugs into
   this spine.
+- A second, thin component beside it (D23), which owns every Item write and the REST view —
+  the engine status Item, and the current level and planned TimeSeries of
+  `define-energy-levels`.

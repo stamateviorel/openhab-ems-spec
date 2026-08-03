@@ -143,7 +143,9 @@ When two contributors describe the same participant — identified by the Item n
 declared on, or by an explicit `id` overriding it — the collision SHALL resolve on one
 precedence chain, explicit `energy:` metadata over contributed over discovered, with ties
 between contributed declarations broken by `service.ranking`, independent of the order in
-which the contributors registered.
+which the contributors registered — a statement the framework cannot read blocking the
+participant outright rather than yielding its rank to the next one down
+(`energy-participants` _Malformed declarations are reported, never partially accepted_).
 
 #### Scenario: An add-on and a script declare the same participant
 
@@ -165,6 +167,13 @@ which the contributors registered.
 - **THEN** the site keeps exactly one participant, the metadata wins wherever the two
   disagree, and no error is raised
 
+#### Scenario: The chain does not promote past a broken link
+
+- **GIVEN** the same pair, where the user's metadata is malformed
+- **WHEN** the two are resolved against each other
+- **THEN** the participant is blocked and reported rather than resolved to the add-on's
+  contribution, so precedence never turns a configuration error into a change of owner
+
 > Source: surfaced by the wave-1 prototype (B9 — see docs/PROTOTYPE_FEEDBACK.md) — it is
 > required by _Runtime contribution_, which admits add-on and script contributors on equal
 > terms without saying what happens when two of them describe the same device, and by
@@ -175,7 +184,11 @@ which the contributors registered.
 > not stated in the thread. Identity, duplicate handling and the precedence chain decided
 > by the owner 2026-08-02 (D5, docs/OWNER_DECISIONS.md) — alternatives preserved in
 > design.md §1 and §5.13; the discovery-side statement is now the same rule seen from the
-> other side.
+> other side. The blocking clause is the owner's follow-up 2026-08-03 (D26,
+> docs/OWNER_DECISIONS.md), taken because D5 and D16·A8 together let a malformed explicit
+> declaration be withdrawn and its contributed neighbour silently promoted; it is stated
+> normatively in `energy-participants` _Malformed declarations are reported, never partially
+> accepted_ — alternatives preserved in `define-participant-model` design.md §5.18.
 
 ### Requirement: Contributor-owned complexity
 
@@ -202,7 +215,9 @@ A contributed algorithm, provider or script SHALL NOT lift an engine-owned prohi
 the per-consumer `never` hands-off flag, a user-declared level gate, the readiness
 interlock, device-protection constraints, or the enumeration of readings that count as
 safety inputs — while the engine's own level-derived steering remains an ordinary
-algorithm input that a contributor may override.
+algorithm input that a contributor may override, and while a contributed claim to the
+device-protection rung is neither lifted nor invented but corroborated under _A contributed
+protection claim is corroborated or demoted_.
 
 #### Scenario: A script cannot start a hands-off device
 
@@ -234,7 +249,71 @@ algorithm input that a contributor may override.
 > the asset handler below every controller, "the last line before an item is written". The
 > same decision lifts `never` off the Simple class onto the consumer so it applies to all
 > four classes — that requirement lives in `define-participant-model`, and its
-> profile-selection consequence in `device-profiles`. Not stated in the thread.
+> profile-selection consequence in `device-profiles`. Not stated in the thread. What
+> happens to a contributor with a **genuine** protection claim was left open by D13 and
+> answered by the owner 2026-08-03 (D25, docs/OWNER_DECISIONS.md) in _A contributed
+> protection claim is corroborated or demoted_ below — alternatives preserved in
+> design.md §6.
+
+### Requirement: A contributed protection claim is corroborated or demoted
+
+A decision from a contributor that claims the device-protection rung SHALL be honoured at
+that rung only where the engine corroborates it from the same cycle's snapshot — the
+participant's own effective declaration carrying the protection being claimed, that
+protection being due at this cycle's evaluation under `define-engine-contract` _Protection
+timing comes from device state history_, and the action the decision renders being the
+action that protection requires — and otherwise be demoted to the level-gate rung, applied
+there on its own merits, and reported with the reason it was demoted.
+
+#### Scenario: A binding that really does know the compressor
+
+- **GIVEN** a consumer whose declaration carries a maximum OFF time that has just elapsed,
+  and a contributed algorithm proposing to switch it on at the device-protection rung
+- **WHEN** the cycle is evaluated
+- **THEN** the claim is corroborated and honoured at that rung, so the contribution wins
+  against the user's level gate exactly as the engine's own protection would
+
+#### Scenario: A claim with nothing behind it
+
+- **GIVEN** a consumer that declares no protection parameters at all, and a contributed
+  algorithm labelling its decision a device protection
+- **WHEN** the cycle is evaluated
+- **THEN** the decision is demoted to the level-gate rung, judged there like any other
+  contributed proposal, and the demotion is reported with its reason
+
+#### Scenario: A claim pointing the wrong way
+
+- **GIVEN** a consumer whose minimum OFF time is what is currently due, so the protection
+  requires it to stay off, and a contributed decision claiming that rung in order to start
+  it
+- **WHEN** the cycle is evaluated
+- **THEN** the claim is not corroborated, because a declared protection that is due is not
+  by itself a licence to do the opposite of what it requires
+
+#### Scenario: An unreadable history does not corroborate
+
+- **GIVEN** a protected consumer reported as protection-unknown because its Item history
+  cannot be read, and a contributed decision claiming the device-protection rung for it
+- **WHEN** the cycle is evaluated
+- **THEN** the claim is demoted, the absence of evidence never standing in for the
+  evidence, and the participant's protection-unknown condition continues to be reported
+
+#### Scenario: Corroboration is a check, not a channel
+
+- **GIVEN** two contributed decisions for one participant, one corroborated and one not
+- **WHEN** the cycle is evaluated twice from the same snapshot
+- **THEN** the same one is honoured at the protection rung both times, because the test is
+  a function of the snapshot and the declaration rather than of which contributor asked
+
+> Source: surfaced by the wave-1 slice (`org.openhab.core.energy` STAGE1_REPORT.md §3.4) —
+> D13 forbids a contributor inventing a prohibition and says nothing about a genuine claim,
+> so the slice shipped the strict reading, capping every contributed decision at the level
+> gate and making a duty-cycle-aware binding unshippable as a contribution;
+> decided by the owner 2026-08-03 (D25, docs/OWNER_DECISIONS.md) — alternatives preserved
+> in design.md §6 and §6.1
+> (the strict cap that shipped; trusting a claimed rung as claimed). The three conjuncts are
+> the whole rule: a contributor gains no reach the engine could not already justify, and a
+> claim is never self-certifying. Not stated in the thread.
 
 ### Requirement: A declared Item name that does not resolve is a runtime condition
 
@@ -290,8 +369,9 @@ state.
 - **GIVEN** planning that uses a contributed solar forecast with a persisted baseline
 - **WHEN** that add-on is uninstalled or its service goes dark
 - **THEN** the engine keeps planning on the baseline and the remaining participants, and
-  reports the degraded source on its observability surface — a deduplicated event and the
-  engine's status Item
+  reports the degraded source on its observability surface — a deduplicated event from the
+  framework itself, and the status Item wherever the separate publishing component of
+  `define-engine-contract` _Decision outcomes are named and published_ is installed
 
 #### Scenario: Safety input lost — degrade safe, not blind
 
@@ -314,7 +394,11 @@ state.
 > definition, freeze-and-floor safe state and the reporting surface decided by the owner
 > 2026-08-02 (D14 and D16 pack A8, docs/OWNER_DECISIONS.md) — alternatives preserved in
 > design.md §5.6 and §5.7; the normative runtime statement lives in
-> `define-engine-contract`.
+> `define-engine-contract`. Which part of that reporting surface the framework owns was
+> split by the owner 2026-08-03 (D23, docs/OWNER_DECISIONS.md): the event is the
+> framework's, the status Item belongs to a separate publishing component, and a site
+> running the framework alone still sees the degradation as an event — alternatives
+> preserved in `define-engine-contract` design.md §23.
 
 ### Requirement: Core-shipped defaults without privilege
 

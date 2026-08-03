@@ -247,6 +247,19 @@ is a decision; it is not taken here.**
 > `define-participant-model` design.md §5.11 (per-participant declared sign conventions).
 > Both requirements above are stated in _Surplus escalation of the current level_.
 >
+> _The composition, amended_ (D27, 2026-08-03): surplus is **`max(0, grid + reclaimable)`**,
+> not the literal sum of two non-negative terms. D10 as worded over-states it whenever the
+> site imports while the battery charges — grid −1 kW with a battery at +3 kW reports 3 kW,
+> where stopping the battery frees 2 kW before the meter goes positive again — so a consumer
+> started on that figure puts the site straight back into import. **This amends D10 as
+> literally worded**, and the owner said so rather than reinterpreting it. Note for whoever
+> writes the vectors: the scenario above (_Battery charging is part of the surplus_) has grid
+> at exactly 0 and therefore does **not** discriminate between the two readings, which is why
+> the requirement now carries an importing-while-charging scenario and a never-negative one.
+> _Alternatives preserved_: the literal sum, and publishing an export figure and a
+> reclaimable figure separately — both argued in full in
+> `define-engine-contract` design.md §11.
+>
 > _Still open, by the owner's own note on D10_: whether the surplus figure is
 > instantaneous, averaged or forecast, and whether an already-running managed consumer's
 > own draw counts towards it. The requirement is worded so that neither is foreclosed.
@@ -458,6 +471,15 @@ ranking?
 > **Still open: one Item or two** — whether the plan rides on the same Item as the current
 > level or on a second one. openHAB's `TimeSeries` is per-item and a user sees the answer in
 > their item list and their charts. Nothing in D6 decides it.
+>
+> **FOLLOW-UP — D23** (owner decision, 2026-08-03, `docs/OWNER_DECISIONS.md`): **who** writes
+> them is now settled even though **how many** is not. Both the current-level Item and the
+> planned `TimeSeries` are written by the separate publishing component that D23 splits out
+> of the framework, alongside the engine's status Item — the framework that derives the
+> level writes nothing at all. That makes D6's own aside ("if adopted later, publication
+> becomes an output of the engine") concrete: there is now a component for it to be an output
+> of. The one-Item-or-two question is inherited by that component unchanged; the three
+> blockers and the rejected shapes are in `define-engine-contract` design.md §23.
 
 The requirement calls the plan "a future-timestamped TimeSeries" and the current level
 "an Item". openHAB's `TimeSeries` is per-item, so whether the plan rides on the **same**

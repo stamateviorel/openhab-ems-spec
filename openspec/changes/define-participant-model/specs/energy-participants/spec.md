@@ -123,10 +123,13 @@ a declared invert flag rather than by a convention of its own.
 > the per-role and setpoint signs decided by the owner 2026-08-02 (D11,
 > docs/OWNER_DECISIONS.md) — **and this decision inverts the battery direction the decision
 > pack recommended**, so both directions and the pack's self-checking corollary are
-> preserved in design.md §5.11. What is built on these signs — surplus as grid export plus
-> reclaimable battery charging (D10) — is stated in `define-energy-levels` _Surplus
+> preserved in design.md §5.11. What is built on these signs — surplus as `max(0, grid +
+> reclaimable)`, the signed grid reading plus reclaimable battery charging (D10 as amended
+> by D27, 2026-08-03) — is stated in `define-energy-levels` _Surplus
 > escalation of the current level_ and `define-optimization-objectives` _Selectable
-> objective_, with the open sub-questions in `define-engine-contract` design.md §11.
+> objective_, with the open sub-questions in `define-engine-contract` design.md §11. The
+> netting is what makes the grid sign load-bearing in both directions: under the literal sum
+> an import contributed nothing, so half of this convention was unused.
 
 ### Requirement: Controllable providers
 
@@ -742,7 +745,10 @@ are only steered when physically prepared.
 
 A declaration the system cannot read completely SHALL cause the whole participant to be
 skipped and reported on the framework's configuration-status surface, keyed on the Item
-that carries it, rather than being partially accepted or read as some default class.
+that carries it — the device staying unmanaged until the declaration is fixed, no
+lower-ranked statement about the same identity taking the blocked one's place — rather than
+being partially accepted, read as some default class, or silently replaced by the
+declaration it outranks.
 
 #### Scenario: One unreadable key, whole participant skipped
 
@@ -766,10 +772,33 @@ that carries it, rather than being partially accepted or read as some default cl
 - **THEN** the problem is available there as a configuration-status message, not only as
   a line in the log
 
+#### Scenario: A typo does not hand the device to somebody else
+
+- **GIVEN** a device an add-on has contributed a declaration for, and explicit `energy:`
+  metadata on the same Item — which outranks the contribution — carrying one unreadable key
+- **WHEN** both are read
+- **THEN** the participant is skipped entirely and the contributed declaration does not
+  become effective in its place, so a typo degrades to nothing happening rather than to the
+  device being steered on terms its owner never chose
+
+#### Scenario: The block lifts when the declaration is fixed
+
+- **GIVEN** a participant blocked by a malformed explicit declaration while a contributed
+  declaration for the same identity is present
+- **WHEN** the user corrects the unreadable key
+- **THEN** the participant registers on the corrected declaration, the contributed statement
+  resumes its ranked place beneath it, and the reported condition clears on its own
+
 > Source: surfaced by the wave-1 prototype (B11 / B12, docs/PROTOTYPE_FEEDBACK.md) — the
 > corpus names no surface on which a declaration in error can appear; core precedent —
 > `ConfigStatusProvider` with `ConfigStatusMessage{INFORMATION,WARNING,ERROR}` and
 > `ConfigStatusInfoEvent` already exist, are i18n'd and are consumed by UIs, so an
 > EMS-specific error surface would be the reviewable defect; decided by the owner
 > 2026-08-02 (D16 / pack A8, docs/OWNER_DECISIONS.md) — alternatives preserved in
-> design.md §5.18.
+> design.md §5.18. **What the skip does to the precedence chain** was decided by the owner
+> 2026-08-03 (D26, docs/OWNER_DECISIONS.md), after the wave-1 slice reported that this rule
+> and D5's "a duplicate is a further statement" interact so that withdrawing a malformed
+> explicit declaration silently promotes the contributed one — a typo transferring control
+> of a live device. Intent to control survives a wrong text, so the block is total —
+> alternatives preserved in design.md §5.18 (let the contribution take over; take over only
+> after the user acknowledges the error).
