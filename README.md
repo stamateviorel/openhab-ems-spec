@@ -10,11 +10,9 @@ requirements live as reviewable **change proposals** under [`openspec/changes/`]
 each one small enough to discuss on its own. Code lands elsewhere (openhab-core /
 openhab-addons) — this repo is the shared plan that the code repos catch up to.
 
-**The reference implementation lives at
-[openhab-core-energy-prototype](https://github.com/stamateviorel/openhab-core-energy-prototype)** —
-waves 1 and 2 built against a real `openhab-core` checkout, four bundles, 601 tests, shadow-only
-and structurally unable to write to an Item. It is what produced the defect lists below; the code
-is the instrument, the defects are the finding.
+A reference implementation was built from this corpus against a real `openhab-core` checkout and is
+what produced the defect lists below. **It is no longer published**; the findings it surfaced are,
+and they are the useful part.
 
 > **Status: seed.** Offered to the openHAB community as a starting point — happy to
 > transfer this repo to the `openhab` organisation, move its content into a core
