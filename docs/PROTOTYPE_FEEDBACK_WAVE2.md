@@ -50,6 +50,8 @@ different from what it says elsewhere.
 
 ## What is deliberately still open
 
-- **The forecast surplus stays off by default.** D31 defined what it means, not whether it runs.
+- ~~The forecast surplus stays off by default.~~ **Closed by D39** (2026-08-30): it is automatic —
+  used where the house's own demand can be netted out, withheld where it would be the production
+  forecast under another name.
 - **W2-5, W2-9 and W2-12** are recorded as limitations rather than answered; each is defensible as it
   stands and none blocks an implementation.

@@ -130,3 +130,17 @@ One change, one confirmation, one debt.
 - **D36** is a debt rather than a change. It asks openHAB core for something it does not have, so
   until that exists the requirement it creates cannot be satisfied by anything, including this
   implementation. Recorded as an open dependency rather than a completed decision.
+
+## Round five — the one D31 left open (2026-08-30)
+
+| # | Question | Decision | Notes |
+|---|---|---|---|
+| D39 | D31 defined what a forecast surplus *means* and said nothing about whether it runs. It shipped off by default, so almost nobody would find it, and on a site with only heating deducted the figure reads high | **Automatic: on where the house's own demand can be netted out, withheld where it cannot** | The setting becomes three-state. Unset — the shipped case — uses the surplus where a demand forecast exists and aligns, and withholds it entirely where the figure would be the production forecast under another name, reporting `SURPLUS_FORECAST_WITHHELD` rather than staying silent. A production forecast presented as surplus schedules a load into hours the house quietly eats first, so the site imports while believing it is on solar. Explicit `true` still gives the upper bound with its existing condition, and explicit `false` still turns the feature off. **Rejected and preserved:** (a) off unless switched on — what shipped, nobody surprised, but the honest case is off too for no reason; (b) on always, labelled as an over-estimate — most useful out of the box, at the cost of over-promising on every house with a real base load. |
+
+### What this round costs
+
+One change, and it is a behaviour change on an unconfigured site: a site with a solar forecast and
+no demand forecast previously handed the objectives a production-only series and now hands them
+nothing. Four tests cover the three states and the withheld case is mutation-proven — removing the
+rule fails exactly the test that asserts it. A new condition, `SURPLUS_FORECAST_WITHHELD`, says why,
+and the compiler found the description switch that had to answer for it.
