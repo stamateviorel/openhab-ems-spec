@@ -11,6 +11,12 @@ same single sign convention as the reading it predicts — grid + = export,
 battery + = charging, PV + = producing, consumers + = consuming — with a source that
 disagrees normalised at the edge rather than interpreted downstream.
 
+A series' entries carry start timestamps only, so the **last entry has no width of its
+own**. Every plane needs one to price or integrate it, so the interval of the final entry
+SHALL be taken as equal to the interval preceding it, and a series of fewer than two
+entries SHALL be reported as having no usable geometry rather than assumed. This is a
+framework-level gap rather than a modelling preference (W2-3).
+
 #### Scenario: Refreshed solar forecast
 
 - **WHEN** a newer forecast run publishes values for timestamps already stored

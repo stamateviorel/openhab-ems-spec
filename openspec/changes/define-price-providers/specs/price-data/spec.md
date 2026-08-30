@@ -8,6 +8,12 @@ The system SHALL represent energy prices as future-timestamped TimeSeries of
 `Number:EnergyPrice` — not as per-slot channels — where a newly published value for a
 timestamp overwrites the older value.
 
+A series' entries carry start timestamps only, so the **last entry has no width of its
+own**. Every plane needs one to price or integrate it, so the interval of the final entry
+SHALL be taken as equal to the interval preceding it, and a series of fewer than two
+entries SHALL be reported as having no usable geometry rather than assumed. This is a
+framework-level gap rather than a modelling preference (W2-3).
+
 #### Scenario: Day-ahead arrival
 
 - **WHEN** tomorrow's 24 (or 96) prices are published by a source
@@ -18,6 +24,41 @@ timestamp overwrites the older value.
 > ([1481931313](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931313));
 > capability landed in openHAB 4.1 (TimeSeries + `forecast` strategy), EnergyPrice UoM
 > from [1484171583](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1484171583).
+>
+> **Sharpened after wave 2 (W2-1).** The UoM type solves *carrying* a price and not
+> *converting* one: `QuantityType.toUnit` will not convert a price even within a single
+> currency, so an implementation cannot plan on it. Composition across differing
+> denominations is arithmetic the plane has to do itself.
+
+A price source is **pulled, never pushed from**: the plane asks a source what it has and a
+source cannot announce that new values have arrived. A site therefore SHALL configure a
+refresh cadence, and an implementation that has none SHALL report it, because otherwise
+tomorrow's prices are not picked up on the day they are published (W2-7).
+
+### Requirement: Sub-unit price denominations
+
+The system SHALL be able to express a price in a currency's sub-unit — ct/kWh as well as
+EUR/kWh — so that a market or supplier quoting cents is represented as quoted rather than
+converted before it arrives.
+
+#### Scenario: A supplier quoting cents
+
+- **GIVEN** a supplier publishing 28 ct/kWh
+- **WHEN** the site names the denomination its feed uses
+- **THEN** the plane carries 28 ct/kWh, and nothing between the feed and the plan divides
+  by one hundred
+
+> **DEPENDENCY ON openHAB CORE, CURRENTLY UNMET — owner decision D36** (2026-08-30,
+> `docs/OWNER_DECISIONS.md`). `Number:EnergyPrice` carries a currency's main unit only, so
+> **no implementation can satisfy this today**, including the reference one. It is stated
+> as a requirement rather than dropped because the alternative — rewording every cents
+> scenario to EUR/kWh — pushes a divide-by-one-hundred onto every site whose feed quotes
+> cents, and a factor-of-100 error in a tariff is both easy to make and quiet. Until core
+> gains sub-unit denominations, an implementation SHALL express prices in the main unit and
+> SHALL say that it does, rather than appear to accept a sub-unit it silently misreads.
+>
+> Rejected alternative, preserved: reword the affected scenarios to "EUR/kWh with VAT" and
+> drop the cents claim, which works today with nothing new. See W2-1 and D36.
 
 ### Requirement: Price component composition
 
@@ -63,6 +104,16 @@ cases need no custom binding.
 - **WHEN** the user configures ×VAT and /10
 - **THEN** the effective series is in ct/kWh with VAT, without any add-on dependency
 
+> **BLOCKED — owner decision D36** (2026-08-30, `docs/OWNER_DECISIONS.md`). This scenario
+> and the requirement above both ask for `ct/kWh`, and **openHAB cannot express a
+> sub-unit denomination**: `Number:EnergyPrice` carries a currency's main unit only. The
+> owner's decision is that core should gain sub-unit denominations rather than that the
+> corpus should retreat to EUR/kWh — so this scenario stands as written and is
+> **unsatisfiable until that lands**, by this implementation or any other. Until then a
+> cents-denominated feed must be converted before it reaches the plane, and an
+> implementation should say so rather than appear to support it. See W2-1 in
+> `docs/PROTOTYPE_FEEDBACK_WAVE2.md`.
+
 #### Scenario: Seasonal/day-night tariff
 
 - **WHEN** the user configures "winter Mon–Sat 07–22 = higher tariff"
@@ -85,6 +136,16 @@ and available to engines, rules and scripts, where a window starts only on a slo
 are non-flat), two slots are contiguous only when one ends exactly where the next begins,
 and a request that cannot be met in full is answered with the best partial selection
 carrying the requested and the granted duration rather than with silence.
+
+Two windows whose costs differ by less than the arithmetic can distinguish are a tie, and
+the earlier one takes it: the comparison is made within a tolerance the framework fixes,
+not the site. Comparing computed costs exactly lets a difference in the last bits — the
+same multiplications reaching the same answer in a different order — decide which hour a
+load runs in.
+
+A declared load curve weights a **consecutive** selection only. A slot's position within a
+run is not known until the set is chosen, so weighting the non-consecutive form would be
+circular, and it costs its slots flat.
 
 #### Scenario: Cheapest consecutive window for a curve
 

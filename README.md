@@ -85,7 +85,7 @@ ambiguity instead of inventing.
 The corpus has been through three passes, and a reader can tell them apart at a glance
 because each one labels itself on the `Source:` line of every requirement it touched.
 
-**1. Collected and credited.** 100 requirements and 268 scenarios across the 12 changes
+**1. Collected and credited.** 102 requirements and 289 scenarios across the 12 changes
 above, each requirement one SHALL with a `Source:` line naming the #3478 comment, the
 production system or the core capability it rests on.
 

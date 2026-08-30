@@ -38,10 +38,15 @@ API and UI vocabulary should follow ("best window", not "cheapest window").
 
 ## 4. Objective availability without its data plane
 
-Selecting the carbon objective when no carbon-intensity source is installed is
+> **ANSWERED — owner decision D33** (2026-08-30, `docs/OWNER_DECISIONS.md`). An objective
+> whose data plane is absent is **not offered**, rather than silently answered with a
+> different one. The reference implementation ships `absentDataPlane=hide`; the two
+> rejected options remain implemented and selectable, and are preserved below.
+
+Selecting the carbon objective when no carbon-intensity source is installed was
 undefined as written. Options: hide unavailable objectives, fall back to cost with a
 visible notice, or refuse selection. Interacts with the extension surface's degraded-
-source reporting. Undecided.
+source reporting.
 
 ## 5. Feed-in under non-cost objectives
 
