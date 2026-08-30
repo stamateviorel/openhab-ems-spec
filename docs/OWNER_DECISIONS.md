@@ -104,3 +104,29 @@ Two changes, three confirmations.
   corpus said "undecided" where the implementation had already chosen.
 - D31 leaves one question open on purpose: the forecast surplus stays off by default, and whether
   that changes was not asked and is not answered here.
+
+## Round four — the three that were a site's call (2026-08-30)
+
+Twelve of wave 2's seventeen findings were not decisions: eleven were corrections the corpus needed
+and one is recorded as a limitation. Three were genuine forks with different consequences at the
+property, and those were put to the owner. Asked in site terms; recorded here in the corpus's.
+
+| # | Question | Decision | Notes |
+|---|---|---|---|
+| D36 | §5.1 — `ct/kWh` is not expressible and the requirement asks for it twice, so as written it asks for something impossible | **Add a requirement that core gain sub-unit denominations** | The ambitious of the two options, chosen over rewording the scenario to euros per kWh. Belgian and Dutch tariffs are quoted in cents, and forcing every site to divide by 100 before feeding a price in makes a factor-of-100 error one typo away, silently. **Cost accepted:** this is a change to openHAB core that nobody has agreed to, and it does not exist. **Interim, and it must be said plainly wherever this requirement appears:** the reference implementation expresses prices in the currency's main unit only, so a cents-denominated feed has to be converted before it arrives. **Rejected and preserved:** reword the scenario to "EUR/kWh with VAT" and drop the cents claim — works today with nothing new. |
+| D37 | §5.3 — the adjustment pipeline has no stated order, and VAT before a fixed fee is not the same money as VAT after it | **The order is the site's, and a conforming implementation must show the order it applied** | Ratifies what ships and adds the display obligation, which `GridPriceSource.describe()` already meets — it renders the pipeline as a user reads it back. Tariffs genuinely differ on whether the fee is taxed, so one fixed order would be wrong somewhere with no way to correct it. **Rejected and preserved:** fix one order for everyone — nothing to configure and nothing to get wrong, at the cost of being wrong for some real tariff. |
+| D38 | §5.16 — "earlier slot wins a tie" is exact on values but compares computed doubles on window costs, so two windows equal on paper can differ in the last bits and a rounding artefact decides which hour a load runs in | **Within a tolerance, and the tolerance is the framework's** | An exact tie was always safe, because the incumbent keeps it; the defect only appears when the *later* window comes out marginally cheaper through arithmetic rather than price. `ConsecutiveWindowSelection.TIE_TOLERANCE` is `1e-9` relative to the figures' magnitude — relative because a window figure's size depends on the currency, the energy unit and the window's length. **It is not a site setting:** a site cannot be asked what floating-point noise it tolerates. **Rejected and preserved:** exact comparison — perfectly deterministic and trivial to specify, but two implementations given one tariff can disagree about which hour is cheapest. |
+
+### What this round costs
+
+One change, one confirmation, one debt.
+
+- **D38** changes the search. `wins()` now treats figures within the tolerance as a dead heat, and a
+  test pins it: a later window cheaper by 1e-12 must not take the tie. It is mutation-proven —
+  removing the tolerance fails exactly that test and nothing else. The first attempt at that test was
+  worthless and passed either way, because it constructed an exact tie, which was never the broken
+  case.
+- **D37** needed no code: the display obligation was already met.
+- **D36** is a debt rather than a change. It asks openHAB core for something it does not have, so
+  until that exists the requirement it creates cannot be satisfied by anything, including this
+  implementation. Recorded as an open dependency rather than a completed decision.

@@ -90,6 +90,9 @@ above, each requirement one SHALL with a `Source:` line naming the #3478 comment
 production system or the core capability it rests on.
 
 **2. Built once, and the build fed back.**
+[`docs/PROTOTYPE_FEEDBACK_WAVE2.md`](docs/PROTOTYPE_FEEDBACK_WAVE2.md) does the same for wave 2 —
+the price and forecast planes — where seventeen more were found, five of which became decisions.
+
 [`docs/PROTOTYPE_FEEDBACK.md`](docs/PROTOTYPE_FEEDBACK.md) catalogues what building a wave-1
 prototype from this corpus surfaced — roughly seventy places where it was ambiguous,
 contradictory or silent — and says, for each, whether a requirement was sharpened, a missing
