@@ -74,3 +74,33 @@ Five changes, three confirmations. The changes are not cosmetic:
   precise corroboration definition. More work and more surface.
 - **D26**, **D27** and **D28** each change behaviour that is currently green and tested, and
   D28 adds a dependency to a bundle that has exactly three.
+
+## Round three — the questions wave 2 left open (2026-08-30)
+
+Wave 2 named seventeen places where the corpus was ambiguous, contradictory or silent
+(`STAGE2_REPORT.md` §5). Five of them needed an owner decision rather than a code fix. They were
+put to the owner as site questions rather than specification questions, at his request — an
+electrician's framing, in kilowatts and contactors — and the answers are recorded here in the
+corpus's own terms. As with D1–D30 these are **one person's decisions in a reference
+implementation, not consensus**, and every rejected option is written beside the one taken.
+
+| # | Question | Decision | Notes |
+|---|---|---|---|
+| D31 | §5.9 — requirement O1 places a deferrable load "into the surplus", a statement about *future* slots, but surplus is defined only as an instantaneous figure and there is no total-demand forecast role to subtract | **Forecast surplus is solar production netted against whatever demand forecasts are installed** — today that is the heating role only | Ratifies what wave 2 shipped as "the one genuine invention", making it the definition rather than an invention. When no demand forecast is installed the plane still reports `SURPLUS_FORECAST_IS_PRODUCTION_ONLY` — an upper bound labelled as one. **Rejected and preserved:** (a) add a total-demand forecast role and keep production-only until a site has one — cleanest, but the role would sit unfilled because nothing produces it; (b) declare O1 a dispatch-time statement only, so no forecast surplus exists — smallest change, but gives up planning against tomorrow's sun; (c) production-only permanently — one meaning everywhere, but systematically over-promises on a house with real base load. **Not decided here:** whether the feature stops being off-by-default. |
+| D32 | §5.7 — "the new values replace the old ones for those timestamps" versus the next scenario's "the capped entries hold the capped value". A refresh landing after a cap silently erases it, and the corpus frames three ways out and picks none | **Caps are kept as a series of their own and composed when the prediction is read** (`cap-at-read-time`), now the shipped default | The only one of the four that survives a restart, because nothing about it depends on remembering who wrote what — which matters directly, since §5.6 records that the layer ledger is not durable. **Rejected and preserved:** (a) the requirement's literal words, newest write wins with the erasure reported — what shipped before, and still available as `fresh-overwrites-old`; (b) re-apply every cap on top of each refresh — correct but needs a memory of caps that does not survive a restart; (c) declared layer ranks — flexible, but nothing ships with a ranking so every write is refused until a site declares one. **Consequence accepted:** a site that writes caps without naming a series to keep them in now has them refused and is told (`CAP_SERIES_UNCONFIGURED`) rather than having them written into the prediction. |
+| D33 | §5.8 — what the carbon objective should do on a site with no carbon source | **Do not offer an objective whose data plane is absent** (`hide`), now the shipped default | Consistent with how the rest of the framework behaves: it already refuses to guess a currency, a market zone or a price composition rather than invent one, and offering an objective it cannot serve is the same class of invention. **Changes shipped behaviour** — the previous default fell back to cost and reported it. **Rejected and preserved:** (a) fall back to cost and report the substitution — always produces a plan and cheap often coincides with clean, but the report is easy to miss and a site believes it is doing one thing while doing another; (b) plan nothing at all — impossible to mislead, but an absent plan reads as a broken system rather than a deliberate refusal. |
+| D34 | §5.11 — whether the four-level signal follows the active objective or stays price-based | **A site setting, price-based by default** | Ratifies what ships. Every production system behind this corpus only ever ran price-based levels, so the default changes nothing for anyone already depending on it, and a site wanting carbon-shaped levels sets `levelInput=objective`. **Rejected and preserved:** (a) always price-based, so the signal means one thing on every site — matters if bindings ever depend on it, but a site that asked for carbon still gets a price-shaped contactor signal; (b) always follow the objective, so the whole system says one consistent thing — but it silently changes behaviour for every existing setup, and "good time to run" starts depending on a setting the person who wired the contactor may not know exists. |
+| D35 | §5.17 — removing the shipped `EUR` currency default went one step beyond what the requirement demands, which forbids inferring the market *zone* and says nothing about currency | **Keep it removed — no assumed currency; a site names it or nothing runs** | An Item carries a number and says nothing about its denomination, and a guessed one is rendered onto a page somebody acts on: a site denominated in øre/kWh would be out by a factor of 100 with nothing reported. Same reasoning that removed the `UTC` market-zone default, which had silently shifted every CET delivery day by one. **Rejected and preserved:** assume `EUR`, which is right for most European sites and saves a setting — but it is precisely the class of silent guess that caused the defect this section records. |
+
+### What this round costs
+
+Two changes, three confirmations.
+
+- **D32** and **D33** each change a shipped default, so four existing tests that had encoded the
+  old ones were rewritten to name the option they exercise rather than inherit it, and two new
+  tests pin the new defaults. A shipped default that nothing asserts is exactly how the
+  `marketZone` defect in §5.17 got in.
+- **D31**, **D34** and **D35** confirm what already ships and close spec-versus-code drift; the
+  corpus said "undecided" where the implementation had already chosen.
+- D31 leaves one question open on purpose: the forecast surplus stays off by default, and whether
+  that changes was not asked and is not answered here.
