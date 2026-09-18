@@ -8,9 +8,9 @@
 > tier was. None of that is reproduced in the answers, and a maintainer overturning a
 > decision needs it.
 >
-> **The answers are in [`OWNER_DECISIONS.md`](OWNER_DECISIONS.md)** — 21 rows, D1–D20 plus
-> the Part D remainder, answered by the owner of the reference implementation on
-> 2026-08-02. They are **owner decisions in a reference implementation, not thread
+> **The answers are in [`OWNER_DECISIONS.md`](OWNER_DECISIONS.md)** — now 39 rows, D1–D39.
+> D1–D20 plus the Part D remainder were answered by the owner of the reference
+> implementation on 2026-08-02; D31–D39 followed on 2026-08-30 from what wave 2 raised. They are **owner decisions in a reference implementation, not thread
 > consensus**, and every requirement they changed says so on its `Source:` line.
 >
 > Read this page against that one, because they do not always agree:
