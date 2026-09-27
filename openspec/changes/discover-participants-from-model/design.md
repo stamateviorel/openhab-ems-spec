@@ -62,6 +62,8 @@ anyway, so the two differ only in whether the draft exists before the user says 
 
 ## 3. Relationship to the model's own gaps
 
+> **OPEN.** No decision recorded.
+
 This change is only as strong as openHAB's semantic coverage of energy equipment. If the
 provider-role vocabulary (grid/pv/battery) or a future `Evse` capability grows, the
 mapping grows with it. It should degrade gracefully, never guess (see the "No guessing"
@@ -70,6 +72,8 @@ requirement).
 Unchanged by the decision pass.
 
 ## 4. Provenance / status
+
+> **CONTEXT — not a question.** Nothing here needs deciding.
 
 New proposal, owner + assistant, not yet raised in #3478. If it survives local review it
 is a good candidate to float in the thread as the "out-of-the-box" onboarding story Kai
@@ -85,6 +89,8 @@ command, shown, waited on, then posted. Nothing has been posted, and this paragr
 a licence to post. Tracked as task 1.4.
 
 ## 5. What the wave-1 prototype surfaced
+
+> **OPEN.** Prototype-sourced; recorded, not answered.
 
 Opened by building the wave-1 slice against this corpus, not by #3478. Ids are the
 prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`); recorded, not answered.

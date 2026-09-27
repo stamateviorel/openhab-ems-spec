@@ -25,11 +25,16 @@ only ever ran price-based levels; undecided. This is the main interaction to set
 
 ## 2. Composite objectives
 
+> **OPEN — deliberately deferred past v1.** Nobody in #3478 asked for weighted mixes; if they
+> come, they arrive as a contributed objective first.
+
 Weighted mixes ("mostly cost, mild carbon preference") are plausible but nobody in the
 thread asked for them; deliberately out of v1. If they come, they arrive as a contributed
 objective (extensibility requirement) before they justify core complexity.
 
 ## 3. Naming
+
+> **OPEN.** No decision recorded.
 
 The thread converged on objective-neutral wording — masipila adopting mstormi's "best
 hours" over "cheapest hours"

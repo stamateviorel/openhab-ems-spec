@@ -65,6 +65,9 @@ available the day `FilterCriteria` grows an aggregation field.
 
 ## 4. Relation to existing community widgets
 
+> **OPEN.** No decision recorded. Closing it needs whoever would own the widget, not a
+> unilateral call here.
+
 mstormi pointed at the community's animated energy widget as a starting point
 ([1481931249](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931249));
 the reference ships a standalone energy-flow widget. Whether the out-of-the-box page
@@ -73,6 +76,8 @@ embeds such a flow visual or stays plainer is design freedom, not spec.
 Unchanged by the decision pass: still design freedom, and deliberately not a requirement.
 
 ## 5. Surfaces the wave-1 prototype found unnamed
+
+> **OPEN.** Prototype-sourced; recorded, not answered.
 
 Opened by building the wave-1 slice against this corpus, not by #3478. Ids are the
 prototype's own (see `docs/PROTOTYPE_FEEDBACK.md`). Four kinds of user-visible information

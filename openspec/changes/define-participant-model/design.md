@@ -52,6 +52,11 @@ declared.
 
 ## 2. Core vs. add-on boundary
 
+> **OPEN — and only a core maintainer can close it.** This is the single question the corpus
+> cannot answer for itself: Kai has said the final solution belongs in openhab-core rather than
+> "yet another binding", and separately that new add-on types might carry the extensible parts,
+> with the extent still to be worked out. Every bundle boundary downstream of here depends on it.
+
 Kai 2026: the final solution belongs in openhab-core, not "yet another binding"
 ([5016907260](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016907260)).
 The reference implementation's internal seams suggest a concrete split to discuss:
@@ -65,12 +70,19 @@ The reference implementation's internal seams suggest a concrete split to discus
 
 ## 3. Engine simplicity
 
+> **OPEN — and the corpus has grown away from it.** The sketch wanted a service simple enough
+> to be a rule template; this change is now nineteen requirements. Each one is defensible and
+> field-sourced, but nobody has ruled on whether the result is still the thing Kai asked for, or
+> on which subset would be.
+
 The sketch wanted the `EnergyManagementService` so simple it "could possibly even be a
 rule template" ([1481931374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931374)) —
 scripts must be able to implement alternative algorithms. Whatever lands must keep the
 engine swappable rather than monolithic.
 
 ## 4. Validation methodology (from the reference)
+
+> **CONTEXT — not a question.** Recorded as an implementation-plan input, not a decision.
 
 Before any engine variant steers a live building: unit tests on the pure logic, then a
 shadow mode running beside the user's existing automation comparing every decision, then

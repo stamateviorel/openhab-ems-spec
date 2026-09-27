@@ -70,6 +70,11 @@ in #3478** — unlike the other changes, whose requirements each trace to a thre
 rests on openHAB's existing semantic model and Kai's metadata/out-of-the-box intent; its
 proposal.md says so up front.
 
+**What is still open** is collected in [`docs/OPEN_QUESTIONS.md`](docs/OPEN_QUESTIONS.md) —
+every section of every change declares whether it is answered, open, narrowed or context, and
+that page lists the ones that are not closed. Three of them need a core maintainer and cannot
+be settled inside this repo.
+
 **Executable acceptance vectors** live in [`fixtures/`](fixtures/) — @masipila's 2023
 worked price/level/scheduling tables, extracted verbatim from the thread and
 machine-verified internally consistent. A conforming implementation must reproduce them.

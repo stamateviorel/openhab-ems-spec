@@ -537,6 +537,8 @@ This one must be answered in both places at once. The same question belongs in
 
 ## 16. Provenance
 
+> **CONTEXT — not a question.** Nothing here needs deciding.
+
 Nothing on this page is thread consensus. Every section is a silence, contradiction or
 inertness the wave-1 prototype hit while building this change, recorded so that a reader
 of `tasks.md` is not the only person who learns the questions exist. Where a thread or

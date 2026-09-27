@@ -1103,6 +1103,8 @@ the other denies.
 
 ## 22. Provenance recap
 
+> **CONTEXT — not a question.** Nothing here needs deciding.
+
 Thread-sourced: central evaluation, conflict resolution, limits (budget/phase), shadow
 mode, replaceable algorithm. Reference-sourced (flagged inline): master stop, ACK
 actuation, and the "regardless of algorithm" limit generalization. Reviewers should

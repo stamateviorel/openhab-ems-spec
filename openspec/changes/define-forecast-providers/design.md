@@ -14,6 +14,10 @@ stand as written. Closing them is a documented follow-up, not a decision.
 
 ## 1. Overwriting past entries (feasibility dependency)
 
+> **OPEN — dispositioned, not decided.** The 2026-08-02 pack put this in its Part C, answered
+> by core's own API rather than by anything the owner had to choose, and the recorded decision
+> was **no action**. So no requirement in this corpus states it and the section stands as written.
+
 Future entries are native core capability: TimeSeries + the `forecast` persistence
 strategy (openHAB 4.1). Overwriting _past or current_ entries — the §14a/inverter cap
 written onto today's prediction — means modifying persisted history. Core ships the API
@@ -25,6 +29,9 @@ modifiable service or offer a fallback (e.g., a cap held in the engine's view wi
 rewriting stored history).
 
 ## 2. Writer precedence on a layered series
+
+> **OPEN — dispositioned, not decided.** Same Part C disposition as §1: no requirement states
+> it, and closing it is a documented follow-up rather than a decision anyone has taken.
 
 Multiple writers target the same series: the baseline generator, the live forecast
 refresh, a cap writer, later the learning layer. Two stated behaviours can collide —

@@ -61,6 +61,10 @@ sense for core — is answered here only for the reference implementation. Task 
 
 ## 2. Naming
 
+> **OPEN — and it is Kai's own question, unanswered since 2023.** He asked whether
+> `DemandDescription` is better wording than `EnergyConsumer`; nobody replied, and the corpus
+> kept his original name by default rather than by decision.
+
 Kai himself questioned `EnergyConsumer` — "I am wondering whether something like
 `DemandDescription` might be actually a better wording?"
 ([1481931374](https://github.com/openhab/openhab-core/issues/3478#issuecomment-1481931374)).
@@ -94,6 +98,8 @@ It is worth one line in #3478 rather than a unilateral rename. Task 1.2 stays op
 carries that shape.
 
 ## 3. Are actuation adapters an extension point?
+
+> **OPEN.** No decision recorded.
 
 Device-quirk handling on the _write_ side (ACK windows, mode mapping — see
 `define-engine-contract` §3) could itself be contributable, e.g. an EEBus add-on acting
