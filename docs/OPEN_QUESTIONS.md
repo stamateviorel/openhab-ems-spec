@@ -1,24 +1,25 @@
 # Open questions across the corpus
 
-Generated 2026-09-27 from the state markers in each change's `design.md`.
+Generated 2026-10-03 from the state markers in each change's `design.md`.
 Every section in this corpus declares one of **Answered**, **Open**, **Narrowed** or
 **Context**; this page collects the ones that are not closed.
 
 It exists because the questions that need someone else were spread across twelve files, where
 a provenance note and an unanswered architectural question looked the same.
 
-**18 sections are open or only narrowed.** Three of them the corpus cannot answer for
-itself.
+**17 sections are open or only narrowed.** Two of them the corpus cannot answer for itself.
+
+The core vs. add-on boundary is no longer among them: it was taken as **D40** on 2026-10-03, for the
+reference implementation only, ratifying the split the four bundles already are. A maintainer can
+overturn it at the cost of one requirement rewrite, which is the point of recording it that way.
 
 ## These need a core maintainer
 
-Nothing downstream of them can be settled here, and answering them is cheap for whoever has the
-authority: each is one decision, and every alternative is preserved in the section.
+Each is one decision, and every alternative is preserved in the section.
 
 | Change | Question | State |
 |---|---|---|
 | [`define-extension-points`](../openspec/changes/define-extension-points/design.md) | 2. Naming | OPEN — and it is Kai's own question, unanswered since 2023 |
-| [`define-participant-model`](../openspec/changes/define-participant-model/design.md) | 2. Core vs. add-on boundary | OPEN — and only a core maintainer can close it |
 | [`define-participant-model`](../openspec/changes/define-participant-model/design.md) | 3. Engine simplicity | OPEN — and the corpus has grown away from it |
 
 ## Everything else still open
@@ -40,4 +41,3 @@ authority: each is one decision, and every alternative is preserved in the secti
 | [`define-price-providers`](../openspec/changes/define-price-providers/design.md) | 5. Price keys that arrive before the price plane (B3) | STILL OPEN |
 | [`discover-participants-from-model`](../openspec/changes/discover-participants-from-model/design.md) | 3. Relationship to the model's own gaps | OPEN |
 | [`discover-participants-from-model`](../openspec/changes/discover-participants-from-model/design.md) | 5. What the wave-1 prototype surfaced | OPEN |
-

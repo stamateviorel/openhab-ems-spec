@@ -52,10 +52,16 @@ declared.
 
 ## 2. Core vs. add-on boundary
 
-> **OPEN — and only a core maintainer can close it.** This is the single question the corpus
-> cannot answer for itself: Kai has said the final solution belongs in openhab-core rather than
-> "yet another binding", and separately that new add-on types might carry the extensible parts,
-> with the extent still to be worked out. Every bundle boundary downstream of here depends on it.
+> **Answered — D40 (2026-10-03), for the reference implementation only.** _Decision:_ **core
+> carries the participant model and registry, the profile classes, the energy levels and the
+> engine contract; everything that touches openHAB's own data surfaces, or encodes one region's
+> rules, ships as an opt-in companion.** This ratifies the split the four bundles already are and
+> that the OSGi integration tests already prove, so that building can continue without waiting;
+> it is an owner decision in a reference implementation, **not thread consensus and not a
+> maintainer's ruling**. The narrower question Kai actually left open — whether a contribution is
+> carried by a plain binding, a new EMS add-on type, a script or the service whiteboard — is
+> `define-extension-points` §1 and **stays open**, because it needs whoever would own a new
+> add-on type. _Alternatives preserved below and in `docs/OWNER_DECISIONS.md`._
 
 Kai 2026: the final solution belongs in openhab-core, not "yet another binding"
 ([5016907260](https://github.com/openhab/openhab-core/issues/3478#issuecomment-5016907260)).
