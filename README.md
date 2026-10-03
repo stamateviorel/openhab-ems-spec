@@ -70,6 +70,10 @@ in #3478** — unlike the other changes, whose requirements each trace to a thre
 rests on openHAB's existing semantic model and Kai's metadata/out-of-the-box intent; its
 proposal.md says so up front.
 
+**Evidence from shipped add-ons** is collected in [`docs/BINDING_EVIDENCE.md`](docs/BINDING_EVIDENCE.md) —
+six openHAB bindings that had to solve these problems in production, widening the provenance beyond
+the single thread this corpus was seeded from.
+
 **What is still open** is collected in [`docs/OPEN_QUESTIONS.md`](docs/OPEN_QUESTIONS.md) —
 every section of every change declares whether it is answered, open, narrowed or context, and
 that page lists the ones that are not closed. Three of them need a core maintainer and cannot
