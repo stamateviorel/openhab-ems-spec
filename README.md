@@ -12,7 +12,8 @@ openhab-addons) — this repo is the shared plan that the code repos catch up to
 
 **The reference implementation lives at
 [openhab-core-energy-prototype](https://github.com/stamateviorel/openhab-core-energy-prototype)** —
-waves 1 and 2 built against a real `openhab-core` checkout, four bundles, 608 unit tests and 7
+waves 1 and 2 plus the capacity tariff, built against a real `openhab-core` checkout, four bundles,
+628 unit tests and 7
 OSGi integration tests, shadow-only
 and structurally unable to write to an Item. It is what produced the defect lists below; the code
 is the instrument, the defects are the finding.
